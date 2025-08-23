@@ -87,11 +87,13 @@ npm run check:prettier # Check Prettier formatting
 **IMPORTANT**: The site configuration is controlled by `src/config.yaml` which OVERRIDES `astro.config.ts` settings.
 
 **Current Deployment** (GitHub Pages):
+
 - Site: `https://drewdotpro.github.io`
 - Base path: `/assessment-site`
 
 **To Switch to Custom Domain** (future):
 Update `src/config.yaml`:
+
 ```yaml
 site:
   site: 'https://yourcustomdomain.com'
