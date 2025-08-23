@@ -7,7 +7,7 @@ backend:
   branch: main
   # Use Netlify's OAuth proxy service (works even when not hosted on Netlify)
   base_url: https://api.netlify.com
-  site_id: rainbow-malasada-896029.netlify.app
+  site_id: rainbow-malasada-896029
   auth_endpoint: auth
   # Custom commit messages for clarity in git history
   commit_messages:
