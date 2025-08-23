@@ -1,0 +1,163 @@
+# Decap CMS Configuration
+# This configuration enables both local and production editing with GitHub-based storage
+
+backend:
+  name: github
+  repo: drewdotpro/assessment-site
+  branch: main
+  # Custom commit messages for clarity in git history
+  commit_messages:
+    create: 'feat(content): Create {{collection}} "{{slug}}"'
+    update: 'feat(content): Update {{collection}} "{{slug}}"'
+    delete: 'feat(content): Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'feat(media): Upload "{{path}}"'
+    deleteMedia: 'feat(media): Delete "{{path}}"'
+
+# Enable Editorial Workflow for controlled publishing
+# This prevents race conditions and orphaned images
+publish_mode: editorial_workflow
+
+# Allow local development without authentication
+local_backend: true
+
+# Media files configuration
+media_folder: 'src/assets/images' # Where to store uploaded images
+public_folder: '~/assets/images'  # How images are referenced in markdown
+
+# Site URL for preview links
+site_url: https://drewdotpro.github.io/assessment-site/
+display_url: https://drewdotpro.github.io/assessment-site/
+
+# Collections define the content types
+collections:
+  # Blog Posts Collection
+  - name: 'post'
+    label: 'Blog Posts'
+    label_singular: 'Blog Post'
+    folder: 'src/data/post'
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    extension: 'md'
+    format: 'frontmatter'
+    preview_path: '/{{slug}}'
+    sortable_fields: ['publishDate', 'title']
+    view_filters:
+      - label: 'Published'
+        field: draft
+        pattern: false
+      - label: 'Drafts'
+        field: draft
+        pattern: true
+    fields:
+      # Core Fields
+      - { 
+          label: 'Title', 
+          name: 'title', 
+          widget: 'string',
+          hint: 'The main title of your blog post'
+        }
+      - { 
+          label: 'Excerpt', 
+          name: 'excerpt', 
+          widget: 'text',
+          hint: 'A brief summary that appears in blog lists and social shares',
+          pattern: ['.{50,160}', 'Must be between 50 and 160 characters']
+        }
+      - { 
+          label: 'Category', 
+          name: 'category', 
+          widget: 'select',
+          options: ['Tutorials', 'News', 'Updates', 'Resources'],
+          hint: 'Main category for this post'
+        }
+      - { 
+          label: 'Tags', 
+          name: 'tags', 
+          widget: 'list',
+          default: [],
+          hint: 'Add tags to help readers find related content',
+          min: 1,
+          max: 5
+        }
+      
+      # Image Field - Properly configured for Astro's image optimization
+      - { 
+          label: 'Featured Image', 
+          name: 'image', 
+          widget: 'image',
+          required: false,
+          hint: 'Main image for the post. Will be automatically optimized for different screen sizes.',
+          media_library: {
+            config: {
+              max_file_size: 5120000 # 5MB max
+            }
+          }
+        }
+      
+      # Publishing Fields
+      - { 
+          label: 'Publish Date', 
+          name: 'publishDate', 
+          widget: 'datetime',
+          date_format: 'YYYY-MM-DD',
+          time_format: false,
+          hint: 'When this post should be published'
+        }
+      - { 
+          label: 'Author', 
+          name: 'author', 
+          widget: 'string',
+          default: 'Team',
+          hint: 'Author name to display'
+        }
+      - { 
+          label: 'Draft', 
+          name: 'draft', 
+          widget: 'boolean', 
+          default: false,
+          hint: 'Set to true to hide from production site'
+        }
+      
+      # Content
+      - { 
+          label: 'Content', 
+          name: 'body', 
+          widget: 'markdown',
+          hint: 'The main content of your blog post. Supports full markdown.',
+          editor_components: ['image', 'code-block']
+        }
+      
+      # SEO Metadata (Optional)
+      - label: 'SEO Metadata'
+        name: 'metadata'
+        widget: 'object'
+        collapsed: true
+        required: false
+        hint: 'Optional SEO settings to override defaults'
+        fields:
+          - { 
+              label: 'Canonical URL', 
+              name: 'canonical', 
+              widget: 'string', 
+              required: false,
+              pattern: ['^https?://.+$', 'Must be a valid URL'],
+              hint: 'Use if this content is published elsewhere'
+            }
+          - { 
+              label: 'No Index', 
+              name: 'noindex', 
+              widget: 'boolean', 
+              required: false,
+              hint: 'Prevent search engines from indexing this page'
+            }
+
+  # Pages Collection (for future expansion)
+  # Uncomment when ready to manage static pages through CMS
+  # - name: 'pages'
+  #   label: 'Pages'
+  #   folder: 'src/pages'
+  #   create: true
+  #   fields:
+  #     - { label: 'Title', name: 'title', widget: 'string' }
+  #     - { label: 'Body', name: 'body', widget: 'markdown' }

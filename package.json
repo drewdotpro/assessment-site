@@ -8,8 +8,7 @@
     "node": "^18.17.1 || ^20.3.0 || >= 21.0.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
+    "dev": "concurrently \"npx decap-server\" \"astro dev\"",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -39,7 +38,9 @@
     "@astrojs/mdx": "^4.3.3",
     "@astrojs/partytown": "^2.1.4",
     "@astrojs/tailwind": "^5.1.5",
+    "decap-server": "^3.3.1",
     "@eslint/js": "^9.33.0",
+    "concurrently": "^8.2.2",
     "@iconify-json/flat-color-icons": "^1.2.1",
     "@iconify-json/tabler": "^1.2.20",
     "@tailwindcss/typography": "^0.5.16",

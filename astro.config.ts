@@ -23,6 +23,8 @@ const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroInteg
 
 export default defineConfig({
   output: 'static',
+  site: 'https://drewdotpro.github.io',
+  base: '/assessment-site',
 
   integrations: [
     tailwind({
