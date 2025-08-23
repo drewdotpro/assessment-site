@@ -25,8 +25,8 @@ media_folder: 'src/assets/images' # Where to store uploaded images
 public_folder: '~/assets/images' # How images are referenced in markdown
 
 # Site URL for preview links
-site_url: https://assessment-site.netlify.app
-display_url: https://assessment-site.netlify.app
+site_url: https://nd-assessment-site.netlify.app
+display_url: https://nd-assessment-site.netlify.app
 
 # Collections define the content types
 collections:

@@ -90,7 +90,7 @@ npm run check:prettier # Check Prettier formatting
 
 **Current Deployment** (Netlify):
 
-- Site: `https://assessment-site.netlify.app` (will be updated with actual URL after deployment)
+- Site: `https://nd-assessment-site.netlify.app`
 - Base path: `/`
 - Auto-deploys from `main` branch
 

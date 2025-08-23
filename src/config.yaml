@@ -1,6 +1,6 @@
 site:
   name: AstroWind
-  site: 'https://assessment-site.netlify.app' # Will be updated after Netlify deployment
+  site: 'https://nd-assessment-site.netlify.app'
   base: '/'
   trailingSlash: false
 
