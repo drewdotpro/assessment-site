@@ -88,14 +88,16 @@ npm run check:prettier # Check Prettier formatting
 
 **IMPORTANT**: The site configuration is controlled by `src/config.yaml` which OVERRIDES `astro.config.ts` settings.
 
-**Current Deployment** (GitHub Pages):
+**Current Deployment** (Netlify):
 
-- Site: `https://drewdotpro.github.io`
-- Base path: `/assessment-site`
+- Site: `https://assessment-site.netlify.app` (will be updated with actual URL after deployment)
+- Base path: `/`
+- Auto-deploys from `main` branch
 
 **To Switch to Custom Domain** (future):
 
-1. **Update site configuration in `src/config.yaml`**:
+1. In Netlify: Domain settings → Add custom domain
+2. Update `src/config.yaml`:
 
 ```yaml
 site:
@@ -103,18 +105,12 @@ site:
   base: '/'
 ```
 
-2. **Update CMS configuration in `public/admin/config.yml`**:
+3. Update `public/admin/config.yml`:
 
 ```yaml
 site_url: https://yourcustomdomain.com
 display_url: https://yourcustomdomain.com
 ```
-
-3. **Update GitHub OAuth App** (in GitHub Settings → Developer settings → OAuth Apps):
-   - Homepage URL: Change to `https://yourcustomdomain.com`
-   - Authorization callback URL: Keep as `https://api.netlify.com/auth/done` (unchanged)
-
-Note: Both `astro.config.ts` AND `src/config.yaml` must be updated when changing deployment targets, but `config.yaml` takes precedence due to the AstroWind integration.
 
 ## Content Management System (CMS)
 
@@ -158,9 +154,9 @@ Decap CMS (formerly Netlify CMS) is configured for content management with GitHu
 
 ### Authentication Setup
 
-- **Current Setup**: Uses Netlify's OAuth proxy service (free, works with any hosting)
-- **GitHub OAuth App**: Required for authentication (see setup instructions below)
-- **Alternative hosting (Netlify/Vercel)**: Can use their built-in OAuth if preferred
+- **Current Setup**: Hosted on Netlify - OAuth works automatically
+- **No additional configuration needed** - Netlify handles GitHub authentication
+- **Just works** - Login with GitHub at `/admin/`
 
 ### Benefits of Editorial Workflow
 
