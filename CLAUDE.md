@@ -82,6 +82,24 @@ npm run check:prettier # Check Prettier formatting
 - Supports hybrid and server modes, but blog requires `prerender = true`
 - Build artifacts output to `dist/` directory
 
+### Deployment Configuration
+
+**IMPORTANT**: The site configuration is controlled by `src/config.yaml` which OVERRIDES `astro.config.ts` settings.
+
+**Current Deployment** (GitHub Pages):
+- Site: `https://drewdotpro.github.io`
+- Base path: `/assessment-site`
+
+**To Switch to Custom Domain** (future):
+Update `src/config.yaml`:
+```yaml
+site:
+  site: 'https://yourcustomdomain.com'
+  base: '/'
+```
+
+Note: Both `astro.config.ts` AND `src/config.yaml` must be updated when changing deployment targets, but `config.yaml` takes precedence due to the AstroWind integration.
+
 ## Content Management System (CMS)
 
 ### Overview
