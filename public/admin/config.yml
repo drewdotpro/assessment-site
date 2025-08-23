@@ -22,7 +22,7 @@ local_backend: true
 
 # Media files configuration
 media_folder: 'src/assets/images' # Where to store uploaded images
-public_folder: '~/assets/images'  # How images are referenced in markdown
+public_folder: '~/assets/images' # How images are referenced in markdown
 
 # Site URL for preview links
 site_url: https://drewdotpro.github.io/assessment-site/
@@ -51,83 +51,70 @@ collections:
         pattern: true
     fields:
       # Core Fields
-      - { 
-          label: 'Title', 
-          name: 'title', 
-          widget: 'string',
-          hint: 'The main title of your blog post'
-        }
-      - { 
-          label: 'Excerpt', 
-          name: 'excerpt', 
+      - { label: 'Title', name: 'title', widget: 'string', hint: 'The main title of your blog post' }
+      - {
+          label: 'Excerpt',
+          name: 'excerpt',
           widget: 'text',
           hint: 'A brief summary that appears in blog lists and social shares',
-          pattern: ['.{50,160}', 'Must be between 50 and 160 characters']
+          pattern: ['.{50,160}', 'Must be between 50 and 160 characters'],
         }
-      - { 
-          label: 'Category', 
-          name: 'category', 
+      - {
+          label: 'Category',
+          name: 'category',
           widget: 'select',
           options: ['Tutorials', 'News', 'Updates', 'Resources'],
-          hint: 'Main category for this post'
+          hint: 'Main category for this post',
         }
-      - { 
-          label: 'Tags', 
-          name: 'tags', 
+      - {
+          label: 'Tags',
+          name: 'tags',
           widget: 'list',
           default: [],
           hint: 'Add tags to help readers find related content',
           min: 1,
-          max: 5
+          max: 5,
         }
-      
+
       # Image Field - Properly configured for Astro's image optimization
-      - { 
-          label: 'Featured Image', 
-          name: 'image', 
+      - {
+          label: 'Featured Image',
+          name: 'image',
           widget: 'image',
           required: false,
           hint: 'Main image for the post. Will be automatically optimized for different screen sizes.',
-          media_library: {
-            config: {
-              max_file_size: 5120000 # 5MB max
-            }
-          }
+          media_library: { config: {
+                  max_file_size: 5120000, # 5MB max
+                } },
         }
-      
+
       # Publishing Fields
-      - { 
-          label: 'Publish Date', 
-          name: 'publishDate', 
+      - {
+          label: 'Publish Date',
+          name: 'publishDate',
           widget: 'datetime',
           date_format: 'YYYY-MM-DD',
           time_format: false,
-          hint: 'When this post should be published'
+          hint: 'When this post should be published',
         }
-      - { 
-          label: 'Author', 
-          name: 'author', 
-          widget: 'string',
-          default: 'Team',
-          hint: 'Author name to display'
-        }
-      - { 
-          label: 'Draft', 
-          name: 'draft', 
-          widget: 'boolean', 
+      - { label: 'Author', name: 'author', widget: 'string', default: 'Team', hint: 'Author name to display' }
+      - {
+          label: 'Draft',
+          name: 'draft',
+          widget: 'boolean',
           default: false,
-          hint: 'Set to true to hide from production site'
+          hint: 'Set to true to hide from production site',
         }
-      
+
       # Content
-      - { 
-          label: 'Content', 
-          name: 'body', 
+      - {
+          label: 'Content',
+          name: 'body',
           widget: 'markdown',
           hint: 'The main content of your blog post. Supports full markdown.',
-          editor_components: ['image', 'code-block']
+          editor_components: ['image', 'code-block'],
         }
-      
+
       # SEO Metadata (Optional)
       - label: 'SEO Metadata'
         name: 'metadata'
@@ -136,20 +123,20 @@ collections:
         required: false
         hint: 'Optional SEO settings to override defaults'
         fields:
-          - { 
-              label: 'Canonical URL', 
-              name: 'canonical', 
-              widget: 'string', 
+          - {
+              label: 'Canonical URL',
+              name: 'canonical',
+              widget: 'string',
               required: false,
               pattern: ['^https?://.+$', 'Must be a valid URL'],
-              hint: 'Use if this content is published elsewhere'
+              hint: 'Use if this content is published elsewhere',
             }
-          - { 
-              label: 'No Index', 
-              name: 'noindex', 
-              widget: 'boolean', 
+          - {
+              label: 'No Index',
+              name: 'noindex',
+              widget: 'boolean',
               required: false,
-              hint: 'Prevent search engines from indexing this page'
+              hint: 'Prevent search engines from indexing this page',
             }
 
   # Pages Collection (for future expansion)

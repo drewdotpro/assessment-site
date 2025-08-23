@@ -52,7 +52,6 @@ jobs:
       # Run checks (linting, type checking, formatting)
       - name: Run Quality Checks
         run: npm run check
-        continue-on-error: true # Don't fail build on lint errors during initial setup
       
       # Build the Astro site
       - name: Build Astro Site
@@ -146,4 +145,3 @@ jobs:
           uploadArtifacts: true
           temporaryPublicStorage: true
           configPath: './.lighthouserc.json'
-        continue-on-error: true
