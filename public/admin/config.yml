@@ -5,6 +5,10 @@ backend:
   name: github
   repo: drewdotpro/assessment-site
   branch: main
+  # Use Netlify's OAuth proxy service (works even when not hosted on Netlify)
+  base_url: https://api.netlify.com
+  site_id: rainbow-malasada-896029.netlify.app
+  auth_endpoint: auth
   # Custom commit messages for clarity in git history
   commit_messages:
     create: 'feat(content): Create {{collection}} "{{slug}}"'

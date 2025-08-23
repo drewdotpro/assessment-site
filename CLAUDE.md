@@ -26,6 +26,8 @@ npm run check:eslint # Check ESLint rules
 npm run check:prettier # Check Prettier formatting
 ```
 
+**IMPORTANT**: Always run `npm run fix` after making changes to automatically fix linting and formatting issues before committing.
+
 ## Architecture & Key Files
 
 ### Configuration System
@@ -92,13 +94,25 @@ npm run check:prettier # Check Prettier formatting
 - Base path: `/assessment-site`
 
 **To Switch to Custom Domain** (future):
-Update `src/config.yaml`:
+
+1. **Update site configuration in `src/config.yaml`**:
 
 ```yaml
 site:
   site: 'https://yourcustomdomain.com'
   base: '/'
 ```
+
+2. **Update CMS configuration in `public/admin/config.yml`**:
+
+```yaml
+site_url: https://yourcustomdomain.com
+display_url: https://yourcustomdomain.com
+```
+
+3. **Update GitHub OAuth App** (in GitHub Settings → Developer settings → OAuth Apps):
+   - Homepage URL: Change to `https://yourcustomdomain.com`
+   - Authorization callback URL: Keep as `https://api.netlify.com/auth/done` (unchanged)
 
 Note: Both `astro.config.ts` AND `src/config.yaml` must be updated when changing deployment targets, but `config.yaml` takes precedence due to the AstroWind integration.
 
@@ -144,8 +158,9 @@ Decap CMS (formerly Netlify CMS) is configured for content management with GitHu
 
 ### Authentication Setup
 
-- **GitHub Pages**: Uses GitHub OAuth via OAuth Apps or third-party service (e.g., Netlify Identity)
-- **Alternative hosting (Netlify/Vercel)**: Automatic GitHub OAuth integration
+- **Current Setup**: Uses Netlify's OAuth proxy service (free, works with any hosting)
+- **GitHub OAuth App**: Required for authentication (see setup instructions below)
+- **Alternative hosting (Netlify/Vercel)**: Can use their built-in OAuth if preferred
 
 ### Benefits of Editorial Workflow
 
