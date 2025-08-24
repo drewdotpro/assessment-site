@@ -1,5 +1,5 @@
 ---
-title: Get started with AstroWind to create a website using Astro and Tailwind CSS!
+title: Get started with AstroWind to create a website using Astro and Tailwind CSS
 excerpt: Start your web journey with AstroWind – harness Astro and Tailwind CSS
   for a stunning site. Explore our guide now.
 category: Tutorials
