@@ -6,6 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AstroWind is a production-ready Astro 5.0 + Tailwind CSS template for building websites. It focuses on performance, SEO, and web best practices.
 
+## Language and Spelling
+
+**IMPORTANT**: All content, code comments, documentation, and user-facing text should be written in **British English**. This includes:
+- Spelling (e.g., "colour" not "color", "centre" not "center", "optimise" not "optimize")
+- Vocabulary (e.g., "organisation" not "organization", "favourite" not "favorite")
+- Date formats (DD/MM/YYYY)
+- Any generated content or copy
+
 ## Essential Commands
 
 ### Development
@@ -27,6 +35,33 @@ npm run check:prettier # Check Prettier formatting
 ```
 
 **IMPORTANT**: Always run `npm run fix` after making changes to automatically fix linting and formatting issues before committing.
+
+## Component Reference Documentation
+
+### CHEATSHEET.md - Complete Component Guide
+
+The `CHEATSHEET.md` file in this repository is a comprehensive reference guide containing:
+- **55 documented components** with usage examples and prop descriptions
+- Complete code snippets showing how to import and use each component
+- Detailed prop lists with types and default values
+- Special notes about component behavior and requirements
+- Common patterns and best practices
+
+**How to use CHEATSHEET.md:**
+1. **Finding components**: Search for component names to quickly find usage examples
+2. **Understanding props**: Each component lists all available props with descriptions
+3. **Copy-paste examples**: Code snippets are ready to use with minor modifications
+4. **Component categories**:
+   - Widget Components (22): Major page sections like Hero, Features, Pricing
+   - UI Components (9): Basic building blocks like Button, Form, ItemGrid
+   - Blog Components (10): Blog-specific like GridItem, Tags, Pagination
+   - Common Components (11): Utilities like Image, Analytics, Metadata
+   - Layouts (4): Page structure templates
+
+**Quick component lookup example:**
+- Need a hero section? Search "Hero" to find Hero, Hero2, and HeroText variants
+- Building a form? Search "Form" or "Contact" for form components
+- Adding features? Search "Features" for Features, Features2, and Features3 options
 
 ## Architecture & Key Files
 

@@ -27,7 +27,11 @@ pnpm-debug.log*
 
 # Claude Code settings
 .claude/
+claude-instruction.md
 
 pnpm-lock.yaml
 
 .astro
+
+# Temporary files
+temp/

@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "cascade-thinking": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "cascade-thinking-mcp"
+      ]
+    },
+    "jetbrains": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@jetbrains/mcp-proxy"
+      ]
+    },
+    "webresearch": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@mzxrai/mcp-webresearch@latest"
+      ]
+    }
+  }
+}
