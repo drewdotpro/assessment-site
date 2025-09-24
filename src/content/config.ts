@@ -65,6 +65,44 @@ const postCollection = defineCollection({
   }),
 });
 
+const faqCollection = defineCollection({
+  loader: glob({ pattern: '*.md', base: 'src/content/faqs' }),
+  schema: z.object({
+    question: z.string(),
+    answer: z.string(),
+    order: z.number().default(1),
+    published: z.boolean().default(true),
+  }),
+});
+
+const serviceCollection = defineCollection({
+  loader: glob({ pattern: '*.md', base: 'src/content/services' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    anchor: z.string(),
+    order: z.number().default(1),
+    icon: z.string().optional(),
+    published: z.boolean().default(true),
+  }),
+});
+
+const trustBadgeCollection = defineCollection({
+  loader: glob({ pattern: '*.md', base: 'src/content/trust-badges' }),
+  schema: z.object({
+    name: z.string(),
+    display_text: z.string(),
+    logo_light: z.string(),
+    logo_dark: z.string(),
+    alt: z.string(),
+    order: z.number().default(1),
+    published: z.boolean().default(true),
+  }),
+});
+
 export const collections = {
   post: postCollection,
+  faqs: faqCollection,
+  services: serviceCollection,
+  'trust-badges': trustBadgeCollection,
 };

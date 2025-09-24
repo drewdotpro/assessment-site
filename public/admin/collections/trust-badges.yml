@@ -1,0 +1,60 @@
+# Trust Badges Collection
+# Professional accreditation badges displayed on homepage
+- name: 'trust_badges'
+  label: 'Trust Badges'
+  label_singular: 'Trust Badge'
+  folder: 'src/content/trust-badges'
+  create: true
+  delete: true
+  slug: '{{order}}-{{slug}}'
+  identifier_field: 'name'
+  sortable_fields: ['order', 'name']
+  summary: '{{order}}. {{name}}'
+  editor:
+    preview: false
+  fields:
+    - {
+        label: 'Organisation Name',
+        name: 'name',
+        widget: 'string',
+        hint: 'Name of the accrediting organisation (e.g., HCPC, GMC)',
+      }
+    - {
+        label: 'Light Mode Logo',
+        name: 'logo_light',
+        widget: 'image',
+        hint: 'Logo for light mode display',
+        media_library: { config: {
+                max_file_size: 512000, # 500KB max for logos
+              } },
+      }
+    - {
+        label: 'Dark Mode Logo',
+        name: 'logo_dark',
+        widget: 'image',
+        hint: 'Logo for dark mode display',
+        media_library: { config: { max_file_size: 512000 } },
+      }
+    - {
+        label: 'Alt Text',
+        name: 'alt',
+        widget: 'string',
+        hint: 'Alternative text for accessibility',
+        default: '{{name}} accreditation',
+      }
+    - {
+        label: 'Display Order',
+        name: 'order',
+        widget: 'number',
+        default: 1,
+        value_type: 'int',
+        min: 1,
+        hint: 'Order in which this badge appears (1 = first)',
+      }
+    - {
+        label: 'Published',
+        name: 'published',
+        widget: 'boolean',
+        default: true,
+        hint: 'Whether this badge is visible on the site',
+      }

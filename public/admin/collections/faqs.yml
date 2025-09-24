@@ -1,0 +1,33 @@
+# FAQs Collection
+# Frequently Asked Questions displayed on homepage and FAQ page
+- name: 'faqs'
+  label: 'FAQs'
+  label_singular: 'FAQ'
+  folder: 'src/content/faqs'
+  create: true
+  delete: true
+  slug: '{{order}}-{{slug}}'
+  identifier_field: 'question'
+  sortable_fields: ['order', 'question']
+  summary: '{{order}}. {{question}}'
+  editor:
+    preview: false
+  fields:
+    - { label: 'Question', name: 'question', widget: 'string', hint: 'The question to be displayed' }
+    - { label: 'Answer', name: 'answer', widget: 'text', hint: 'The answer to the question' }
+    - {
+        label: 'Display Order',
+        name: 'order',
+        widget: 'number',
+        default: 1,
+        value_type: 'int',
+        min: 1,
+        hint: 'Order in which this FAQ appears (1 = first)',
+      }
+    - {
+        label: 'Published',
+        name: 'published',
+        widget: 'boolean',
+        default: true,
+        hint: 'Whether this FAQ is visible on the site',
+      }

@@ -29,8 +29,285 @@ site_url: https://nd-assessment-site.netlify.app
 display_url: https://nd-assessment-site.netlify.app
 
 # Collections define the content types
+# Note: Collection configs are kept in separate files in /collections/ for reference
+# but must be included here as Decap CMS doesn't support imports
 collections:
-  # Blog Posts Collection
+  # ============================================
+  # SITE SETTINGS - Global configuration
+  # ============================================
+  - name: 'site_settings'
+    label: 'Site Settings'
+    label_singular: 'Site Settings'
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: 'general'
+        label: 'General Settings'
+        file: 'src/content/site-settings.yaml'
+        fields:
+          # Core Site Information
+          - label: 'Site Information'
+            name: 'site'
+            widget: 'object'
+            fields:
+              - { label: 'Site Name', name: 'name', widget: 'string', default: 'Together Assessments' }
+              - { label: 'Site Email', name: 'email', widget: 'string', default: 'info@togetherassessments.co.uk' }
+              - { label: 'ICO Registration', name: 'ico_registration', widget: 'string', default: '00010615323' }
+
+          # Logo Configuration
+          - label: 'Logo Settings'
+            name: 'logo'
+            widget: 'object'
+            fields:
+              - { label: 'Light Mode Logo', name: 'light', widget: 'image', default: '~/assets/images/logo-light.svg' }
+              - { label: 'Dark Mode Logo', name: 'dark', widget: 'image', default: '~/assets/images/logo-dark.svg' }
+              - { label: 'Logo Alt Text', name: 'alt', widget: 'string', default: 'Together Assessments Logo' }
+
+          # Hero Section
+          - label: 'Hero Section'
+            name: 'hero'
+            widget: 'object'
+            fields:
+              - { label: 'Hero Image', name: 'image', widget: 'image', default: '~/assets/images/hero-image.png' }
+              - {
+                  label: 'Main Text',
+                  name: 'text',
+                  widget: 'string',
+                  default: 'For adults in North Lincolnshire (online UK‑wide available)',
+                }
+              - {
+                  label: 'Title',
+                  name: 'title',
+                  widget: 'string',
+                  default: 'Specialist neurodiversity assessments & formulations.',
+                }
+              - {
+                  label: 'Subtitle',
+                  name: 'subtitle',
+                  widget: 'string',
+                  default: 'Independent, friendly, evidence‑based. Clear recommendations you can act on.',
+                }
+
+          # CTAs
+          - label: 'Call to Actions'
+            name: 'ctas'
+            widget: 'object'
+            fields:
+              - label: 'Primary CTA'
+                name: 'primary'
+                widget: 'object'
+                fields:
+                  - { label: 'Text', name: 'text', widget: 'string', default: 'Book a free 15‑minute consultation' }
+                  - { label: 'Link', name: 'link', widget: 'string', default: '/consultation' }
+                  - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'Book a consultation' }
+              - label: 'Secondary CTA'
+                name: 'secondary'
+                widget: 'object'
+                fields:
+                  - { label: 'Text', name: 'text', widget: 'string', default: 'See assessment options' }
+                  - { label: 'Link', name: 'link', widget: 'string', default: '/services' }
+                  - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'View services' }
+              - label: 'Deep CTA'
+                name: 'deep'
+                widget: 'object'
+                fields:
+                  - { label: 'Lead Text', name: 'lead_text', widget: 'text', default: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.', hint: 'Text that appears above the CTA button' }
+                  - { label: 'Text', name: 'text', widget: 'string', default: 'Questions? Get in touch.' }
+                  - { label: 'Link', name: 'link', widget: 'string', default: '/contact' }
+                  - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'Contact us' }
+
+          # Section Titles
+          - label: 'Section Titles'
+            name: 'sections'
+            widget: 'object'
+            fields:
+              - { label: 'How It Works Title', name: 'how_it_works', widget: 'string', default: 'How it works' }
+              - { label: 'Services Title', name: 'services', widget: 'string', default: 'Services' }
+              - { label: 'Blog Title', name: 'blog', widget: 'string', default: 'Latest from the blog' }
+              - { label: 'Blog Subtitle', name: 'blog_subtitle', widget: 'string', default: 'Lorem Ipsum' }
+              - { label: 'FAQs Title', name: 'faqs', widget: 'string', default: 'Frequently Asked Questions' }
+
+          # How It Works Steps
+          - label: 'How It Works Steps'
+            name: 'steps'
+            widget: 'list'
+            max: 3
+            fields:
+              - { label: 'Step Text', name: 'text', widget: 'string' }
+            default:
+              - { text: 'Free 15‑min consult → understand needs.' }
+              - { text: 'Assessment or formulation → structured sessions & validated tools.' }
+              - { text: 'Clear recommendations → practical, tailored next steps (work, study, life).' }
+
+          # Footer
+          - label: 'Footer Settings'
+            name: 'footer'
+            widget: 'object'
+            fields:
+              - { label: 'Footer Title', name: 'title', widget: 'string', default: 'Together Assessments' }
+              - {
+                  label: 'Business Info',
+                  name: 'business_info',
+                  widget: 'text',
+                  default: 'Sole trader, trading as Together Assessments. North Lincolnshire and surrounding areas.',
+                }
+
+  # ============================================
+  # FAQS - Frequently Asked Questions
+  # ============================================
+  - name: 'faqs'
+    label: 'FAQs'
+    label_singular: 'FAQ'
+    folder: 'src/content/faqs'
+    create: true
+    delete: true
+    slug: '{{order}}-{{slug}}'
+    identifier_field: 'question'
+    sortable_fields: ['order', 'question']
+    summary: '{{order}}. {{question}}'
+    editor:
+      preview: false
+    fields:
+      - { label: 'Question', name: 'question', widget: 'string', hint: 'The question to be displayed' }
+      - { label: 'Answer', name: 'answer', widget: 'text', hint: 'The answer to the question' }
+      - {
+          label: 'Display Order',
+          name: 'order',
+          widget: 'number',
+          default: 1,
+          value_type: 'int',
+          min: 1,
+          hint: 'Order in which this FAQ appears (1 = first)',
+        }
+      - {
+          label: 'Published',
+          name: 'published',
+          widget: 'boolean',
+          default: true,
+          hint: 'Whether this FAQ is visible on the site',
+        }
+
+  # ============================================
+  # SERVICES - Service cards for homepage
+  # ============================================
+  - name: 'services'
+    label: 'Services'
+    label_singular: 'Service'
+    folder: 'src/content/services'
+    create: true
+    delete: true
+    slug: '{{order}}-{{slug}}'
+    identifier_field: 'title'
+    sortable_fields: ['order', 'title']
+    summary: '{{order}}. {{title}}'
+    editor:
+      preview: false
+    fields:
+      - { label: 'Service Title', name: 'title', widget: 'string', hint: 'The name of the service' }
+      - { label: 'Description', name: 'description', widget: 'text', hint: 'Brief description of the service' }
+      - {
+          label: 'Anchor ID',
+          name: 'anchor',
+          widget: 'string',
+          pattern: ['^[a-z0-9-]+$', 'Must be lowercase letters, numbers, and hyphens only'],
+          hint: 'URL anchor for linking to this service on the services page (e.g., "adhd-adults")',
+        }
+      - {
+          label: 'Display Order',
+          name: 'order',
+          widget: 'number',
+          default: 1,
+          value_type: 'int',
+          min: 1,
+          hint: 'Order in which this service appears (1 = first)',
+        }
+      - {
+          label: 'Icon',
+          name: 'icon',
+          widget: 'select',
+          required: false,
+          options:
+            ['tabler:brain', 'tabler:puzzle', 'tabler:clipboard-check', 'tabler:briefcase', 'tabler:heart-handshake'],
+          hint: 'Optional icon for the service card',
+        }
+      - {
+          label: 'Published',
+          name: 'published',
+          widget: 'boolean',
+          default: true,
+          hint: 'Whether this service is visible on the site',
+        }
+
+  # ============================================
+  # TRUST BADGES - Professional accreditations
+  # ============================================
+  - name: 'trust_badges'
+    label: 'Trust Badges'
+    label_singular: 'Trust Badge'
+    folder: 'src/content/trust-badges'
+    create: true
+    delete: true
+    slug: '{{order}}-{{slug}}'
+    identifier_field: 'name'
+    sortable_fields: ['order', 'name']
+    summary: '{{order}}. {{name}}'
+    editor:
+      preview: false
+    fields:
+      - {
+          label: 'Organisation Name',
+          name: 'name',
+          widget: 'string',
+          hint: 'Name of the accrediting organisation (e.g., HCPC, GMC)',
+        }
+      - {
+          label: 'Display Text',
+          name: 'display_text',
+          widget: 'string',
+          hint: 'Text to display next to the logo (e.g., "HCPC Registered", "GMC Partner")',
+        }
+      - {
+          label: 'Light Mode Logo',
+          name: 'logo_light',
+          widget: 'image',
+          hint: 'Logo for light mode display',
+          media_library: { config: { max_file_size: 512000 } },
+        }
+      - {
+          label: 'Dark Mode Logo',
+          name: 'logo_dark',
+          widget: 'image',
+          hint: 'Logo for dark mode display',
+          media_library: { config: { max_file_size: 512000 } },
+        }
+      - {
+          label: 'Alt Text',
+          name: 'alt',
+          widget: 'string',
+          hint: 'Alternative text for accessibility',
+          default: '{{name}} accreditation',
+        }
+      - {
+          label: 'Display Order',
+          name: 'order',
+          widget: 'number',
+          default: 1,
+          value_type: 'int',
+          min: 1,
+          hint: 'Order in which this badge appears (1 = first)',
+        }
+      - {
+          label: 'Published',
+          name: 'published',
+          widget: 'boolean',
+          default: true,
+          hint: 'Whether this badge is visible on the site',
+        }
+
+  # ============================================
+  # BLOG POSTS - Content blog
+  # ============================================
   - name: 'post'
     label: 'Blog Posts'
     label_singular: 'Blog Post'
@@ -50,7 +327,6 @@ collections:
         field: draft
         pattern: true
     fields:
-      # Core Fields
       - { label: 'Title', name: 'title', widget: 'string', hint: 'The main title of your blog post' }
       - {
           label: 'Excerpt',
@@ -75,25 +351,19 @@ collections:
           min: 1,
           max: 5,
         }
-
-      # Image Field - Properly configured for Astro's image optimization
       - {
           label: 'Featured Image',
           name: 'image',
           widget: 'image',
           required: false,
-          hint: 'Main image for the post. Will be automatically optimized for different screen sizes.',
-          media_library: { config: {
-                  max_file_size: 5120000, # 5MB max
-                } },
+          hint: 'Main image for the post. Will be automatically optimised for different screen sizes.',
+          media_library: { config: { max_file_size: 5120000 } },
         }
-
-      # Publishing Fields
       - {
           label: 'Publish Date',
           name: 'publishDate',
           widget: 'datetime',
-          date_format: 'YYYY-MM-DD',
+          date_format: 'DD/MM/YYYY',
           time_format: false,
           hint: 'When this post should be published',
         }
@@ -105,8 +375,6 @@ collections:
           default: false,
           hint: 'Set to true to hide from production site',
         }
-
-      # Content
       - {
           label: 'Content',
           name: 'body',
@@ -114,8 +382,6 @@ collections:
           hint: 'The main content of your blog post. Supports full markdown.',
           editor_components: ['image', 'code-block'],
         }
-
-      # SEO Metadata (Optional)
       - label: 'SEO Metadata'
         name: 'metadata'
         widget: 'object'
@@ -138,13 +404,3 @@ collections:
               required: false,
               hint: 'Prevent search engines from indexing this page',
             }
-
-  # Pages Collection (for future expansion)
-  # Uncomment when ready to manage static pages through CMS
-  # - name: 'pages'
-  #   label: 'Pages'
-  #   folder: 'src/pages'
-  #   create: true
-  #   fields:
-  #     - { label: 'Title', name: 'title', widget: 'string' }
-  #     - { label: 'Body', name: 'body', widget: 'markdown' }

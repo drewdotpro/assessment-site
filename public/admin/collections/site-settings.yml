@@ -1,0 +1,118 @@
+# Site Settings Collection
+# Global configuration for the entire site
+- name: 'site_settings'
+  label: 'Site Settings'
+  label_singular: 'Site Settings'
+  delete: false
+  editor:
+    preview: false
+  files:
+    - name: 'general'
+      label: 'General Settings'
+      file: 'src/content/site-settings.yaml'
+      fields:
+        # Core Site Information
+        - label: 'Site Information'
+          name: 'site'
+          widget: 'object'
+          fields:
+            - { label: 'Site Name', name: 'name', widget: 'string', default: 'Together Assessments' }
+            - { label: 'Site Email', name: 'email', widget: 'string', default: 'info@togetherassessments.co.uk' }
+            - { label: 'ICO Registration', name: 'ico_registration', widget: 'string', default: '00010615323' }
+
+        # Logo Configuration
+        - label: 'Logo Settings'
+          name: 'logo'
+          widget: 'object'
+          fields:
+            - { label: 'Light Mode Logo', name: 'light', widget: 'image', default: '~/assets/images/logo-light.svg' }
+            - { label: 'Dark Mode Logo', name: 'dark', widget: 'image', default: '~/assets/images/logo-dark.svg' }
+            - { label: 'Logo Alt Text', name: 'alt', widget: 'string', default: 'Together Assessments Logo' }
+
+        # Hero Section
+        - label: 'Hero Section'
+          name: 'hero'
+          widget: 'object'
+          fields:
+            - { label: 'Hero Image', name: 'image', widget: 'image', default: '~/assets/images/hero-image.png' }
+            - {
+                label: 'Main Text',
+                name: 'text',
+                widget: 'string',
+                default: 'For adults in North Lincolnshire (online UK‑wide available)',
+              }
+            - {
+                label: 'Title',
+                name: 'title',
+                widget: 'string',
+                default: 'Specialist neurodiversity assessments & formulations.',
+              }
+            - {
+                label: 'Subtitle',
+                name: 'subtitle',
+                widget: 'string',
+                default: 'Independent, friendly, evidence‑based. Clear recommendations you can act on.',
+              }
+
+        # CTAs
+        - label: 'Call to Actions'
+          name: 'ctas'
+          widget: 'object'
+          fields:
+            - label: 'Primary CTA'
+              name: 'primary'
+              widget: 'object'
+              fields:
+                - { label: 'Text', name: 'text', widget: 'string', default: 'Book a free 15‑minute consultation' }
+                - { label: 'Link', name: 'link', widget: 'string', default: '/consultation' }
+                - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'Book a consultation' }
+            - label: 'Secondary CTA'
+              name: 'secondary'
+              widget: 'object'
+              fields:
+                - { label: 'Text', name: 'text', widget: 'string', default: 'See assessment options' }
+                - { label: 'Link', name: 'link', widget: 'string', default: '/services' }
+                - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'View services' }
+            - label: 'Deep CTA'
+              name: 'deep'
+              widget: 'object'
+              fields:
+                - { label: 'Text', name: 'text', widget: 'string', default: 'Questions? Get in touch.' }
+                - { label: 'Link', name: 'link', widget: 'string', default: '/contact' }
+                - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'Contact us' }
+
+        # Section Titles
+        - label: 'Section Titles'
+          name: 'sections'
+          widget: 'object'
+          fields:
+            - { label: 'How It Works Title', name: 'how_it_works', widget: 'string', default: 'How it works' }
+            - { label: 'Services Title', name: 'services', widget: 'string', default: 'Services' }
+            - { label: 'Blog Title', name: 'blog', widget: 'string', default: 'Latest from the blog' }
+            - { label: 'Blog Subtitle', name: 'blog_subtitle', widget: 'string', default: 'Lorem Ipsum' }
+            - { label: 'FAQs Title', name: 'faqs', widget: 'string', default: 'Frequently Asked Questions' }
+
+        # How It Works Steps
+        - label: 'How It Works Steps'
+          name: 'steps'
+          widget: 'list'
+          max: 3
+          fields:
+            - { label: 'Step Text', name: 'text', widget: 'string' }
+          default:
+            - { text: 'Free 15‑min consult → understand needs.' }
+            - { text: 'Assessment or formulation → structured sessions & validated tools.' }
+            - { text: 'Clear recommendations → practical, tailored next steps (work, study, life).' }
+
+        # Footer
+        - label: 'Footer Settings'
+          name: 'footer'
+          widget: 'object'
+          fields:
+            - { label: 'Footer Title', name: 'title', widget: 'string', default: 'Together Assessments' }
+            - {
+                label: 'Business Info',
+                name: 'business_info',
+                widget: 'text',
+                default: 'Sole trader, trading as Together Assessments. North Lincolnshire and surrounding areas.',
+              }

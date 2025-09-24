@@ -1,9 +1,19 @@
 ---
-import { SITE } from 'astrowind:config';
+import { Image } from 'astro:assets';
+import YAML from 'yaml';
+import fs from 'fs';
+import path from 'path';
+
+// Load site settings
+const settingsPath = path.join(process.cwd(), 'src/content/site-settings.yaml');
+const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
+
+// Import logo images
+import logoLight from '~/assets/images/logo-light.svg';
+import logoDark from '~/assets/images/logo-dark.svg';
 ---
 
-<span
-  class="self-center ml-2 rtl:ml-0 rtl:mr-2 text-2xl md:text-xl font-bold text-gray-900 whitespace-nowrap dark:text-white"
->
-  🚀 {SITE?.name}
-</span>
+<div class="flex items-center">
+  <Image src={logoLight} alt={settings.logo.alt} class="h-8 w-auto dark:hidden" width={120} height={40} />
+  <Image src={logoDark} alt={settings.logo.alt} class="h-8 w-auto hidden dark:block" width={120} height={40} />
+</div>
