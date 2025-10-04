@@ -75,6 +75,26 @@ import { UI } from 'astrowind:config';
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     });
 
+    attachEvent('[data-aw-toggle-font]', 'click', function () {
+      const fonts = ['sylexiad', 'opendyslexic', 'fastsans'];
+      const fontFamilies = {
+        sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
+        opendyslexic: "'OpenDyslexic3', ui-sans-serif, system-ui, sans-serif",
+        fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif"
+      };
+
+      const current = localStorage.getItem('fontPreference') || 'sylexiad';
+      const currentIndex = fonts.indexOf(current);
+      const nextIndex = (currentIndex + 1) % fonts.length;
+      const nextFont = fonts[nextIndex];
+
+      localStorage.setItem('fontPreference', nextFont);
+
+      const root = document.documentElement;
+      root.style.setProperty('--aw-font-sans', fontFamilies[nextFont]);
+      root.style.setProperty('--aw-font-serif', fontFamilies[nextFont]);
+    });
+
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
       const network = elem.getAttribute('data-aw-social-share');
       const url = encodeURIComponent(elem.getAttribute('data-aw-url'));
