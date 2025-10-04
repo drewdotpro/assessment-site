@@ -1,0 +1,19 @@
+<script is:inline>
+  const fonts = ['sylexiad', 'opendyslexic', 'fastsans'];
+  const fontFamilies = {
+    sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
+    opendyslexic: "'OpenDyslexic3', ui-sans-serif, system-ui, sans-serif",
+    fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif"
+  };
+
+  function applyFont(fontKey) {
+    const root = document.documentElement;
+    root.style.setProperty('--aw-font-sans', fontFamilies[fontKey]);
+    root.style.setProperty('--aw-font-serif', fontFamilies[fontKey]);
+  }
+
+  const savedFont = localStorage.getItem('fontPreference') || 'sylexiad';
+  if (fonts.includes(savedFont)) {
+    applyFont(savedFont);
+  }
+</script>
