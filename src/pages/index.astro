@@ -13,14 +13,16 @@ import fs from 'fs';
 import path from 'path';
 import badgePlaceholder from '~/assets/images/badge-placeholder-rect.svg';
 
-// Load site settings
+// Load site settings and homepage content
 const settingsPath = path.join(process.cwd(), 'src/content/site-settings.yaml');
 const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
+const homePagePath = path.join(process.cwd(), 'src/content/home-page/content.yaml');
+const homePageContent = YAML.parse(fs.readFileSync(homePagePath, 'utf8'));
 
 // Load content collections - filter for published items
-const allServices = await getCollection('services');
-const allFaqs = await getCollection('faqs');
-const allTrustBadges = await getCollection('trust-badges');
+const allServices = await getCollection('services_page_items');
+const allFaqs = await getCollection('faqs_page_items');
+const allTrustBadges = await getCollection('site_settings_trust_badges');
 
 // Filter and sort
 const services = allServices.filter(s => s.data.published).sort((a, b) => a.data.order - b.data.order);
@@ -55,32 +57,32 @@ const metadata = {
     actions={[
       {
         variant: 'primary',
-        text: settings.ctas.primary.text,
-        href: settings.ctas.primary.link,
+        text: homePageContent.ctas.primary.text,
+        href: homePageContent.ctas.primary.link,
         icon: 'tabler:calendar',
       },
     ]}
     image={{
-      src: settings.hero.image,
+      src: homePageContent.hero.image,
       alt: 'Hero Image',
     }}
   >
     <Fragment slot="title">
-      {settings.hero.text}
+      {homePageContent.hero.text}
     </Fragment>
 
     <Fragment slot="subtitle">
-      <span class="font-semibold">{settings.hero.title}</span>
+      <span class="font-semibold">{homePageContent.hero.title}</span>
       <br />
-      <span class="text-muted">{settings.hero.subtitle}</span>
+      <span class="text-muted">{homePageContent.hero.subtitle}</span>
     </Fragment>
   </Hero>
 
   <!-- Secondary CTA -->
   <div class="text-center py-8">
     <Button
-      text={settings.ctas.secondary.text}
-      href={settings.ctas.secondary.link}
+      text={homePageContent.ctas.secondary.text}
+      href={homePageContent.ctas.secondary.link}
       variant="secondary"
       class="w-auto"
     />
@@ -111,8 +113,8 @@ const metadata = {
 
   <!-- How it Works -->
   <Steps
-    title={settings.sections.how_it_works}
-    items={settings.steps.map((step, index) => ({
+    title={homePageContent.sections.how_it_works}
+    items={homePageContent.steps.map((step, index) => ({
       title: `Step ${index + 1}`,
       description: step.text,
       icon: index === 0 ? 'tabler:message-circle' : index === 1 ? 'tabler:clipboard-check' : 'tabler:bulb',
@@ -121,7 +123,7 @@ const metadata = {
 
   <!-- Services -->
   <Features2
-    title={settings.sections.services}
+    title={homePageContent.sections.services}
     subtitle=""
     items={services.length > 0 ? services.map((service) => ({
       title: service.data.title,
@@ -137,23 +139,23 @@ const metadata = {
   <!-- Deep CTA -->
   <CallToAction
     title=""
-    subtitle={settings.ctas.deep.lead_text}
+    subtitle={homePageContent.ctas.deep.lead_text}
     actions={[
       {
         variant: 'primary',
-        text: settings.ctas.deep.text,
-        href: settings.ctas.deep.link,
+        text: homePageContent.ctas.deep.text,
+        href: homePageContent.ctas.deep.link,
         icon: 'tabler:message-circle',
       },
     ]}
   />
 
   <!-- Blog -->
-  <BlogLatestPosts title={settings.sections.blog} information={settings.sections.blog_subtitle} count={4} />
+  <BlogLatestPosts title={homePageContent.sections.blog} information={homePageContent.sections.blog_subtitle} count={4} />
 
   <!-- FAQs -->
   <FAQs
-    title={settings.sections.faqs}
+    title={homePageContent.sections.faqs}
     items={homepageFaqs.length > 0 ? homepageFaqs.map((faq) => ({
       title: faq.data.question,
       description: faq.data.answer,

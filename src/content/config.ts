@@ -66,7 +66,7 @@ const postCollection = defineCollection({
 });
 
 const faqCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/faqs' }),
+  loader: glob({ pattern: '*.md', base: 'src/content/faqs-page/faq-items' }),
   schema: z.object({
     question: z.string(),
     answer: z.string(),
@@ -76,7 +76,7 @@ const faqCollection = defineCollection({
 });
 
 const serviceCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/services' }),
+  loader: glob({ pattern: '*.md', base: 'src/content/services-page/services' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -88,7 +88,7 @@ const serviceCollection = defineCollection({
 });
 
 const trustBadgeCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/trust-badges' }),
+  loader: glob({ pattern: '*.md', base: 'src/content/site-settings/trust-badges' }),
   schema: z.object({
     name: z.string(),
     display_text: z.string(),
@@ -102,7 +102,7 @@ const trustBadgeCollection = defineCollection({
 
 export const collections = {
   post: postCollection,
-  faqs: faqCollection,
-  services: serviceCollection,
-  'trust-badges': trustBadgeCollection,
+  faqs_page_items: faqCollection,
+  services_page_items: serviceCollection,
+  site_settings_trust_badges: trustBadgeCollection,
 };

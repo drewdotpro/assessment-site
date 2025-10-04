@@ -6,9 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Together Assessments website built on the AstroWind template (Astro 5.0 + Tailwind CSS). This is a custom implementation for a neurodiversity assessment service provider.
 
-## Reference Examples
+## Reference Documentation
 
-The original AstroWind template examples have been moved to `src/reference-examples/` for reference when building new components or understanding component usage patterns. These examples demonstrate various component implementations but are not part of the active site.
+- **Template Examples**: Original AstroWind template examples are in `src/reference-examples/` for reference when building new components or understanding component usage patterns
+- **Decap CMS Documentation**: Local documentation for Decap CMS is available in `decap-cms-docs/` for reference on CMS configuration and capabilities
 
 ## Language and Spelling
 
@@ -19,22 +20,8 @@ The original AstroWind template examples have been moved to `src/reference-examp
 - Date formats (DD/MM/YYYY)
 - Any generated content or copy
 
-## Project Status
+## Sister Sites
 
-**Current State**: The site structure is complete with CMS integration, but content implementation is in progress.
-
-### Pages with Placeholder Content
-- FAQ page (`/faq`) - skeleton template only
-- Services page (`/services`) - hardcoded sections with Lorem ipsum
-- About page (`/about`) - basic template
-- Most legal/policy pages - template structure ready
-
-### Integration Opportunities
-- Services page should pull from services content collection
-- FAQ page needs to integrate with FAQs collection
-- Trust badges using placeholder images
-
-### Sister Sites
 The site is part of a network including:
 - Together ADHD (https://togetheradhd.co.uk)
 - Together Autism (https://togetherautism.co.uk)
@@ -49,7 +36,7 @@ npm run build        # Build production site to ./dist/
 npm run preview      # Preview built site locally
 ```
 
-**Note**: The `dev` command now runs `concurrently "npx decap-server" "astro dev"` to enable local CMS editing at http://localhost:4321/admin/
+**Note**: The `dev` command runs `concurrently "npx decap-server" "astro dev"` to enable local CMS editing at http://localhost:4321/admin/
 
 ### Code Quality
 
@@ -97,7 +84,7 @@ The `CHEATSHEET.md` file in this repository is a comprehensive reference guide c
 
 ### Configuration System
 
-**Dual Configuration Architecture**:
+**Configuration Architecture**:
 
 1. **src/config.yaml**: Framework-level configuration (AstroWind defaults)
    - Site metadata and SEO defaults
@@ -105,13 +92,9 @@ The `CHEATSHEET.md` file in this repository is a comprehensive reference guide c
    - Analytics configuration
    - UI theme settings
 
-2. **src/content/site-settings.yaml**: Content and business configuration
-   - Company information (name, email, ICO registration)
-   - Hero section content
-   - CTAs (primary, secondary, deep)
-   - Section headings
-   - Footer information
-   - Trust badge references
+2. **Content configuration** - Organised hierarchically:
+   - `src/content/site-settings.yaml`: Company information (name, email, ICO registration), logo settings, footer information
+   - `src/content/home-page/content.yaml`: Homepage-specific content including hero section, CTAs, section titles, and how-it-works steps
 
 3. **astro.config.ts**: Astro build configuration, integrations, and markdown plugins
 
@@ -127,15 +110,15 @@ The `CHEATSHEET.md` file in this repository is a comprehensive reference guide c
 - **src/layouts/**: Page layouts (Layout, PageLayout, MarkdownLayout, LandingLayout)
 - **src/pages/**: Routes - each file creates a page route
   - `[...blog]/`: Dynamic blog routing with categories and tags
-  - `homes/`: Example homepage templates
-  - `landing/`: Landing page templates
+  - Various policy and legal pages
 - **src/content/**: Content collections with CMS management
-  - `post/`: Blog posts (currently empty, posts load from src/data/post/)
-  - `faqs/`: Frequently asked questions
-  - `services/`: Service offerings
-  - `trust-badges/`: Professional accreditations
-  - `site-settings.yaml`: Centralised content configuration
   - `config.ts`: Collection schemas and loaders
+  - `site-settings.yaml`: Site-wide configuration
+  - `site-settings/trust-badges/`: Professional accreditation badges
+  - `home-page/content.yaml`: Homepage content configuration
+  - `faqs-page/faq-items/`: FAQ content items
+  - `services-page/services/`: Service descriptions
+  - `post/`: Blog posts (currently empty, posts load from src/data/post/)
 - **src/utils/**: Helper functions for blog, images, permalinks, frontmatter processing
 
 ### Key Technologies & Patterns
@@ -162,20 +145,23 @@ The site uses Astro Content Collections for structured content management:
 - Dynamic routing with categories, tags, and pagination
 - RSS feed generation at `/rss.xml`
 
-#### FAQs (`faqs`)
-- Location: `src/content/faqs/`
+#### FAQs (`faqs_page_items`)
+- Location: `src/content/faqs-page/faq-items/`
 - Schema: question, answer, order, published
-- Used on homepage and FAQ page
+- Used on homepage (first 4) and FAQ page (all)
+- Managed via CMS under "FAQs Page / FAQ Items"
 
-#### Services (`services`)
-- Location: `src/content/services/`
+#### Services (`services_page_items`)
+- Location: `src/content/services-page/services/`
 - Schema: title, description, anchor, order, icon, published
 - Displayed on homepage and linked to service page sections
+- Managed via CMS under "Services Page / Service Items"
 
-#### Trust Badges (`trust-badges`)
-- Location: `src/content/trust-badges/`
+#### Trust Badges (`site_settings_trust_badges`)
+- Location: `src/content/site-settings/trust-badges/`
 - Schema: name, display_text, logo_light, logo_dark, alt, order, published
 - Professional accreditations displayed on homepage
+- Managed via CMS under "Site Settings / Trust Badges"
 
 ### Blog System
 
@@ -262,16 +248,15 @@ Decap CMS (formerly Netlify CMS) is configured for content management with GitHu
 
 ### CMS Configuration
 
-- **Main Config**: `public/admin/config.yml`
-- **Collection Configs**: Modularised in `public/admin/collections/`
-  - `blog-posts.yml`: Blog post collection schema
-  - `faqs.yml`: FAQ collection schema
-  - `services.yml`: Services collection schema
-  - `site-settings.yml`: Global site settings schema
-  - `trust-badges.yml`: Trust badges collection schema
+- **Config Location**: `public/admin/config.yml`
 - **Backend**: GitHub with Editorial Workflow
-- **Collections**: Blog posts, FAQs, Services, Trust Badges, Site Settings
-- **Media**: Git-based storage with Astro optimisation pipeline
+- **Collections** - Organised hierarchically in the CMS UI:
+  - **Site Settings**: General configuration and trust badges
+  - **Home Page**: Homepage content management
+  - **FAQs Page / FAQ Items**: Frequently asked questions
+  - **Services Page / Service Items**: Service offerings
+  - **Blog Posts**: Blog content
+- **Media**: Git-based storage in `src/assets/images/` with Astro optimisation pipeline
 
 ### Authentication Setup
 
@@ -287,6 +272,18 @@ Decap CMS (formerly Netlify CMS) is configured for content management with GitHu
 4. **Version Control**: Full Git history with meaningful commit messages
 5. **Rollback**: Easy reversion through Git if needed
 
+### Content Organisation Strategy
+
+The CMS uses a hierarchical naming convention to group related content:
+- **File Collections**: Used for single configuration files (Site Settings, Home Page)
+- **Folder Collections**: Used for multiple items (FAQ Items, Service Items, Trust Badges)
+- **Naming Convention**: Uses "/" in labels to create logical groupings in the CMS UI
+- **Collection Names**: Use underscores in technical names (e.g., `faqs_page_items`) for Astro compatibility
+
 ### Adding New Content Types
 
-To add new collections (e.g., pages, products), edit `public/admin/config.yml` and add collection definitions following the existing blog post pattern.
+To add new collections:
+1. Edit `public/admin/config.yml` following the hierarchical naming pattern
+2. Create corresponding content directories under `src/content/`
+3. Update `src/content/config.ts` with the collection schema
+4. Import collections in pages using `getCollection('collection_name')`

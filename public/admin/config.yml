@@ -29,15 +29,14 @@ site_url: https://nd-assessment-site.netlify.app
 display_url: https://nd-assessment-site.netlify.app
 
 # Collections define the content types
-# Note: Collection configs are kept in separate files in /collections/ for reference
-# but must be included here as Decap CMS doesn't support imports
 collections:
   # ============================================
-  # SITE SETTINGS - Global configuration
+  # SITE SETTINGS GROUP
   # ============================================
+
+  # Site Settings - File Collection for configs
   - name: 'site_settings'
     label: 'Site Settings'
-    label_singular: 'Site Settings'
     delete: false
     editor:
       preview: false
@@ -64,6 +63,98 @@ collections:
               - { label: 'Dark Mode Logo', name: 'dark', widget: 'image', default: '~/assets/images/logo-dark.svg' }
               - { label: 'Logo Alt Text', name: 'alt', widget: 'string', default: 'Together Assessments Logo' }
 
+          # Footer
+          - label: 'Footer Settings'
+            name: 'footer'
+            widget: 'object'
+            fields:
+              - { label: 'Footer Title', name: 'title', widget: 'string', default: 'Together Assessments' }
+              - {
+                  label: 'Business Info',
+                  name: 'business_info',
+                  widget: 'text',
+                  default: 'Sole trader, trading as Together Assessments. North Lincolnshire and surrounding areas.',
+                }
+
+  # Trust Badges - Folder Collection under Site Settings
+  - name: 'site_settings_trust_badges'
+    label: 'Site Settings / Trust Badges'
+    label_singular: 'Trust Badge'
+    folder: 'src/content/site-settings/trust-badges'
+    create: true
+    delete: true
+    slug: '{{order}}-{{slug}}'
+    identifier_field: 'name'
+    sortable_fields: ['order', 'name']
+    summary: '{{order}}. {{name}}'
+    editor:
+      preview: false
+    fields:
+      - {
+          label: 'Organisation Name',
+          name: 'name',
+          widget: 'string',
+          hint: 'Name of the accrediting organisation (e.g., HCPC, GMC)',
+        }
+      - {
+          label: 'Display Text',
+          name: 'display_text',
+          widget: 'string',
+          hint: 'Text to display next to the logo (e.g., "HCPC Registered", "GMC Partner")',
+        }
+      - {
+          label: 'Light Mode Logo',
+          name: 'logo_light',
+          widget: 'image',
+          hint: 'Logo for light mode display',
+          media_library: { config: { max_file_size: 512000 } },
+        }
+      - {
+          label: 'Dark Mode Logo',
+          name: 'logo_dark',
+          widget: 'image',
+          hint: 'Logo for dark mode display',
+          media_library: { config: { max_file_size: 512000 } },
+        }
+      - {
+          label: 'Alt Text',
+          name: 'alt',
+          widget: 'string',
+          hint: 'Alternative text for accessibility',
+          default: '{{name}} accreditation',
+        }
+      - {
+          label: 'Display Order',
+          name: 'order',
+          widget: 'number',
+          default: 1,
+          value_type: 'int',
+          min: 1,
+          hint: 'Order in which this badge appears (1 = first)',
+        }
+      - {
+          label: 'Published',
+          name: 'published',
+          widget: 'boolean',
+          default: true,
+          hint: 'Whether this badge is visible on the site',
+        }
+
+  # ============================================
+  # HOME PAGE GROUP
+  # ============================================
+
+  # Home Page - File Collection
+  - name: 'home_page'
+    label: 'Home Page'
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: 'content'
+        label: 'Home Page Content'
+        file: 'src/content/home-page/content.yaml'
+        fields:
           # Hero Section
           - label: 'Hero Section'
             name: 'hero'
@@ -140,26 +231,15 @@ collections:
               - { text: 'Assessment or formulation → structured sessions & validated tools.' }
               - { text: 'Clear recommendations → practical, tailored next steps (work, study, life).' }
 
-          # Footer
-          - label: 'Footer Settings'
-            name: 'footer'
-            widget: 'object'
-            fields:
-              - { label: 'Footer Title', name: 'title', widget: 'string', default: 'Together Assessments' }
-              - {
-                  label: 'Business Info',
-                  name: 'business_info',
-                  widget: 'text',
-                  default: 'Sole trader, trading as Together Assessments. North Lincolnshire and surrounding areas.',
-                }
+  # ============================================
+  # FAQS PAGE GROUP
+  # ============================================
 
-  # ============================================
-  # FAQS - Frequently Asked Questions
-  # ============================================
-  - name: 'faqs'
-    label: 'FAQs'
+  # FAQs - Folder Collection
+  - name: 'faqs_page_items'
+    label: 'FAQs Page / FAQ Items'
     label_singular: 'FAQ'
-    folder: 'src/content/faqs'
+    folder: 'src/content/faqs-page/faq-items'
     create: true
     delete: true
     slug: '{{order}}-{{slug}}'
@@ -189,12 +269,14 @@ collections:
         }
 
   # ============================================
-  # SERVICES - Service cards for homepage
+  # SERVICES PAGE GROUP
   # ============================================
-  - name: 'services'
-    label: 'Services'
+
+  # Services - Folder Collection
+  - name: 'services_page_items'
+    label: 'Services Page / Service Items'
     label_singular: 'Service'
-    folder: 'src/content/services'
+    folder: 'src/content/services-page/services'
     create: true
     delete: true
     slug: '{{order}}-{{slug}}'
@@ -237,72 +319,6 @@ collections:
           widget: 'boolean',
           default: true,
           hint: 'Whether this service is visible on the site',
-        }
-
-  # ============================================
-  # TRUST BADGES - Professional accreditations
-  # ============================================
-  - name: 'trust_badges'
-    label: 'Trust Badges'
-    label_singular: 'Trust Badge'
-    folder: 'src/content/trust-badges'
-    create: true
-    delete: true
-    slug: '{{order}}-{{slug}}'
-    identifier_field: 'name'
-    sortable_fields: ['order', 'name']
-    summary: '{{order}}. {{name}}'
-    editor:
-      preview: false
-    fields:
-      - {
-          label: 'Organisation Name',
-          name: 'name',
-          widget: 'string',
-          hint: 'Name of the accrediting organisation (e.g., HCPC, GMC)',
-        }
-      - {
-          label: 'Display Text',
-          name: 'display_text',
-          widget: 'string',
-          hint: 'Text to display next to the logo (e.g., "HCPC Registered", "GMC Partner")',
-        }
-      - {
-          label: 'Light Mode Logo',
-          name: 'logo_light',
-          widget: 'image',
-          hint: 'Logo for light mode display',
-          media_library: { config: { max_file_size: 512000 } },
-        }
-      - {
-          label: 'Dark Mode Logo',
-          name: 'logo_dark',
-          widget: 'image',
-          hint: 'Logo for dark mode display',
-          media_library: { config: { max_file_size: 512000 } },
-        }
-      - {
-          label: 'Alt Text',
-          name: 'alt',
-          widget: 'string',
-          hint: 'Alternative text for accessibility',
-          default: '{{name}} accreditation',
-        }
-      - {
-          label: 'Display Order',
-          name: 'order',
-          widget: 'number',
-          default: 1,
-          value_type: 'int',
-          min: 1,
-          hint: 'Order in which this badge appears (1 = first)',
-        }
-      - {
-          label: 'Published',
-          name: 'published',
-          widget: 'boolean',
-          default: true,
-          hint: 'Whether this badge is visible on the site',
         }
 
   # ============================================
