@@ -5,6 +5,6 @@ description: Expert autism assessments for adults using internationally
   reports to support understanding and access to services.
 anchor: autism-adults
 order: 2
-icon: tabler:puzzle
+icon: tabler:brain
 published: true
 ---
