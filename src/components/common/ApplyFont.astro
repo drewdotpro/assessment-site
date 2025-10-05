@@ -26,14 +26,24 @@
     });
   }
 
-  const savedFont = localStorage.getItem('fontPreference') || 'sylexiad';
-  if (fonts.includes(savedFont)) {
-    applyFont(savedFont);
-    // Update dropdown highlighting after DOM loads
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => updateDropdownHighlight(savedFont));
-    } else {
-      updateDropdownHighlight(savedFont);
+  function initFont() {
+    const savedFont = localStorage.getItem('fontPreference') || 'sylexiad';
+    if (fonts.includes(savedFont)) {
+      applyFont(savedFont);
+      // Update dropdown highlighting after DOM loads
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => updateDropdownHighlight(savedFont));
+      } else {
+        updateDropdownHighlight(savedFont);
+      }
     }
   }
+
+  // Initial load
+  initFont();
+
+  // Astro view transitions
+  document.addEventListener('astro:after-swap', () => {
+    initFont();
+  });
 </script>
