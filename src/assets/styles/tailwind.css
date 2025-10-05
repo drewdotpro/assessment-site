@@ -60,10 +60,23 @@
   padding: 0 5px;
 }
 
+/* Regular navigation dropdowns use block display */
 .dropdown:focus .dropdown-menu,
 .dropdown:focus-within .dropdown-menu,
 .dropdown:hover .dropdown-menu {
   display: block;
+}
+
+/* Font dropdown uses flex display to work with flexbox utilities (flex-col, w-max, items-center) */
+.dropdown:focus .font-dropdown-menu,
+.dropdown:focus-within .font-dropdown-menu,
+.dropdown:hover .font-dropdown-menu {
+  display: flex;
+}
+
+/* Force hide dropdown (overrides hover/focus states, used after font selection) */
+.font-dropdown-menu.force-hidden {
+  display: none !important;
 }
 
 [astro-icon].icon-light > * {

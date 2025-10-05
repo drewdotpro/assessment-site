@@ -12,15 +12,15 @@
     root.style.setProperty('--aw-font-serif', fontFamilies[fontKey]);
   }
 
-  function updateButtonStates(selectedFont) {
+  function updateDropdownHighlight(selectedFont) {
     const buttons = document.querySelectorAll('[data-font-button]');
     buttons.forEach(btn => {
       const font = btn.getAttribute('data-font-button');
       if (font === selectedFont) {
-        btn.classList.add('ring-primary', 'bg-primary/10', 'text-primary', 'dark:text-primary');
+        btn.classList.add('text-primary', 'dark:text-primary');
         btn.classList.remove('text-muted', 'dark:text-gray-400');
       } else {
-        btn.classList.remove('ring-primary', 'bg-primary/10', 'text-primary', 'dark:text-primary');
+        btn.classList.remove('text-primary', 'dark:text-primary');
         btn.classList.add('text-muted', 'dark:text-gray-400');
       }
     });
@@ -29,11 +29,11 @@
   const savedFont = localStorage.getItem('fontPreference') || 'sylexiad';
   if (fonts.includes(savedFont)) {
     applyFont(savedFont);
-    // Update UI after DOM loads
+    // Update dropdown highlighting after DOM loads
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => updateButtonStates(savedFont));
+      document.addEventListener('DOMContentLoaded', () => updateDropdownHighlight(savedFont));
     } else {
-      updateButtonStates(savedFont);
+      updateDropdownHighlight(savedFont);
     }
   }
 </script>

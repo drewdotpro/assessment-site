@@ -75,6 +75,15 @@ import { UI } from 'astrowind:config';
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     });
 
+    attachEvent('[data-font-toggle-button]', 'click', function (_, elem) {
+      // Remove force-hidden when opening dropdown
+      const dropdown = elem.closest('.dropdown');
+      const menu = dropdown?.querySelector('.font-dropdown-menu');
+      if (menu) {
+        menu.classList.remove('force-hidden');
+      }
+    });
+
     attachEvent('[data-font-button]', 'click', function (_, elem) {
       const fontFamilies = {
         sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
@@ -89,16 +98,23 @@ import { UI } from 'astrowind:config';
       root.style.setProperty('--aw-font-sans', fontFamilies[selectedFont]);
       root.style.setProperty('--aw-font-serif', fontFamilies[selectedFont]);
 
-      // Update visual selection
+      // Update dropdown item highlighting
       document.querySelectorAll('[data-font-button]').forEach(btn => {
         if (btn === elem) {
-          btn.classList.add('ring-primary', 'bg-primary/10', 'text-primary', 'dark:text-primary');
+          btn.classList.add('text-primary', 'dark:text-primary');
           btn.classList.remove('text-muted', 'dark:text-gray-400');
         } else {
-          btn.classList.remove('ring-primary', 'bg-primary/10', 'text-primary', 'dark:text-primary');
+          btn.classList.remove('text-primary', 'dark:text-primary');
           btn.classList.add('text-muted', 'dark:text-gray-400');
         }
       });
+
+      // Force hide dropdown permanently until next open
+      const dropdown = elem.closest('.dropdown');
+      const menu = dropdown?.querySelector('.font-dropdown-menu');
+      if (menu) {
+        menu.classList.add('force-hidden');
+      }
     });
 
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {

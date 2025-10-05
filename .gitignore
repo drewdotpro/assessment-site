@@ -36,3 +36,4 @@ pnpm-lock.yaml
 # Temporary files
 temp/
 /decap-cmd-docs/
+/.playwright-mcp/
