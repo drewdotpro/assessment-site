@@ -16,7 +16,7 @@ const { metadata } = Astro.props;
 
 <Layout metadata={metadata}>
   <slot name="header">
-    <Header {...headerData} isSticky showRssFeed showToggleTheme showFontToggle />
+    <Header {...headerData} isSticky showToggleTheme showFontToggle />
   </slot>
   <main>
     <slot />

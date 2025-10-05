@@ -1,22 +1,42 @@
 ---
-import { Icon } from 'astro-icon/components';
+import FontIconSylexiad from '~/components/ui/FontIconSylexiad.astro';
+import FontIconOpenDyslexic from '~/components/ui/FontIconOpenDyslexic.astro';
+import FontIconFastSans from '~/components/ui/FontIconFastSans.astro';
 
 export interface Props {
-  label?: string;
-  class?: string;
   iconClass?: string;
-  iconName?: string;
 }
 
-const {
-  label = 'Cycle reading font',
-  class:
-    className = 'text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 inline-flex items-center',
-  iconClass = 'w-6 h-6',
-  iconName = 'tabler:typography',
-} = Astro.props;
+const { iconClass = 'w-5 h-5' } = Astro.props;
+
+const baseClass = 'text-muted dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5 inline-flex items-center transition-all';
 ---
 
-<button type="button" class={className} aria-label={label} data-aw-toggle-font>
-  <Icon name={iconName} class={iconClass} />
-</button>
+<div class="flex gap-1">
+  <button
+    type="button"
+    class={baseClass}
+    aria-label="Sylexiad Sans Medium"
+    data-font-button="sylexiad"
+  >
+    <FontIconSylexiad class={iconClass} />
+  </button>
+
+  <button
+    type="button"
+    class={baseClass}
+    aria-label="OpenDyslexic"
+    data-font-button="opendyslexic"
+  >
+    <FontIconOpenDyslexic class={iconClass} />
+  </button>
+
+  <button
+    type="button"
+    class={baseClass}
+    aria-label="Fast Sans"
+    data-font-button="fastsans"
+  >
+    <FontIconFastSans class={iconClass} />
+  </button>
+</div>

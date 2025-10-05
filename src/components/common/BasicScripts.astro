@@ -75,24 +75,30 @@ import { UI } from 'astrowind:config';
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     });
 
-    attachEvent('[data-aw-toggle-font]', 'click', function () {
-      const fonts = ['sylexiad', 'opendyslexic', 'fastsans'];
+    attachEvent('[data-font-button]', 'click', function (_, elem) {
       const fontFamilies = {
         sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
         opendyslexic: "'OpenDyslexic3', ui-sans-serif, system-ui, sans-serif",
         fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif"
       };
 
-      const current = localStorage.getItem('fontPreference') || 'sylexiad';
-      const currentIndex = fonts.indexOf(current);
-      const nextIndex = (currentIndex + 1) % fonts.length;
-      const nextFont = fonts[nextIndex];
-
-      localStorage.setItem('fontPreference', nextFont);
+      const selectedFont = elem.getAttribute('data-font-button');
+      localStorage.setItem('fontPreference', selectedFont);
 
       const root = document.documentElement;
-      root.style.setProperty('--aw-font-sans', fontFamilies[nextFont]);
-      root.style.setProperty('--aw-font-serif', fontFamilies[nextFont]);
+      root.style.setProperty('--aw-font-sans', fontFamilies[selectedFont]);
+      root.style.setProperty('--aw-font-serif', fontFamilies[selectedFont]);
+
+      // Update visual selection
+      document.querySelectorAll('[data-font-button]').forEach(btn => {
+        if (btn === elem) {
+          btn.classList.add('ring-primary', 'bg-primary/10', 'text-primary', 'dark:text-primary');
+          btn.classList.remove('text-muted', 'dark:text-gray-400');
+        } else {
+          btn.classList.remove('ring-primary', 'bg-primary/10', 'text-primary', 'dark:text-primary');
+          btn.classList.add('text-muted', 'dark:text-gray-400');
+        }
+      });
     });
 
     attachEvent('[data-aw-social-share]', 'click', function (_, elem) {
