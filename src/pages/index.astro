@@ -7,11 +7,12 @@ import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 import FAQs from '~/components/widgets/FAQs.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Button from '~/components/ui/Button.astro';
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
+import { findImage } from '~/utils/images';
 import YAML from 'yaml';
 import fs from 'fs';
 import path from 'path';
-import badgePlaceholder from '~/assets/images/badge-placeholder-rect.svg';
 
 // Load site settings and homepage content
 const settingsPath = path.join(process.cwd(), 'src/content/site-settings.yaml');
@@ -28,6 +29,15 @@ const allTrustBadges = await getCollection('site_settings_trust_badges');
 const services = allServices.filter(s => s.data.published).sort((a, b) => a.data.order - b.data.order);
 const faqs = allFaqs.filter(f => f.data.published).sort((a, b) => a.data.order - b.data.order);
 const trustBadges = allTrustBadges.filter(t => t.data.published).sort((a, b) => a.data.order - b.data.order);
+
+// Resolve badge images dynamically
+const trustBadgesWithImages = await Promise.all(
+  trustBadges.map(async (badge) => ({
+    ...badge,
+    resolvedLogoLight: await findImage(badge.data.logo_light),
+    resolvedLogoDark: await findImage(badge.data.logo_dark),
+  }))
+);
 
 // Get first 4 FAQs for homepage
 const homepageFaqs = faqs.slice(0, 4);
@@ -95,15 +105,28 @@ const metadata = {
       <div class="text-center mb-8">
         <p class="text-base text-muted dark:text-slate-400">Professional accreditations and memberships</p>
       </div>
-      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-        {trustBadges.map((badge) => (
-          <div class="flex items-center gap-3">
-            <img 
-              src={badgePlaceholder.src} 
-              alt={badge.data.alt} 
-              class="h-12 w-auto"
-            />
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+      <div class="flex flex-col sm:flex-row sm:flex-wrap justify-center items-center gap-6 sm:gap-8 md:gap-12">
+        {trustBadgesWithImages.map((badge) => (
+          <div class="flex items-center gap-3 w-64 sm:w-auto">
+            {badge.resolvedLogoLight && (
+              <Image
+                src={badge.resolvedLogoLight}
+                alt={badge.data.alt}
+                class="h-12 w-auto dark:hidden flex-shrink-0"
+                width={48}
+                height={48}
+              />
+            )}
+            {badge.resolvedLogoDark && (
+              <Image
+                src={badge.resolvedLogoDark}
+                alt={badge.data.alt}
+                class="h-12 w-auto hidden dark:block flex-shrink-0"
+                width={48}
+                height={48}
+              />
+            )}
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 text-center flex-1">
               {badge.data.display_text}
             </span>
           </div>
