@@ -37,10 +37,6 @@ const desktopLinks = [
         text: 'Blog',
         href: getBlogPermalink(),
       },
-      {
-        text: 'Policies',
-        href: getPermalink('/policies'),
-      },
     ],
   },
   {
@@ -106,10 +102,6 @@ const tabletLinks = [
         text: 'Blog',
         href: getBlogPermalink(),
       },
-      {
-        text: 'Policies',
-        href: getPermalink('/policies'),
-      },
     ],
   },
   {
@@ -154,21 +146,27 @@ export const footerData = {
         { text: 'Fees', href: getPermalink('/fees') },
         { text: 'FAQs', href: getPermalink('/faq') },
         { text: 'Blog', href: getBlogPermalink() },
-        { text: 'Resources', href: getPermalink('/policies') },
+        { text: 'Self-Help', href: getPermalink('/self-help') },
+        { text: 'Local Support', href: getPermalink('/local-support') },
         { text: 'Contact', href: getPermalink('/contact') },
       ],
     },
     {
-      title: 'Legal',
+      title: 'Website Policies',
       links: [
         { text: 'Privacy Policy', href: getPermalink('/privacy-policy') },
         { text: 'Cookie Policy', href: getPermalink('/cookie-policy') },
         { text: 'Terms of Service', href: getPermalink('/terms-of-service') },
-        { text: 'Complaints', href: getPermalink('/complaints') },
+      ],
+    },
+    {
+      title: 'Support & Standards',
+      links: [
         { text: 'Safeguarding', href: getPermalink('/safeguarding') },
         { text: 'Accessibility Statement', href: getPermalink('/accessibility-statement') },
         { text: 'Data Retention & SAR', href: getPermalink('/data-retention-sar') },
         { text: 'Refunds/Cancellations', href: getPermalink('/refunds-cancellations') },
+        { text: 'Complaints', href: getPermalink('/complaints') },
       ],
     },
   ],
