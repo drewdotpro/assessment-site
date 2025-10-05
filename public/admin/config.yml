@@ -313,11 +313,9 @@ collections:
       - {
           label: 'Icon',
           name: 'icon',
-          widget: 'select',
+          widget: 'tabler-icon-picker',
           required: false,
-          options:
-            ['tabler:brain', 'tabler:puzzle', 'tabler:clipboard-check', 'tabler:briefcase', 'tabler:heart-handshake'],
-          hint: 'Optional icon for the service card',
+          hint: 'Choose an icon for the service card from 5,993 Tabler icons',
         }
       - {
           label: 'Published',

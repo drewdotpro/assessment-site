@@ -10,5 +10,416 @@
   <body>
     <!-- Include the script that builds the page and powers Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+    <!-- Custom Tabler Icon Picker Widget -->
+    <script>
+      // Tabler Icon Picker Control Component
+      var TablerIconPickerControl = createClass({
+        getInitialState: function () {
+          return {
+            icons: null,
+            loading: true,
+            error: null,
+            searchTerm: '',
+            selectedIcon: this.props.value || '',
+            displayedCount: 200,
+            observer: null,
+          };
+        },
+
+        componentDidMount: function () {
+          // Load icon data
+          fetch('/admin/tabler-icons.json')
+            .then(function (response) {
+              if (!response.ok) throw new Error('Failed to load icons');
+              return response.json();
+            })
+            .then(
+              function (data) {
+                this.setState({ icons: data.icons, loading: false });
+              }.bind(this)
+            )
+            .catch(
+              function (error) {
+                this.setState({ error: error.message, loading: false });
+              }.bind(this)
+            );
+        },
+
+        componentWillUnmount: function () {
+          // Cleanup IntersectionObserver
+          if (this.state.observer) {
+            this.state.observer.disconnect();
+          }
+        },
+
+        setupInfiniteScroll: function (element) {
+          if (!element || this.state.observer) return;
+
+          var observer = new IntersectionObserver(
+            function (entries) {
+              if (entries[0].isIntersecting) {
+                this.loadMoreIcons();
+              }
+            }.bind(this),
+            {
+              root: element.parentElement,
+              threshold: 0.1,
+            }
+          );
+
+          observer.observe(element);
+          this.setState({ observer: observer });
+        },
+
+        loadMoreIcons: function () {
+          this.setState(function (state) {
+            return { displayedCount: state.displayedCount + 200 };
+          });
+        },
+
+        handleSearch: function (e) {
+          this.setState({ searchTerm: e.target.value.toLowerCase() });
+        },
+
+        handleIconClick: function (iconName) {
+          var fullIconName = 'tabler:' + iconName;
+          this.setState({ selectedIcon: fullIconName });
+          this.props.onChange(fullIconName);
+        },
+
+        handleClear: function () {
+          this.setState({ selectedIcon: '' });
+          this.props.onChange('');
+        },
+
+        renderIcon: function (iconName, iconData) {
+          var isSelected = this.state.selectedIcon === 'tabler:' + iconName;
+          var svgStyle = {
+            width: '24px',
+            height: '24px',
+            stroke: 'currentColor',
+            fill: 'none',
+          };
+
+          return h(
+            'div',
+            {
+              key: iconName,
+              onClick: this.handleIconClick.bind(this, iconName),
+              style: {
+                padding: '12px',
+                border: isSelected ? '2px solid #3b82f6' : '1px solid #e5e7eb',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: isSelected ? '#eff6ff' : 'white',
+                transition: 'all 0.2s',
+              },
+              onMouseEnter: function (e) {
+                if (!isSelected) {
+                  e.currentTarget.style.borderColor = '#d1d5db';
+                  e.currentTarget.style.backgroundColor = '#f9fafb';
+                }
+              },
+              onMouseLeave: function (e) {
+                if (!isSelected) {
+                  e.currentTarget.style.borderColor = '#e5e7eb';
+                  e.currentTarget.style.backgroundColor = 'white';
+                }
+              },
+            },
+            [
+              h('svg', {
+                key: 'svg',
+                viewBox: '0 0 24 24',
+                width: iconData.width || 24,
+                height: iconData.height || 24,
+                style: svgStyle,
+                dangerouslySetInnerHTML: { __html: iconData.body },
+              }),
+              h(
+                'span',
+                {
+                  key: 'name',
+                  style: {
+                    fontSize: '11px',
+                    color: '#6b7280',
+                    textAlign: 'center',
+                    wordBreak: 'break-word',
+                    maxWidth: '100%',
+                  },
+                },
+                iconName
+              ),
+            ]
+          );
+        },
+
+        render: function () {
+          var self = this;
+
+          // Loading state
+          if (this.state.loading) {
+            return h('div', { style: { padding: '20px' } }, 'Loading icons...');
+          }
+
+          // Error state
+          if (this.state.error) {
+            return h(
+              'div',
+              { style: { padding: '20px', color: '#dc2626' } },
+              'Error loading icons: ' + this.state.error
+            );
+          }
+
+          // Filter icons based on search
+          var filteredIcons = Object.keys(this.state.icons).filter(function (name) {
+            return name.toLowerCase().includes(self.state.searchTerm);
+          });
+
+          // Sort alphabetically
+          filteredIcons.sort();
+
+          // Smart display logic:
+          // - If searching and results <= 500, show all (no infinite scroll)
+          // - Otherwise, use displayedCount for progressive loading
+          var shouldShowAll = this.state.searchTerm && filteredIcons.length <= 500;
+          var displayLimit = shouldShowAll ? filteredIcons.length : this.state.displayedCount;
+          var displayIcons = filteredIcons.slice(0, displayLimit);
+          var hasMore = filteredIcons.length > displayLimit;
+
+          return h('div', { className: this.props.classNameWrapper }, [
+            // Selected icon display
+            this.state.selectedIcon &&
+              h(
+                'div',
+                {
+                  key: 'selected',
+                  style: {
+                    padding: '12px',
+                    marginBottom: '12px',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    backgroundColor: '#f9fafb',
+                  },
+                },
+                [
+                  h(
+                    'div',
+                    {
+                      key: 'icon-display',
+                      style: { display: 'flex', alignItems: 'center', gap: '12px' },
+                    },
+                    [
+                      h('svg', {
+                        key: 'svg',
+                        viewBox: '0 0 24 24',
+                        width: 24,
+                        height: 24,
+                        style: { stroke: 'currentColor', fill: 'none' },
+                        dangerouslySetInnerHTML: {
+                          __html: this.state.icons[this.state.selectedIcon.replace('tabler:', '')].body,
+                        },
+                      }),
+                      h('strong', { key: 'name' }, this.state.selectedIcon),
+                    ]
+                  ),
+                  h(
+                    'button',
+                    {
+                      key: 'clear',
+                      type: 'button',
+                      onClick: this.handleClear,
+                      style: {
+                        padding: '6px 12px',
+                        backgroundColor: 'white',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                      },
+                    },
+                    'Clear'
+                  ),
+                ]
+              ),
+
+            // Search input
+            h('input', {
+              key: 'search',
+              type: 'text',
+              placeholder: 'Search icons...',
+              value: this.state.searchTerm,
+              onChange: this.handleSearch,
+              style: {
+                width: '100%',
+                padding: '10px 12px',
+                marginBottom: '12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                fontSize: '14px',
+              },
+            }),
+
+            // Icon count
+            h(
+              'div',
+              {
+                key: 'count',
+                style: {
+                  marginBottom: '12px',
+                  fontSize: '14px',
+                  color: '#6b7280',
+                },
+              },
+              hasMore
+                ? 'Showing ' + displayIcons.length + ' of ' + filteredIcons.length + ' icons'
+                : filteredIcons.length +
+                    ' icon' +
+                    (filteredIcons.length === 1 ? '' : 's') +
+                    (this.state.searchTerm ? ' found' : '')
+            ),
+
+            // Icon grid
+            h(
+              'div',
+              {
+                key: 'grid',
+                style: {
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                  gap: '12px',
+                  maxHeight: '500px',
+                  overflowY: 'auto',
+                  padding: '4px',
+                },
+              },
+              displayIcons
+                .map(function (iconName) {
+                  return self.renderIcon(iconName, self.state.icons[iconName]);
+                })
+                .concat(
+                  hasMore
+                    ? h(
+                        'div',
+                        {
+                          key: 'sentinel',
+                          ref: self.setupInfiniteScroll,
+                          style: {
+                            gridColumn: '1 / -1',
+                            height: '20px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            color: '#9ca3af',
+                            fontSize: '12px',
+                          },
+                        },
+                        'Loading more icons...'
+                      )
+                    : []
+                )
+            ),
+
+            // No results message
+            filteredIcons.length === 0 &&
+              h(
+                'div',
+                {
+                  key: 'no-results',
+                  style: {
+                    padding: '40px',
+                    textAlign: 'center',
+                    color: '#9ca3af',
+                  },
+                },
+                'No icons found for "' + this.state.searchTerm + '"'
+              ),
+          ]);
+        },
+      });
+
+      // Tabler Icon Picker Preview Component
+      var TablerIconPickerPreview = createClass({
+        getInitialState: function () {
+          return {
+            iconData: null,
+          };
+        },
+
+        componentDidMount: function () {
+          this.loadIconData();
+        },
+
+        componentDidUpdate: function (prevProps) {
+          if (prevProps.value !== this.props.value) {
+            this.loadIconData();
+          }
+        },
+
+        loadIconData: function () {
+          if (!this.props.value) {
+            this.setState({ iconData: null });
+            return;
+          }
+
+          fetch('/admin/tabler-icons.json')
+            .then(function (response) {
+              return response.json();
+            })
+            .then(
+              function (data) {
+                var iconName = this.props.value.replace('tabler:', '');
+                this.setState({ iconData: data.icons[iconName] || null });
+              }.bind(this)
+            )
+            .catch(function () {
+              this.setState({ iconData: null });
+            });
+        },
+
+        render: function () {
+          if (!this.props.value) {
+            return h('div', {}, 'No icon selected');
+          }
+
+          if (!this.state.iconData) {
+            return h('div', {}, this.props.value);
+          }
+
+          return h(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+              },
+            },
+            [
+              h('svg', {
+                key: 'svg',
+                viewBox: '0 0 24 24',
+                width: 24,
+                height: 24,
+                style: { stroke: 'currentColor', fill: 'none' },
+                dangerouslySetInnerHTML: { __html: this.state.iconData.body },
+              }),
+              h('span', { key: 'name' }, this.props.value),
+            ]
+          );
+        },
+      });
+
+      // Register the widget
+      CMS.registerWidget('tabler-icon-picker', TablerIconPickerControl, TablerIconPickerPreview);
+    </script>
   </body>
 </html>

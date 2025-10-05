@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "concurrently \"npx decap-server\" \"astro dev\"",
     "build": "astro build",
+    "build:icon-data": "node scripts/build-icon-data.js",
     "preview": "astro preview",
     "astro": "astro",
     "check": "npm run check:astro && npm run check:eslint && npm run check:prettier",

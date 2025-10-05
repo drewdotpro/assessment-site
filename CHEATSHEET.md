@@ -3,6 +3,7 @@
 A comprehensive reference for all 55 AstroWind components with examples and configurations.
 
 ## Table of Contents
+
 - [Widget Components (22)](#widget-components-22)
 - [UI Components (9)](#ui-components-9)
 - [Blog Components (10)](#blog-components-10)
@@ -16,17 +17,13 @@ A comprehensive reference for all 55 AstroWind components with examples and conf
 ## Widget Components (22)
 
 ### 1. Hero
+
 **Primary hero section with centered content**
 
 ```astro
 import Hero from '~/components/widgets/Hero.astro';
 
-<Hero
-  tagline="Optional Tagline"
-  title="Main Title" // or use slot
-  subtitle="Subtitle text" // or use slot
-  id="hero-section"
->
+<Hero tagline="Optional Tagline" title="Main Title" or use slot subtitle="Subtitle text" or use slot id="hero-section">
   <Fragment slot="title">Custom <span class="text-accent">Title</span></Fragment>
   <Fragment slot="subtitle">Custom subtitle content</Fragment>
   <Fragment slot="content">Additional content below subtitle</Fragment>
@@ -42,9 +39,10 @@ import Hero from '~/components/widgets/Hero.astro';
 ```
 
 **Props:**
+
 - `tagline`: string
 - `title`: string | slot
-- `subtitle`: string | slot  
+- `subtitle`: string | slot
 - `content`: string | slot
 - `actions`: slot (for action buttons)
 - `image`: slot (for image content)
@@ -52,15 +50,13 @@ import Hero from '~/components/widgets/Hero.astro';
 - `bg`: slot for background
 
 ### 2. Hero2
+
 **Side-by-side hero layout**
 
 ```astro
 import Hero2 from '~/components/widgets/Hero2.astro';
 
-<Hero2
-  tagline="SaaS Demo"
-  id="hero2-section"
->
+<Hero2 tagline="SaaS Demo" id="hero2-section">
   <Fragment slot="title">Your <span class="text-accent">SaaS</span> Solution</Fragment>
   <Fragment slot="subtitle">Comprehensive subtitle here</Fragment>
   <Fragment slot="actions">
@@ -74,6 +70,7 @@ import Hero2 from '~/components/widgets/Hero2.astro';
 ```
 
 **Props:**
+
 - `tagline`: string
 - `title`: string | slot
 - `subtitle`: string | slot
@@ -84,6 +81,7 @@ import Hero2 from '~/components/widgets/Hero2.astro';
 - `bg`: slot for background
 
 ### 3. HeroText
+
 **Text-only hero without image**
 
 ```astro
@@ -99,6 +97,7 @@ import HeroText from '~/components/widgets/HeroText.astro';
 ```
 
 **Props:**
+
 - `title`: string | slot
 - `subtitle`: string | slot
 - `tagline`: string
@@ -109,6 +108,7 @@ import HeroText from '~/components/widgets/HeroText.astro';
 **Note:** Unlike other Hero variants, HeroText does NOT have `id` or `bg` props.
 
 ### 4. Features
+
 **Feature grid with icon items**
 
 ```astro
@@ -119,12 +119,18 @@ import Features from '~/components/widgets/Features.astro';
   tagline="Features"
   title="What you get with AstroWind"
   subtitle="Professional and comprehensive template"
-  columns={3} // 1, 2, 3, 4, or 6
+  columns={3}
+  1,
+  2,
+  3,
+  4,
+  or
+  6
   items={[
     {
       title: 'Tailwind CSS',
       description: 'Great framework integration',
-      icon: 'tabler:brand-tailwind'
+      icon: 'tabler:brand-tailwind',
     },
     // more items...
   ]}
@@ -132,6 +138,7 @@ import Features from '~/components/widgets/Features.astro';
 ```
 
 **Props:**
+
 - `title`, `subtitle`, `tagline`: Headlines
 - `items`: Item[] with title, description, icon
 - `columns`: number (1-6)
@@ -142,6 +149,7 @@ import Features from '~/components/widgets/Features.astro';
 - `bg`: slot for background
 
 ### 5. Features2
+
 **Compact feature grid**
 
 ```astro
@@ -156,13 +164,14 @@ import Features2 from '~/components/widgets/Features2.astro';
     {
       title: 'Headers',
       description: 'Site navigation',
-      icon: 'flat-color-icons:template'
-    }
+      icon: 'flat-color-icons:template',
+    },
   ]}
 />
 ```
 
 **Props:**
+
 - `title`, `subtitle`, `tagline`: Headlines
 - `items`: Item[] with title, description, icon
 - `columns`: number (1-6)
@@ -175,6 +184,7 @@ import Features2 from '~/components/widgets/Features2.astro';
 **Note:** Uses ItemGrid2 internally for different styling than Features.
 
 ### 6. Features3
+
 **Features with prominent image**
 
 ```astro
@@ -184,7 +194,18 @@ import Features3 from '~/components/widgets/Features3.astro';
   title="Visual Features"
   subtitle="Image-focused feature display"
   image={{ src: 'image-url', alt: 'Feature Image' }}
-  items={[...]}
+  items={[
+    {
+      title: 'Feature 1',
+      description: 'Description of the feature',
+      icon: 'tabler:check',
+    },
+    {
+      title: 'Feature 2',
+      description: 'Another feature description',
+      icon: 'tabler:rocket',
+    },
+  ]}
   columns={2}
   isBeforeContent={false}
   isAfterContent={false}
@@ -192,6 +213,7 @@ import Features3 from '~/components/widgets/Features3.astro';
 ```
 
 **Props:**
+
 - `title`, `subtitle`, `tagline`: Headlines
 - `items`: Item[] with title, description, icon
 - `columns`: number (1-6)
@@ -205,6 +227,7 @@ import Features3 from '~/components/widgets/Features3.astro';
 - `bg`: slot for background
 
 ### 7. Steps
+
 **Process steps with image**
 
 ```astro
@@ -216,13 +239,13 @@ import Steps from '~/components/widgets/Steps.astro';
     {
       title: 'Step 1: <span class="font-medium">Download</span>',
       description: 'Fork or clone the repository',
-      icon: 'tabler:package'
+      icon: 'tabler:package',
     },
     {
       title: 'Step 2: <span class="font-medium">Customize</span>',
       description: 'Modify styles and content',
-      icon: 'tabler:paint'
-    }
+      icon: 'tabler:paint',
+    },
   ]}
   image={{ src: 'image-url', alt: 'Steps' }}
   isReversed={false}
@@ -230,6 +253,7 @@ import Steps from '~/components/widgets/Steps.astro';
 ```
 
 **Props:**
+
 - `title`, `subtitle`, `tagline`: Headlines
 - `items`: Step items with title, description, icon
 - `image`: string | Image
@@ -240,6 +264,7 @@ import Steps from '~/components/widgets/Steps.astro';
 - `bg`: slot for background
 
 ### 8. Steps2
+
 **Alternative steps layout**
 
 ```astro
@@ -250,12 +275,24 @@ import Steps2 from '~/components/widgets/Steps2.astro';
   subtitle="Follow these steps"
   tagline="Guide"
   callToAction={{ text: 'Start Now', href: '#', variant: 'primary' }}
-  items={[...]}
+  items={[
+    {
+      title: 'Step 1: <span class="font-medium">Setup</span>',
+      description: 'Initial configuration',
+      icon: 'tabler:settings',
+    },
+    {
+      title: 'Step 2: <span class="font-medium">Deploy</span>',
+      description: 'Launch your site',
+      icon: 'tabler:rocket',
+    },
+  ]}
   isReversed={false}
 />
 ```
 
 **Props:**
+
 - `title`, `subtitle`, `tagline`: Headlines
 - `items`: Step items with title, description, icon
 - `callToAction`: CallToAction configuration
@@ -268,6 +305,7 @@ import Steps2 from '~/components/widgets/Steps2.astro';
 **Note:** Steps2 has `callToAction` prop while Steps does not.
 
 ### 9. Content
+
 **Content section with image and items**
 
 ```astro
@@ -282,8 +320,8 @@ import Content from '~/components/widgets/Content.astro';
   items={[
     {
       title: 'Built with Astro',
-      description: 'Modern static site generator'
-    }
+      description: 'Modern static site generator',
+    },
   ]}
   image={{ src: 'image-url', alt: 'Content' }}
   callToAction={{ text: 'Learn More', href: '#' }}
@@ -299,6 +337,7 @@ import Content from '~/components/widgets/Content.astro';
 ```
 
 **Props:**
+
 - `title`, `subtitle`, `tagline`: Headlines
 - `content`: string | slot
 - `items`: Item[]
@@ -310,6 +349,7 @@ import Content from '~/components/widgets/Content.astro';
 - Standard Widget props (id, isDark, classes, bg)
 
 ### 10. CallToAction
+
 **Centered CTA section**
 
 ```astro
@@ -324,13 +364,14 @@ import CallToAction from '~/components/widgets/CallToAction.astro';
       variant: 'primary',
       text: 'Download Now',
       href: '#',
-      icon: 'tabler:download'
-    }
+      icon: 'tabler:download',
+    },
   ]}
 />
 ```
 
 **Props:**
+
 - `title`: string | slot
 - `subtitle`: string | slot
 - `tagline`: string | slot
@@ -340,6 +381,7 @@ import CallToAction from '~/components/widgets/CallToAction.astro';
 **Note:** Despite the interface definition, the component only uses `actions`, not `callToAction`.
 
 ### 11. FAQs
+
 **Frequently asked questions**
 
 ```astro
@@ -353,13 +395,14 @@ import FAQs from '~/components/widgets/FAQs.astro';
   items={[
     {
       title: 'Question 1?',
-      description: 'Answer to question 1'
-    }
+      description: 'Answer to question 1',
+    },
   ]}
 />
 ```
 
 **Props:**
+
 - `title`: string (default: '')
 - `subtitle`: string (default: '')
 - `tagline`: string (default: '')
@@ -370,6 +413,7 @@ import FAQs from '~/components/widgets/FAQs.astro';
 **Note:** Unlike other widgets, FAQs uses empty string defaults instead of slot rendering for title/subtitle/tagline.
 
 ### 12. Stats
+
 **Statistics display**
 
 ```astro
@@ -382,12 +426,13 @@ import Stats from '~/components/widgets/Stats.astro';
   stats={[
     { amount: '100K+', title: 'Users', icon: 'tabler:users' },
     { amount: '24/7', title: 'Support' },
-    { amount: '99.9%', title: 'Uptime' }
+    { amount: '99.9%', title: 'Uptime' },
   ]}
 />
 ```
 
 **Props:**
+
 - `title`: string | slot
 - `subtitle`: string | slot
 - `tagline`: string
@@ -395,6 +440,7 @@ import Stats from '~/components/widgets/Stats.astro';
 - Standard Widget props (id, isDark, classes, bg)
 
 ### 13. Pricing
+
 **Pricing cards**
 
 ```astro
@@ -410,12 +456,9 @@ import Pricing from '~/components/widgets/Pricing.astro';
       subtitle: 'For individuals',
       price: 29,
       period: 'per month',
-      items: [
-        { description: '10 users' },
-        { description: '100GB storage' }
-      ],
+      items: [{ description: '10 users' }, { description: '100GB storage' }],
       callToAction: { text: 'Get Started', href: '#' },
-      hasRibbon: false
+      hasRibbon: false,
     },
     {
       title: 'Pro',
@@ -423,14 +466,19 @@ import Pricing from '~/components/widgets/Pricing.astro';
       period: 'per month',
       hasRibbon: true,
       ribbonTitle: 'Popular',
-      items: [...],
-      callToAction: { text: 'Get Started', href: '#', variant: 'primary' }
-    }
+      items: [
+        { description: 'Unlimited users' },
+        { description: 'Priority support' },
+        { description: 'Advanced analytics' },
+      ],
+      callToAction: { text: 'Get Started', href: '#', variant: 'primary' },
+    },
   ]}
 />
 ```
 
 **Props:**
+
 - `title`: string (default: '')
 - `subtitle`: string (default: '')
 - `tagline`: string (default: '')
@@ -439,6 +487,7 @@ import Pricing from '~/components/widgets/Pricing.astro';
 - Standard Widget props (id, isDark, classes, bg)
 
 ### 14. Testimonials
+
 **Customer testimonials grid**
 
 ```astro
@@ -454,14 +503,15 @@ import Testimonials from '~/components/widgets/Testimonials.astro';
       testimonial: 'Amazing product that solved all our needs',
       name: 'John Doe',
       job: 'CEO at Company',
-      image: { src: 'avatar-url', alt: 'John' }
-    }
+      image: { src: 'avatar-url', alt: 'John' },
+    },
   ]}
   callToAction={{ text: 'More Reviews', href: '#' }}
 />
 ```
 
 **Props:**
+
 - `title`: string (default: '')
 - `subtitle`: string (default: '')
 - `tagline`: string (default: '')
@@ -475,6 +525,7 @@ import Testimonials from '~/components/widgets/Testimonials.astro';
 - Standard Widget props (id, isDark, classes, bg)
 
 ### 15. Brands
+
 **Brand logos display**
 
 ```astro
@@ -487,12 +538,13 @@ import Brands from '~/components/widgets/Brands.astro';
   icons={['tabler:brand-google', 'tabler:brand-facebook']}
   images={[
     { src: 'logo1.png', alt: 'Brand 1' },
-    { src: 'logo2.png', alt: 'Brand 2' }
+    { src: 'logo2.png', alt: 'Brand 2' },
   ]}
 />
 ```
 
 **Props:**
+
 - `title`: string (default: '')
 - `subtitle`: string (default: '')
 - `tagline`: string (default: '')
@@ -501,6 +553,7 @@ import Brands from '~/components/widgets/Brands.astro';
 - Standard Widget props (id, isDark, classes, bg)
 
 ### 16. Contact
+
 **Contact form section**
 
 ```astro
@@ -514,23 +567,23 @@ import Contact from '~/components/widgets/Contact.astro';
       type: 'text',
       name: 'name',
       label: 'Name',
-      placeholder: 'Your name'
+      placeholder: 'Your name',
     },
     {
       type: 'email',
       name: 'email',
       label: 'Email',
-      placeholder: 'your@email.com'
-    }
+      placeholder: 'your@email.com',
+    },
   ]}
   textarea={{
     label: 'Message',
     name: 'message',
     placeholder: 'Your message',
-    rows: 5
+    rows: 5,
   }}
   disclaimer={{
-    label: 'I agree to the privacy policy'
+    label: 'I agree to the privacy policy',
   }}
   button="Send Message"
 />
@@ -539,6 +592,7 @@ import Contact from '~/components/widgets/Contact.astro';
 **Props:** Combines Form props with Widget props
 
 ### 17. BlogLatestPosts
+
 **Display latest blog posts**
 
 ```astro
@@ -554,6 +608,7 @@ import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 ```
 
 **Props:**
+
 - `title`: string | slot
 - `information`: string | slot
 - `count`: number of posts (default: 4)
@@ -561,6 +616,7 @@ import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 - `linkUrl`: string | URL (default: blog permalink)
 
 ### 18. BlogHighlightedPosts
+
 **Featured blog posts**
 
 ```astro
@@ -576,6 +632,7 @@ import BlogHighlightedPosts from '~/components/widgets/BlogHighlightedPosts.astr
 ```
 
 **Props:**
+
 - `title`: string | slot
 - `postIds`: string[] of post IDs/slugs (required)
 - `information`: string | slot
@@ -583,24 +640,23 @@ import BlogHighlightedPosts from '~/components/widgets/BlogHighlightedPosts.astr
 - `linkUrl`: string | URL (default: blog permalink)
 
 ### 19. Note
+
 **Information banner**
 
 ```astro
 import Note from '~/components/widgets/Note.astro';
 
-<Note
-  icon="tabler:info-square"
-  title="Important:"
-  description="Key information to highlight"
-/>
+<Note icon="tabler:info-square" title="Important:" description="Key information to highlight" />
 ```
 
 **Props:**
+
 - `icon`: string (default: 'tabler:info-square')
 - `title`: string | slot
 - `description`: string | slot
 
 ### 20. Announcement
+
 **Static announcement bar (hardcoded)**
 
 ```astro
@@ -612,6 +668,7 @@ import Announcement from '~/components/widgets/Announcement.astro';
 **Note:** This component is hardcoded with no props. It displays a fixed announcement about Astro v5.12 and GitHub stars.
 
 ### 21. Header
+
 **Site navigation header**
 
 ```astro
@@ -626,24 +683,28 @@ import Header from '~/components/widgets/Header.astro';
       text: 'Services',
       links: [
         { text: 'Service 1', href: '/service1' },
-        { text: 'Service 2', href: '/service2' }
-      ]
-    }
+        { text: 'Service 2', href: '/service2' },
+      ],
+    },
   ]}
   actions={[
     { text: 'Login', href: '/login', variant: 'secondary' },
-    { text: 'Sign Up', href: '/signup', variant: 'primary' }
+    { text: 'Sign Up', href: '/signup', variant: 'primary' },
   ]}
   isSticky={true}
   isDark={false}
   isFullWidth={false}
   showToggleTheme={true}
   showRssFeed={false}
-  position="center" // left, center, right
+  position="center"
+  left,
+  center,
+  right
 />
 ```
 
 **Props:**
+
 - `id`: string (default: 'header')
 - `links`: Navigation links with dropdown support
 - `actions`: CTA buttons
@@ -655,41 +716,47 @@ import Header from '~/components/widgets/Header.astro';
 - `position`: 'left' | 'center' | 'right' (default: 'center')
 
 ### 22. Footer
+
 **Site footer**
 
 ```astro
 import Footer from '~/components/widgets/Footer.astro';
 
 <Footer
-  links={[ // Required!
+  links={[
+    // Required!
     {
       title: 'Product',
       links: [
         { text: 'Features', href: '#' },
-        { text: 'Pricing', href: '#' }
-      ]
-    }
+        { text: 'Pricing', href: '#' },
+      ],
+    },
   ]}
   secondaryLinks={[
     { text: 'Terms', href: '/terms' },
-    { text: 'Privacy', href: '/privacy' }
+    { text: 'Privacy', href: '/privacy' },
   ]}
   socialLinks={[
     { ariaLabel: 'Twitter', icon: 'tabler:brand-twitter', href: '#' },
-    { ariaLabel: 'Github', icon: 'tabler:brand-github', href: '#' }
+    { ariaLabel: 'Github', icon: 'tabler:brand-github', href: '#' },
   ]}
   footNote="© 2024 Your Company. All rights reserved."
-  theme="light" // or "dark"
+  theme="light"
+  or
+  "dark"
 />
 ```
 
 **Props:**
+
 - `links`: Link groups (REQUIRED)
 - `secondaryLinks`: Secondary links array
 - `socialLinks`: Social media links
 - `footNote`: Copyright text
 - `theme`: 'light' | 'dark' (default: 'light')
-```
+
+````
 
 ---
 
@@ -710,9 +777,10 @@ import Button from '~/components/ui/Button.astro';
   class="custom-class"
   type="submit" // button, submit, reset (for forms)
 />
-```
+````
 
 **Props (CallToAction type):**
+
 - `variant`: 'primary' | 'secondary' | 'tertiary' | 'link'
 - `text`: string
 - `href`: string (for links)
@@ -722,6 +790,7 @@ import Button from '~/components/ui/Button.astro';
 - `class`: string
 
 ### 2. Form
+
 **Form builder component**
 
 ```astro
@@ -734,24 +803,24 @@ import Form from '~/components/ui/Form.astro';
       name: 'fullname',
       label: 'Full Name',
       placeholder: 'John Doe',
-      autocomplete: 'name'
+      autocomplete: 'name',
     },
     {
       type: 'email',
       name: 'email',
       label: 'Email',
       placeholder: 'john@example.com',
-      autocomplete: 'email'
-    }
+      autocomplete: 'email',
+    },
   ]}
   textarea={{
     label: 'Message',
     name: 'message',
     placeholder: 'Your message here...',
-    rows: 5
+    rows: 5,
   }}
   disclaimer={{
-    label: 'By submitting, you agree to our terms'
+    label: 'By submitting, you agree to our terms',
   }}
   button="Submit Form"
   description="Optional form description"
@@ -759,6 +828,7 @@ import Form from '~/components/ui/Form.astro';
 ```
 
 ### 3. Headline
+
 **Reusable headline component**
 
 ```astro
@@ -771,12 +841,13 @@ import Headline from '~/components/ui/Headline.astro';
   classes={{
     container: 'text-center',
     title: 'text-4xl font-bold',
-    subtitle: 'text-xl text-muted'
+    subtitle: 'text-xl text-muted',
   }}
 />
 ```
 
 ### 4. ItemGrid
+
 **Flexible item grid**
 
 ```astro
@@ -788,8 +859,8 @@ import ItemGrid from '~/components/ui/ItemGrid.astro';
       title: 'Item Title',
       description: 'Item description',
       icon: 'tabler:check',
-      callToAction: { text: 'Learn More', href: '#' }
-    }
+      callToAction: { text: 'Learn More', href: '#' },
+    },
   ]}
   columns={3}
   defaultIcon="tabler:point"
@@ -798,12 +869,13 @@ import ItemGrid from '~/components/ui/ItemGrid.astro';
     panel: 'relative',
     title: 'text-xl font-bold',
     description: 'text-muted',
-    icon: 'text-primary'
+    icon: 'text-primary',
   }}
 />
 ```
 
 ### 5. ItemGrid2
+
 **Alternative item grid layout**
 
 ```astro
@@ -815,8 +887,8 @@ import ItemGrid2 from '~/components/ui/ItemGrid2.astro';
       title: 'Item Title',
       description: 'Item description',
       icon: 'tabler:check',
-      callToAction: { text: 'Learn More', href: '#' }
-    }
+      callToAction: { text: 'Learn More', href: '#' },
+    },
   ]}
   columns={3}
   defaultIcon="tabler:point"
@@ -825,16 +897,18 @@ import ItemGrid2 from '~/components/ui/ItemGrid2.astro';
     panel: 'rounded-lg',
     title: 'text-xl font-bold',
     description: 'text-muted',
-    icon: 'text-primary'
+    icon: 'text-primary',
   }}
 />
 ```
 
 **Props:**
+
 - Same as ItemGrid but with different default styling
 - Card-based layout vs. row-based layout in ItemGrid
 
 ### 6. Timeline
+
 **Timeline component for process/history**
 
 ```astro
@@ -845,8 +919,8 @@ import Timeline from '~/components/ui/Timeline.astro';
     {
       title: '2024',
       description: 'Company founded',
-      icon: 'tabler:flag'
-    }
+      icon: 'tabler:flag',
+    },
   ]}
   defaultIcon="tabler:point"
   classes={{
@@ -854,60 +928,56 @@ import Timeline from '~/components/ui/Timeline.astro';
     panel: 'relative',
     title: 'text-xl font-bold',
     description: 'text-muted',
-    icon: 'text-primary'
+    icon: 'text-primary',
   }}
 />
 ```
 
 **Props:**
+
 - `items`: Array of Item objects with title, description, icon
 - `defaultIcon`: string (fallback icon if item doesn't specify one)
 - `classes`: object with container, panel, title, description, icon classes
 
 ### 7. DListItem
+
 **Definition list item**
 
 ```astro
 import DListItem from '~/components/ui/DListItem.astro';
 
-<DListItem dt="Term">
-  Definition content goes here (can be HTML)
-</DListItem>
+<DListItem dt="Term"> Definition content goes here (can be HTML) </DListItem>
 ```
 
 **Props:**
+
 - `dt`: string (the term/title)
 - Content is passed via default slot
 
 ### 8. Background
+
 **Background wrapper component**
 
 ```astro
 import Background from '~/components/ui/Background.astro';
 
-<Background isDark={false}>
-  // Content here
-</Background>
+<Background isDark={false}> // Content here </Background>
 ```
 
 ### 9. WidgetWrapper
+
 **Base wrapper for all widgets**
 
 ```astro
 import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 
-<WidgetWrapper
-  id="section-id"
-  isDark={false}
-  containerClass="max-w-7xl mx-auto"
-  as="section"
-  bg={backgroundSlot}
->
+<WidgetWrapper id="section-id" isDark={false} containerClass="max-w-7xl mx-auto" as="section" bg={backgroundSlot}>
   // Widget content
 </WidgetWrapper>
 ```
 
 **Props:**
+
 - `id`: string
 - `isDark`: boolean
 - `containerClass`: string (container CSS classes)
@@ -919,6 +989,7 @@ import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
 ## Blog Components (10)
 
 ### 1. Grid
+
 **Blog post grid container**
 
 ```astro
@@ -928,6 +999,7 @@ import Grid from '~/components/blog/Grid.astro';
 ```
 
 ### 2. GridItem
+
 **Individual blog grid item**
 
 ```astro
@@ -937,6 +1009,7 @@ import GridItem from '~/components/blog/GridItem.astro';
 ```
 
 ### 3. List
+
 **Blog post list container**
 
 ```astro
@@ -946,6 +1019,7 @@ import List from '~/components/blog/List.astro';
 ```
 
 ### 4. ListItem
+
 **Individual blog list item**
 
 ```astro
@@ -955,6 +1029,7 @@ import ListItem from '~/components/blog/ListItem.astro';
 ```
 
 ### 5. SinglePost
+
 **Full blog post display**
 
 ```astro
@@ -964,26 +1039,24 @@ import SinglePost from '~/components/blog/SinglePost.astro';
 ```
 
 ### 6. Pagination
+
 **Blog pagination controls**
 
 ```astro
 import Pagination from '~/components/blog/Pagination.astro';
 
-<Pagination
-  prevUrl="/blog/page/1"
-  nextUrl="/blog/page/3"
-  prevText="Newer posts"
-  nextText="Older posts"
-/>
+<Pagination prevUrl="/blog/page/1" nextUrl="/blog/page/3" prevText="Newer posts" nextText="Older posts" />
 ```
 
 **Props:**
+
 - `prevUrl`: string (optional)
 - `nextUrl`: string (optional)
 - `prevText`: string (default: 'Newer posts')
 - `nextText`: string (default: 'Older posts')
 
 ### 7. RelatedPosts
+
 **Related posts widget**
 
 ```astro
@@ -993,26 +1066,24 @@ import RelatedPosts from '~/components/blog/RelatedPosts.astro';
 ```
 
 ### 8. Tags
+
 **Post tags display**
 
 ```astro
 import Tags from '~/components/blog/Tags.astro';
 
-<Tags 
-  tags={post.tags} 
-  title="Tags:"
-  isCategory={false}
-  class="mt-4" 
-/>
+<Tags tags={post.tags} title="Tags:" isCategory={false} class="mt-4" />
 ```
 
 **Props:**
+
 - `tags`: Post['tags'] - array of tag objects
 - `title`: string | undefined (optional label)
 - `isCategory`: boolean (default: false) - whether showing categories vs tags
 - `class`: string (default: 'text-sm')
 
 ### 9. Headline (Blog)
+
 **Blog-specific headline**
 
 ```astro
@@ -1025,12 +1096,14 @@ import Headline from '~/components/blog/Headline.astro';
 ```
 
 **Props:**
+
 - Default slot: title content
 - `subtitle` slot: subtitle content
 
 **Note:** This is different from the UI Headline component - it uses slots instead of props.
 
 ### 10. ToBlogLink
+
 **Link back to blog**
 
 ```astro
@@ -1044,24 +1117,64 @@ import ToBlogLink from '~/components/blog/ToBlogLink.astro';
 ## Common Components (11)
 
 ### 1. Image
+
 **Optimized image component**
 
 ```astro
 import Image from '~/components/common/Image.astro';
 
 <Image
-  src="~/assets/images/hero.jpg" // required, can be string or ImageMetadata
-  alt="Description" // required!
+  src="~/assets/images/hero.jpg"
+  required,
+  can
+  be
+  string
+  or
+  ImageMetadata
+  alt="Description"
+  required!
   width={1024}
   height={576}
   widths={[400, 768, 1024, 2040]}
   sizes="(max-width: 767px) 400px, (max-width: 1023px) 768px, 1024px"
-  loading="lazy" // 'lazy' | 'eager' (default: 'lazy')
-  decoding="async" // 'sync' | 'async' | 'auto' (default: 'async')
-  fetchpriority="auto" // 'high' | 'low' | 'auto'
-  layout="constrained" // 'constrained' | 'fixed' | 'fullWidth' | 'none' (default: 'constrained')
-  aspectRatio="16:9" // string or number
-  objectPosition="center" // CSS object-position value
+  loading="lazy"
+  'lazy'
+  |
+  'eager'
+  (default:
+  'lazy')
+  decoding="async"
+  'sync'
+  |
+  'async'
+  |
+  'auto'
+  (default:
+  'async')
+  fetchpriority="auto"
+  'high'
+  |
+  'low'
+  |
+  'auto'
+  layout="constrained"
+  'constrained'
+  |
+  'fixed'
+  |
+  'fullWidth'
+  |
+  'none'
+  (default:
+  'constrained')
+  aspectRatio="16:9"
+  string
+  or
+  number
+  objectPosition="center"
+  CSS
+  object-position
+  value
   class="rounded-lg"
 />
 ```
@@ -1069,6 +1182,7 @@ import Image from '~/components/common/Image.astro';
 **Note:** Alt text is required and will throw an error if missing. The component automatically optimizes images using Astro's image optimization or Unpic for external URLs.
 
 ### 2. Analytics
+
 **Analytics integration**
 
 ```astro
@@ -1078,6 +1192,7 @@ import Analytics from '~/components/common/Analytics.astro';
 ```
 
 ### 3. Metadata
+
 **SEO metadata**
 
 ```astro
@@ -1091,15 +1206,16 @@ import Metadata from '~/components/common/Metadata.astro';
   ignoreTitleTemplate={false}
   openGraph={{
     images: [{ url: '/og-image.jpg' }],
-    type: 'website'
+    type: 'website',
   }}
   twitter={{
-    cardType: 'summary_large_image'
+    cardType: 'summary_large_image',
   }}
 />
 ```
 
 **Props:**
+
 - `title`: string
 - `description`: string
 - `canonical`: string (default: current URL)
@@ -1109,42 +1225,39 @@ import Metadata from '~/components/common/Metadata.astro';
 - `twitter`: Twitter card configuration
 
 ### 4. SocialShare
+
 **Social sharing buttons**
 
 ```astro
 import SocialShare from '~/components/common/SocialShare.astro';
 
-<SocialShare
-  url="https://example.com/post"
-  text="Check this out!"
-  class="mt-4"
-/>
+<SocialShare url="https://example.com/post" text="Check this out!" class="mt-4" />
 ```
 
 ### 5. ToggleMenu
+
 **Mobile menu toggle**
 
 ```astro
 import ToggleMenu from '~/components/common/ToggleMenu.astro';
 
-<ToggleMenu 
-  label="Toggle Menu"
-  class="custom-class"
-/>
+<ToggleMenu label="Toggle Menu" class="custom-class" />
 ```
 
 **Props:**
+
 - `label`: string (default: 'Toggle Menu')
 - `class`: string (custom CSS classes)
 - Default slot for custom hamburger icon
 
 ### 6. ToggleTheme
+
 **Dark/light theme toggle**
 
 ```astro
 import ToggleTheme from '~/components/common/ToggleTheme.astro';
 
-<ToggleTheme 
+<ToggleTheme
   label="Toggle between Dark and Light mode"
   class="custom-class"
   iconClass="w-6 h-6"
@@ -1153,39 +1266,44 @@ import ToggleTheme from '~/components/common/ToggleTheme.astro';
 ```
 
 **Props:**
+
 - `label`: string (default: 'Toggle between Dark and Light mode')
 - `class`: string (custom button classes)
 - `iconClass`: string (default: 'w-6 h-6')
 - `iconName`: string (default: 'tabler:sun')
 
 ### 7. ApplyColorMode
+
 **Apply color mode script**
 
 ```astro
 import ApplyColorMode from '~/components/common/ApplyColorMode.astro';
 
-<ApplyColorMode /> // Add to <head>
+<ApplyColorMode /> // Add to
 ```
 
 ### 8. BasicScripts
+
 **Essential scripts**
 
 ```astro
 import BasicScripts from '~/components/common/BasicScripts.astro';
 
-<BasicScripts /> // Add before </body>
+<BasicScripts /> // Add before
 ```
 
 ### 9. CommonMeta
+
 **Common meta tags**
 
 ```astro
 import CommonMeta from '~/components/common/CommonMeta.astro';
 
-<CommonMeta /> // Add to <head>
+<CommonMeta /> // Add to
 ```
 
 ### 10. SiteVerification
+
 **Site verification tags**
 
 ```astro
@@ -1197,19 +1315,17 @@ import SiteVerification from '~/components/common/SiteVerification.astro';
 **Note:** Adds Google site verification meta tag if configured in config.yaml
 
 ### 11. SplitbeeAnalytics
+
 **Splitbee analytics**
 
 ```astro
 import SplitbeeAnalytics from '~/components/common/SplitbeeAnalytics.astro';
 
-<SplitbeeAnalytics 
-  doNotTrack={true}
-  noCookieMode={false}
-  url="https://cdn.splitbee.io/sb.js"
-/>
+<SplitbeeAnalytics doNotTrack={true} noCookieMode={false} url="https://cdn.splitbee.io/sb.js" />
 ```
 
 **Props:**
+
 - `doNotTrack`: boolean (default: true) - Respect DNT header
 - `noCookieMode`: boolean (default: false) - Disable cookies
 - `url`: string (default: 'https://cdn.splitbee.io/sb.js')
@@ -1219,24 +1335,27 @@ import SplitbeeAnalytics from '~/components/common/SplitbeeAnalytics.astro';
 ## Root Components (3)
 
 ### 1. CustomStyles
+
 **Custom CSS injection**
 
 ```astro
 import CustomStyles from '~/components/CustomStyles.astro';
 
-<CustomStyles /> // Add to <head>
+<CustomStyles /> // Add to
 ```
 
 ### 2. Favicons
+
 **Favicon configuration**
 
 ```astro
 import Favicons from '~/components/Favicons.astro';
 
-<Favicons /> // Add to <head>
+<Favicons /> // Add to
 ```
 
 ### 3. Logo
+
 **Site logo component**
 
 ```astro
@@ -1252,6 +1371,7 @@ import Logo from '~/components/Logo.astro';
 ## Layouts
 
 ### Layout
+
 **Base layout with all meta tags**
 
 ```astro
@@ -1271,11 +1391,13 @@ const metadata = {
 ```
 
 **Props:**
+
 - `metadata`: MetaData object
 
 **Note:** This is the base layout that includes all common meta tags, favicons, analytics, etc. Usually you'll use PageLayout instead.
 
 ### PageLayout
+
 **Standard page layout**
 
 ```astro
@@ -1296,9 +1418,9 @@ const metadata = {
   <Fragment slot="header">
     <!-- Optional custom header -->
   </Fragment>
-  
+
   <!-- Page content -->
-  
+
   <Fragment slot="footer">
     <!-- Optional custom footer -->
   </Fragment>
@@ -1306,6 +1428,7 @@ const metadata = {
 ```
 
 ### LandingLayout
+
 **Landing page layout**
 
 ```astro
@@ -1325,17 +1448,19 @@ const metadata = {
   <Fragment slot="header">
     <!-- Optional custom header (has custom default) -->
   </Fragment>
-  
+
   <!-- Landing page content -->
 </Layout>
 ```
 
 **Props:**
+
 - `metadata`: MetaData object
 
 **Note:** Uses a simplified header by default with just one nav link and a download button.
 
 ### MarkdownLayout
+
 **Blog post layout**
 
 ```astro
@@ -1353,6 +1478,7 @@ import Layout from '~/layouts/MarkdownLayout.astro';
 ## Common Patterns
 
 ### Component Composition
+
 ```astro
 <!-- Typical page structure -->
 <Layout metadata={metadata}>
@@ -1367,17 +1493,19 @@ import Layout from '~/layouts/MarkdownLayout.astro';
 ```
 
 ### Responsive Columns
+
 ```astro
 <!-- Adaptive column layouts -->
-<Features columns={3} /> <!-- Desktop: 3, Tablet: 2, Mobile: 1 -->
-<ItemGrid columns={4} /> <!-- Desktop: 4, Tablet: 2, Mobile: 1 -->
+<Features columns={3} />
+<!-- Desktop: 3, Tablet: 2, Mobile: 1 -->
+<ItemGrid columns={4} />
+<!-- Desktop: 4, Tablet: 2, Mobile: 1 -->
 ```
 
 ### Icon Usage
+
 ```astro
-<!-- Tabler icons (default) -->
-icon="tabler:check"
-icon="tabler:arrow-right"
+<!-- Tabler icons (default) -->icon="tabler:check" icon="tabler:arrow-right"
 
 <!-- Flat color icons -->
 icon="flat-color-icons:template"
@@ -1387,18 +1515,16 @@ icon="custom:my-icon"
 ```
 
 ### Call-to-Action Variants
+
 ```astro
-<!-- Button styles -->
-variant="primary"   // Filled primary color
-variant="secondary" // Outlined
-variant="tertiary"  // Ghost button
-variant="link"      // Text link style
+<!-- Button styles -->variant="primary" // Filled primary color variant="secondary" // Outlined variant="tertiary" //
+Ghost button variant="link" // Text link style
 ```
 
 ### Conditional Styling
+
 ```astro
-<!-- Dark mode -->
-isDark={true}
+<!-- Dark mode -->isDark={true}
 
 <!-- Layout variations -->
 isReversed={true}
@@ -1407,6 +1533,7 @@ isBeforeContent={true}
 ```
 
 ### Slot Usage
+
 ```astro
 <!-- Named slots for customization -->
 <Component>
@@ -1418,6 +1545,7 @@ isBeforeContent={true}
 ```
 
 ### Image Optimization
+
 ```astro
 <!-- Responsive images -->
 <Image
@@ -1429,9 +1557,11 @@ isBeforeContent={true}
 ```
 
 ### Configuration
+
 All components respect settings from `src/config.yaml`:
+
 - Site metadata
-- Analytics configuration  
+- Analytics configuration
 - UI theme settings
 - Blog configuration
 

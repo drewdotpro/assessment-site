@@ -7,7 +7,7 @@ import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
 import FAQs from '~/components/widgets/FAQs.astro';
 import CallToAction from '~/components/widgets/CallToAction.astro';
 import Button from '~/components/ui/Button.astro';
-import { Image } from 'astro:assets';
+import Image from '~/components/common/Image.astro';
 import { getCollection } from 'astro:content';
 import { findImage } from '~/utils/images';
 import YAML from 'yaml';
@@ -140,7 +140,7 @@ const metadata = {
   <!-- How it Works -->
   <Steps
     title={homePageContent.sections.how_it_works}
-    items={homePageContent.steps.map((step, index) => ({
+    items={homePageContent.steps.map((step: { text: string }, index: number) => ({
       title: `Step ${index + 1}`,
       description: step.text,
       icon: index === 0 ? 'tabler:message-circle' : index === 1 ? 'tabler:clipboard-check' : 'tabler:bulb',
