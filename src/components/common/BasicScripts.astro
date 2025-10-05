@@ -96,7 +96,7 @@ import { UI } from 'astrowind:config';
       const fontFamilies = {
         sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
         opendyslexic: "'OpenDyslexic3', ui-sans-serif, system-ui, sans-serif",
-        fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif"
+        fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif",
       };
 
       const selectedFont = elem.getAttribute('data-font-button');
@@ -107,7 +107,7 @@ import { UI } from 'astrowind:config';
       root.style.setProperty('--aw-font-serif', fontFamilies[selectedFont]);
 
       // Update dropdown item highlighting
-      document.querySelectorAll('[data-font-button]').forEach(btn => {
+      document.querySelectorAll('[data-font-button]').forEach((btn) => {
         if (btn === elem) {
           btn.classList.add('text-primary', 'dark:text-primary');
           btn.classList.remove('text-muted', 'dark:text-gray-400');

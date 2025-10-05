@@ -23,6 +23,7 @@ Together Assessments website built on the AstroWind template (Astro 5.0 + Tailwi
 ## Sister Sites
 
 The site is part of a network including:
+
 - Together ADHD (https://togetheradhd.co.uk)
 - Together Autism (https://togetherautism.co.uk)
 
@@ -50,6 +51,7 @@ The site includes three neurodiversity-friendly fonts with dynamic switching:
    - Custom font specific to the Together brand
 
 **Implementation:**
+
 - Font definitions and CSS variables in `src/components/CustomStyles.astro`
 - Font switcher dropdown in header via `src/components/common/ToggleFont.astro`
 - User preference persisted in localStorage
@@ -57,6 +59,7 @@ The site includes three neurodiversity-friendly fonts with dynamic switching:
 - Preloaded for performance with `size-adjust` for consistent metrics
 
 **Working with fonts:**
+
 - Fonts are set via CSS custom properties (`--aw-font-sans`, `--aw-font-serif`, `--aw-font-heading`)
 - Tailwind config references these variables in `fontFamily` configuration
 - All font changes should maintain accessibility and readability standards
@@ -92,6 +95,7 @@ npm run check:prettier # Check Prettier formatting
 Playwright is available via MCP for visual debugging and verification:
 
 **When to use Playwright:**
+
 - Debugging visual issues and layout problems
 - Verifying implementations of UI components
 - Testing responsive designs at different viewport sizes
@@ -99,6 +103,7 @@ Playwright is available via MCP for visual debugging and verification:
 - Automating browser interactions for testing
 
 **Available tools:**
+
 - `browser_navigate`: Navigate to URLs (both local dev and production)
 - `browser_snapshot`: Get accessibility tree snapshot (better than screenshots for most debugging)
 - `browser_take_screenshot`: Capture visual screenshots
@@ -108,6 +113,7 @@ Playwright is available via MCP for visual debugging and verification:
 - `browser_console_messages`: Check for console errors
 
 **Common workflows:**
+
 1. Start dev server with `npm run dev`
 2. Use `browser_navigate` to http://localhost:4321
 3. Use `browser_snapshot` to inspect page structure
@@ -191,22 +197,26 @@ The `CHEATSHEET.md` file in this repository is a comprehensive reference guide c
 The site uses a responsive navigation system with separate configurations for different breakpoints:
 
 **Desktop Navigation** (`desktopLinks` in `src/navigation.ts`):
+
 - Displays at `xl:` breakpoint and above (1280px+)
 - Simplified menu structure for desktop users
 - Direct links to main pages plus dropdown menus for Resources and Together network
 
 **Tablet Navigation** (`tabletLinks` in `src/navigation.ts`):
+
 - Displays between `md:` and `xl:` breakpoints (768px-1279px)
 - Restructured menu with "Assessments" grouping
 - Includes "Book a Consultation" within menu structure
 
 **Implementation:**
+
 - Both menu structures exported from `src/navigation.ts`
 - Header component (`src/components/widgets/Header.astro`) switches between them based on breakpoint
 - Footer navigation (`footerData`) pulls site name and email from `src/content/site-settings.yaml`
 - Permalink utilities used for consistent URL generation
 
 **When modifying navigation:**
+
 - Update both `desktopLinks` and `tabletLinks` to maintain consistency
 - Use `getPermalink()` for internal links and `getBlogPermalink()` for blog
 - External links to sister sites use `target: '_blank'`
@@ -230,24 +240,28 @@ The site uses a responsive navigation system with separate configurations for di
 The site uses Astro Content Collections for structured content management:
 
 #### Blog Posts (`post`)
+
 - Location: `src/data/post/` (loaded via glob loader)
 - Schema: publishDate, title, excerpt, image, category, tags, author, metadata
 - Dynamic routing with categories, tags, and pagination
 - RSS feed generation at `/rss.xml`
 
 #### FAQs (`faqs_page_items`)
+
 - Location: `src/content/faqs-page/faq-items/`
 - Schema: question, answer, order, published
 - Used on homepage (first 4) and FAQ page (all)
 - Managed via CMS under "FAQs Page / FAQ Items"
 
 #### Services (`services_page_items`)
+
 - Location: `src/content/services-page/services/`
 - Schema: title, description, anchor, order, icon, published
 - Displayed on homepage and linked to service page sections
 - Managed via CMS under "Services Page / Service Items"
 
 #### Trust Badges (`site_settings_trust_badges`)
+
 - Location: `src/content/site-settings/trust-badges/`
 - Schema: name, display_text, logo_light, logo_dark, alt, order, published
 - Professional accreditations displayed on homepage
@@ -369,6 +383,7 @@ Decap CMS (formerly Netlify CMS) is configured for content management with GitHu
 ### Content Organisation Strategy
 
 The CMS uses a hierarchical naming convention to group related content:
+
 - **File Collections**: Used for single configuration files (Site Settings, Home Page)
 - **Folder Collections**: Used for multiple items (FAQ Items, Service Items, Trust Badges)
 - **Naming Convention**: Uses "/" in labels to create logical groupings in the CMS UI
@@ -377,6 +392,7 @@ The CMS uses a hierarchical naming convention to group related content:
 ### Adding New Content Types
 
 To add new collections:
+
 1. Edit `public/admin/config.yml` following the hierarchical naming pattern
 2. Create corresponding content directories under `src/content/`
 3. Update `src/content/config.ts` with the collection schema

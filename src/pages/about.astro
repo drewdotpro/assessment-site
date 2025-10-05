@@ -1,5 +1,6 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
+import TextPageContent from '~/components/widgets/TextPageContent.astro';
 
 const metadata = {
   title: 'About',
@@ -7,7 +8,5 @@ const metadata = {
 ---
 
 <Layout metadata={metadata}>
-  <div class="container mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold text-center mb-8 font-heading">About</h1>
-  </div>
+  <TextPageContent slug="about" />
 </Layout>

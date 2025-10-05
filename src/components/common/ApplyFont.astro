@@ -3,7 +3,7 @@
   const fontFamilies = {
     sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
     opendyslexic: "'OpenDyslexic3', ui-sans-serif, system-ui, sans-serif",
-    fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif"
+    fastsans: "'Fast Sans', ui-sans-serif, system-ui, sans-serif",
   };
 
   function applyFont(fontKey) {
@@ -14,7 +14,7 @@
 
   function updateDropdownHighlight(selectedFont) {
     const buttons = document.querySelectorAll('[data-font-button]');
-    buttons.forEach(btn => {
+    buttons.forEach((btn) => {
       const font = btn.getAttribute('data-font-button');
       if (font === selectedFont) {
         btn.classList.add('text-primary', 'dark:text-primary');

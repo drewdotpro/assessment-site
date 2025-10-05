@@ -100,9 +100,20 @@ const trustBadgeCollection = defineCollection({
   }),
 });
 
+const textPageCollection = defineCollection({
+  loader: glob({ pattern: '*.md', base: 'src/content/text-pages' }),
+  schema: z.object({
+    slug: z.string(),
+    title: z.string(),
+    subheading: z.string().optional(),
+    image: z.string().optional(),
+  }),
+});
+
 export const collections = {
   post: postCollection,
   faqs_page_items: faqCollection,
   services_page_items: serviceCollection,
   site_settings_trust_badges: trustBadgeCollection,
+  text_pages: textPageCollection,
 };

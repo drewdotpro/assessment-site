@@ -203,7 +203,13 @@ collections:
                 name: 'deep'
                 widget: 'object'
                 fields:
-                  - { label: 'Lead Text', name: 'lead_text', widget: 'text', default: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.', hint: 'Text that appears above the CTA button' }
+                  - {
+                      label: 'Lead Text',
+                      name: 'lead_text',
+                      widget: 'text',
+                      default: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+                      hint: 'Text that appears above the CTA button',
+                    }
                   - { label: 'Text', name: 'text', widget: 'string', default: 'Questions? Get in touch.' }
                   - { label: 'Link', name: 'link', widget: 'string', default: '/contact' }
                   - { label: 'Alt Text', name: 'alt', widget: 'string', default: 'Contact us' }
@@ -319,6 +325,48 @@ collections:
           widget: 'boolean',
           default: true,
           hint: 'Whether this service is visible on the site',
+        }
+
+  # ============================================
+  # TEXT PAGES GROUP
+  # ============================================
+
+  # Text Pages - Folder Collection
+  - name: 'text_pages'
+    label: 'Text Pages'
+    label_singular: 'Text Page'
+    folder: 'src/content/text-pages'
+    create: false
+    delete: false
+    slug: '{{slug}}'
+    identifier_field: 'title'
+    sortable_fields: ['title']
+    summary: '{{title}}'
+    editor:
+      preview: false
+    fields:
+      - { label: 'Slug', name: 'slug', widget: 'hidden' }
+      - { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' }
+      - {
+          label: 'Sub-heading',
+          name: 'subheading',
+          widget: 'string',
+          required: false,
+          hint: 'Optional sub-heading displayed below the title (H3, centred, without font-heading)',
+        }
+      - {
+          label: 'Image',
+          name: 'image',
+          widget: 'image',
+          required: false,
+          hint: 'Optional image displayed after the sub-heading (centred)',
+          media_library: { config: { max_file_size: 2048000 } },
+        }
+      - {
+          label: 'Content',
+          name: 'body',
+          widget: 'markdown',
+          hint: 'The main content of the page. Supports full markdown formatting.',
         }
 
   # ============================================
