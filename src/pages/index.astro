@@ -26,9 +26,9 @@ const allFaqs = await getCollection('faqs_page_items');
 const allTrustBadges = await getCollection('site_settings_trust_badges');
 
 // Filter and sort
-const services = allServices.filter(s => s.data.published).sort((a, b) => a.data.order - b.data.order);
-const faqs = allFaqs.filter(f => f.data.published).sort((a, b) => a.data.order - b.data.order);
-const trustBadges = allTrustBadges.filter(t => t.data.published).sort((a, b) => a.data.order - b.data.order);
+const services = allServices.filter((s) => s.data.published).sort((a, b) => a.data.order - b.data.order);
+const faqs = allFaqs.filter((f) => f.data.published).sort((a, b) => a.data.order - b.data.order);
+const trustBadges = allTrustBadges.filter((t) => t.data.published).sort((a, b) => a.data.order - b.data.order);
 
 // Resolve badge images dynamically
 const trustBadgesWithImages = await Promise.all(
@@ -106,31 +106,33 @@ const metadata = {
         <p class="text-base text-muted dark:text-slate-400">Professional accreditations and memberships</p>
       </div>
       <div class="flex flex-col sm:flex-row sm:flex-wrap justify-center items-center gap-6 sm:gap-8 md:gap-12">
-        {trustBadgesWithImages.map((badge) => (
-          <div class="flex items-center gap-3 w-64 sm:w-auto">
-            {badge.resolvedLogoLight && (
-              <Image
-                src={badge.resolvedLogoLight}
-                alt={badge.data.alt}
-                class="h-12 w-auto dark:hidden flex-shrink-0"
-                width={48}
-                height={48}
-              />
-            )}
-            {badge.resolvedLogoDark && (
-              <Image
-                src={badge.resolvedLogoDark}
-                alt={badge.data.alt}
-                class="h-12 w-auto hidden dark:block flex-shrink-0"
-                width={48}
-                height={48}
-              />
-            )}
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 text-center flex-1">
-              {badge.data.display_text}
-            </span>
-          </div>
-        ))}
+        {
+          trustBadgesWithImages.map((badge) => (
+            <div class="flex items-center gap-3 w-64 sm:w-auto">
+              {badge.resolvedLogoLight && (
+                <Image
+                  src={badge.resolvedLogoLight}
+                  alt={badge.data.alt}
+                  class="h-12 w-auto dark:hidden flex-shrink-0"
+                  width={48}
+                  height={48}
+                />
+              )}
+              {badge.resolvedLogoDark && (
+                <Image
+                  src={badge.resolvedLogoDark}
+                  alt={badge.data.alt}
+                  class="h-12 w-auto hidden dark:block flex-shrink-0"
+                  width={48}
+                  height={48}
+                />
+              )}
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300 text-center flex-1">
+                {badge.data.display_text}
+              </span>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
@@ -149,15 +151,17 @@ const metadata = {
   <Features2
     title={homePageContent.sections.services}
     subtitle=""
-    items={services.length > 0 ? services.map((service) => ({
-      title: service.data.title,
-      description: service.data.description,
-      icon: service.data.icon || 'tabler:point',
-      callToAction: {
-        text: 'Learn more',
-        href: `/services#${service.data.anchor}`,
-      },
-    })) : []}
+    items={services.length > 0
+      ? services.map((service) => ({
+          title: service.data.title,
+          description: service.data.description,
+          icon: service.data.icon || 'tabler:point',
+          callToAction: {
+            text: 'Learn more',
+            href: `/services#${service.data.anchor}`,
+          },
+        }))
+      : []}
   />
 
   <!-- Deep CTA -->
@@ -175,26 +179,29 @@ const metadata = {
   />
 
   <!-- Blog -->
-  <BlogLatestPosts title={homePageContent.sections.blog} information={homePageContent.sections.blog_subtitle} count={4} />
+  <BlogLatestPosts
+    title={homePageContent.sections.blog}
+    information={homePageContent.sections.blog_subtitle}
+    count={4}
+  />
 
   <!-- FAQs -->
   <FAQs
     title={homePageContent.sections.faqs}
-    items={homepageFaqs.length > 0 ? homepageFaqs.map((faq) => ({
-      title: faq.data.question,
-      description: faq.data.answer,
-    })) : []}
+    items={homepageFaqs.length > 0
+      ? homepageFaqs.map((faq) => ({
+          title: faq.data.question,
+          description: faq.data.answer,
+        }))
+      : []}
   />
-  
+
   <!-- More FAQs Button -->
-  {faqs.length > 4 && (
-    <div class="text-center py-4 mb-8">
-      <Button
-        text="More FAQs"
-        href="/faq"
-        variant="secondary"
-        class="w-auto"
-      />
-    </div>
-  )}
+  {
+    faqs.length > 4 && (
+      <div class="text-center py-4 mb-8">
+        <Button text="More FAQs" href="/faq" variant="secondary" class="w-auto" />
+      </div>
+    )
+  }
 </Layout>

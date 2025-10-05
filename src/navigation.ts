@@ -141,6 +141,7 @@ export const footerData = {
       title: 'Pages',
       links: [
         { text: 'Home', href: getPermalink('/') },
+        { text: 'Book a Consultation', href: getPermalink('/consultation') },
         { text: 'About', href: getPermalink('/about') },
         { text: 'Services', href: getPermalink('/services') },
         { text: 'Fees', href: getPermalink('/fees') },
