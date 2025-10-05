@@ -1,64 +1,137 @@
 import { getPermalink, getBlogPermalink } from './utils/permalinks';
 
+// Desktop menu links (shows at xl: breakpoint and above)
+const desktopLinks = [
+  {
+    text: 'About',
+    href: getPermalink('/about'),
+  },
+  {
+    text: 'Services',
+    href: getPermalink('/services'),
+  },
+  {
+    text: 'Fees',
+    href: getPermalink('/fees'),
+  },
+  {
+    text: 'FAQs',
+    href: getPermalink('/faq'),
+  },
+  {
+    text: 'Resources',
+    links: [
+      {
+        text: 'Contact',
+        href: getPermalink('/contact'),
+      },
+      {
+        text: 'Self-Help',
+        href: getPermalink('/self-help'),
+      },
+      {
+        text: 'Local Support',
+        href: getPermalink('/local-support'),
+      },
+      {
+        text: 'Blog',
+        href: getBlogPermalink(),
+      },
+      {
+        text: 'Policies',
+        href: getPermalink('/policies'),
+      },
+    ],
+  },
+  {
+    text: 'Together',
+    links: [
+      {
+        text: 'Together ADHD',
+        href: 'https://togetheradhd.co.uk',
+        target: '_blank',
+      },
+      {
+        text: 'Together Autism',
+        href: 'https://togetherautism.co.uk',
+        target: '_blank',
+      },
+    ],
+  },
+];
+
+// Tablet menu links (shows between md: and xl: breakpoints)
+const tabletLinks = [
+  {
+    text: 'Assessments',
+    links: [
+      {
+        text: 'About',
+        href: getPermalink('/about'),
+      },
+      {
+        text: 'Services',
+        href: getPermalink('/services'),
+      },
+      {
+        text: 'Fees',
+        href: getPermalink('/fees'),
+      },
+      {
+        text: 'FAQs',
+        href: getPermalink('/faq'),
+      },
+      {
+        text: 'Book a Consultation',
+        href: getPermalink('/consultation'),
+      },
+    ],
+  },
+  {
+    text: 'Resources',
+    links: [
+      {
+        text: 'Contact',
+        href: getPermalink('/contact'),
+      },
+      {
+        text: 'Self-Help',
+        href: getPermalink('/self-help'),
+      },
+      {
+        text: 'Local Support',
+        href: getPermalink('/local-support'),
+      },
+      {
+        text: 'Blog',
+        href: getBlogPermalink(),
+      },
+      {
+        text: 'Policies',
+        href: getPermalink('/policies'),
+      },
+    ],
+  },
+  {
+    text: 'Together',
+    links: [
+      {
+        text: 'Together ADHD',
+        href: 'https://togetheradhd.co.uk',
+        target: '_blank',
+      },
+      {
+        text: 'Together Autism',
+        href: 'https://togetherautism.co.uk',
+        target: '_blank',
+      },
+    ],
+  },
+];
+
 export const headerData = {
-  links: [
-    {
-      text: 'About',
-      href: getPermalink('/about'),
-    },
-    {
-      text: 'Services',
-      href: getPermalink('/services'),
-    },
-    {
-      text: 'Fees',
-      href: getPermalink('/fees'),
-    },
-    {
-      text: 'FAQs',
-      href: getPermalink('/faq'),
-    },
-    {
-      text: 'Resources',
-      links: [
-        {
-          text: 'Contact',
-          href: getPermalink('/contact'),
-        },
-        {
-          text: 'Self-Help',
-          href: getPermalink('/self-help'),
-        },
-        {
-          text: 'Local Support',
-          href: getPermalink('/local-support'),
-        },
-        {
-          text: 'Blog',
-          href: getBlogPermalink(),
-        },
-        {
-          text: 'Policies',
-          href: getPermalink('/policies'),
-        },
-      ],
-    },
-    {
-      text: 'Together',
-      links: [
-        {
-          text: 'Together ADHD',
-          href: 'https://togetheradhd.co.uk',
-          target: '_blank',
-        },
-        {
-          text: 'Together Autism',
-          href: 'https://togetherautism.co.uk',
-          target: '_blank',
-        },
-      ],
-    },
-  ],
+  links: desktopLinks,
+  tabletLinks: tabletLinks,
   actions: [{ text: 'Book a Consultation', href: getPermalink('/consultation') }],
 };
 

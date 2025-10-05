@@ -11,6 +11,10 @@
     "webresearch": {
       "command": "cmd",
       "args": ["/c", "npx", "-y", "@mzxrai/mcp-webresearch@latest"]
+    },
+    "playwright": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@playwright/mcp@latest", "--allowed-hosts=*"]
     }
   }
 }
