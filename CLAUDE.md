@@ -26,6 +26,41 @@ The site is part of a network including:
 - Together ADHD (https://togetheradhd.co.uk)
 - Together Autism (https://togetherautism.co.uk)
 
+## Accessibility Features
+
+This site implements comprehensive accessibility features tailored for neurodiversity:
+
+### Custom Font System
+
+The site includes three neurodiversity-friendly fonts with dynamic switching:
+
+1. **Sylexiad Sans Medium** (default body/serif font)
+   - Designed for readability with neurodiversity in mind
+   - Set as `--aw-font-sans` and `--aw-font-serif` in CustomStyles.astro
+
+2. **OpenDyslexic3** (dyslexia-friendly alternative)
+   - Specialised font designed to reduce reading errors for dyslexic readers
+   - Weighted bottoms help prevent letter confusion
+
+3. **Fast Sans** (clean, fast-reading alternative)
+   - Optimised for quick reading and reduced eye strain
+
+4. **Together Assessments** (custom brand font)
+   - Used for headings (`--aw-font-heading`)
+   - Custom font specific to the Together brand
+
+**Implementation:**
+- Font definitions and CSS variables in `src/components/CustomStyles.astro`
+- Font switcher dropdown in header via `src/components/common/ToggleFont.astro`
+- User preference persisted in localStorage
+- Font files located in `public/fonts/`
+- Preloaded for performance with `size-adjust` for consistent metrics
+
+**Working with fonts:**
+- Fonts are set via CSS custom properties (`--aw-font-sans`, `--aw-font-serif`, `--aw-font-heading`)
+- Tailwind config references these variables in `fontFamily` configuration
+- All font changes should maintain accessibility and readability standards
+
 ## Essential Commands
 
 ### Development
@@ -49,6 +84,35 @@ npm run check:prettier # Check Prettier formatting
 ```
 
 **IMPORTANT**: Always run `npm run fix` after making changes to automatically fix linting and formatting issues before committing.
+
+## Development Tools
+
+### Playwright MCP (Browser Automation)
+
+Playwright is available via MCP for visual debugging and verification:
+
+**When to use Playwright:**
+- Debugging visual issues and layout problems
+- Verifying implementations of UI components
+- Testing responsive designs at different viewport sizes
+- Capturing screenshots for documentation or bug reports
+- Automating browser interactions for testing
+
+**Available tools:**
+- `browser_navigate`: Navigate to URLs (both local dev and production)
+- `browser_snapshot`: Get accessibility tree snapshot (better than screenshots for most debugging)
+- `browser_take_screenshot`: Capture visual screenshots
+- `browser_click`, `browser_type`, `browser_hover`: Interact with elements
+- `browser_evaluate`: Run JavaScript in browser context
+- `browser_resize`: Test different viewport sizes
+- `browser_console_messages`: Check for console errors
+
+**Common workflows:**
+1. Start dev server with `npm run dev`
+2. Use `browser_navigate` to http://localhost:4321
+3. Use `browser_snapshot` to inspect page structure
+4. Use `browser_screenshot` to capture visual state
+5. Use `browser_evaluate` to debug JavaScript issues
 
 ## Component Reference Documentation
 
@@ -120,6 +184,32 @@ The `CHEATSHEET.md` file in this repository is a comprehensive reference guide c
   - `services-page/services/`: Service descriptions
   - `post/`: Blog posts (currently empty, posts load from src/data/post/)
 - **src/utils/**: Helper functions for blog, images, permalinks, frontmatter processing
+- **src/navigation.ts**: Navigation configuration with responsive menu structures
+
+### Navigation Architecture
+
+The site uses a responsive navigation system with separate configurations for different breakpoints:
+
+**Desktop Navigation** (`desktopLinks` in `src/navigation.ts`):
+- Displays at `xl:` breakpoint and above (1280px+)
+- Simplified menu structure for desktop users
+- Direct links to main pages plus dropdown menus for Resources and Together network
+
+**Tablet Navigation** (`tabletLinks` in `src/navigation.ts`):
+- Displays between `md:` and `xl:` breakpoints (768px-1279px)
+- Restructured menu with "Assessments" grouping
+- Includes "Book a Consultation" within menu structure
+
+**Implementation:**
+- Both menu structures exported from `src/navigation.ts`
+- Header component (`src/components/widgets/Header.astro`) switches between them based on breakpoint
+- Footer navigation (`footerData`) pulls site name and email from `src/content/site-settings.yaml`
+- Permalink utilities used for consistent URL generation
+
+**When modifying navigation:**
+- Update both `desktopLinks` and `tabletLinks` to maintain consistency
+- Use `getPermalink()` for internal links and `getBlogPermalink()` for blog
+- External links to sister sites use `target: '_blank'`
 
 ### Key Technologies & Patterns
 
@@ -173,8 +263,12 @@ The site uses Astro Content Collections for structured content management:
 ### Styling Approach
 
 - Custom styles in `src/components/CustomStyles.astro` and `src/assets/styles/tailwind.css`
+  - `CustomStyles.astro` contains font definitions, CSS variables for fonts, colour theming, and dark mode styles
+  - Defines `--aw-color-primary`, `--aw-color-secondary`, `--aw-color-accent` and text colours
+  - Font preloading for performance optimisation
 - Follow existing Tailwind utility patterns
 - Dark mode toggle controlled via `ui.theme` in config.yaml
+- Font switcher in header allows users to select preferred neurodiversity-friendly fonts
 
 ### Build Output
 

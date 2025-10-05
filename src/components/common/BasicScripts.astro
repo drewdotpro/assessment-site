@@ -84,6 +84,14 @@ import { UI } from 'astrowind:config';
       }
     });
 
+    // Remove force-hidden on hover to restore normal hover behaviour
+    attachEvent('.dropdown:has([data-font-toggle-button])', 'mouseenter', function (_, elem) {
+      const menu = elem.querySelector('.font-dropdown-menu');
+      if (menu) {
+        menu.classList.remove('force-hidden');
+      }
+    });
+
     attachEvent('[data-font-button]', 'click', function (_, elem) {
       const fontFamilies = {
         sylexiad: "'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif",
