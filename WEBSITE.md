@@ -29,7 +29,7 @@ The website consists of the following pages:
 | **Services**      | `/services`      | CMS: Services Page / Top Content + Service Items | List of assessment services offered                                                                         |
 | **Fees**          | `/fees`          | CMS: Text Pages                                  | Pricing information                                                                                         |
 | **FAQs**          | `/faq`           | CMS: FAQs Page / Top Content + FAQ Items         | Frequently asked questions                                                                                  |
-| **Contact**       | `/contact`       | Static page (hardcoded)                          | Contact information and form                                                                                |
+| **Contact**       | `/contact`       | CMS: Contact Page                                | Contact page with configurable content and email button                                                     |
 | **Consultation**  | `/consultation`  | CMS: Consultation Page                           | Booking page with Google Calendar integration                                                               |
 | **Self-Help**     | `/self-help`     | CMS: Text Pages                                  | Self-help resources                                                                                         |
 | **Local Support** | `/local-support` | CMS: Text Pages                                  | Local support information                                                                                   |
@@ -233,6 +233,28 @@ Controls the consultation booking page:
 - Google Calendar booking link (embedded iframe)
 
 **File Location:** `src/content/consultation-page/content.yaml`
+
+---
+
+### Contact Page
+
+**Collection:** Contact Page (file-based)
+
+Controls the contact page with email functionality:
+
+- Title heading (H1)
+- Sub-heading (optional, H3)
+- Image (optional, centred)
+- Content (optional, markdown support)
+
+**File Location:** `src/content/contact-page/content.yaml`
+
+**Special Features:**
+
+- Displays an "Email Us" button that opens the user's email client
+- Email address pulled from Site Settings (`site.email`)
+- Email subject automatically set to: `{site-name} - Enquiry`
+- Example: "Together Assessments - Enquiry"
 
 ---
 

@@ -141,6 +141,16 @@ const consultationPageCollection = defineCollection({
   }),
 });
 
+const contactPageCollection = defineCollection({
+  loader: glob({ pattern: 'content.yaml', base: 'src/content/contact-page' }),
+  schema: z.object({
+    title: z.string(),
+    subheading: z.string().optional(),
+    image: z.string().optional(),
+    body: z.string().optional(),
+  }),
+});
+
 export const collections = {
   post: postCollection,
   faqs_page_items: faqCollection,
@@ -150,4 +160,5 @@ export const collections = {
   services_page_top_content: servicesPageTopContentCollection,
   faqs_page_top_content: faqsPageTopContentCollection,
   consultation_page: consultationPageCollection,
+  contact_page: contactPageCollection,
 };

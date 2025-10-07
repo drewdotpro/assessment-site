@@ -442,6 +442,45 @@ collections:
             }
 
   # ============================================
+  # CONTACT PAGE GROUP
+  # ============================================
+
+  # Contact Page - File Collection
+  - name: 'contact_page'
+    label: 'Contact Page'
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: 'content'
+        label: 'Contact Page'
+        file: 'src/content/contact-page/content.yaml'
+        fields:
+          - { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' }
+          - {
+              label: 'Sub-heading',
+              name: 'subheading',
+              widget: 'string',
+              required: false,
+              hint: 'Optional sub-heading displayed below the title (H3, centred, without font-heading)',
+            }
+          - {
+              label: 'Image',
+              name: 'image',
+              widget: 'image',
+              required: false,
+              hint: 'Optional image displayed after the sub-heading (centred)',
+              media_library: { config: { max_file_size: 2048000 } },
+            }
+          - {
+              label: 'Content',
+              name: 'body',
+              widget: 'markdown',
+              required: false,
+              hint: 'Optional content displayed before the contact button. Supports full markdown formatting.',
+            }
+
+  # ============================================
   # TEXT PAGES GROUP
   # ============================================
 
