@@ -6,10 +6,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Together Assessments website built on the AstroWind template (Astro 5.0 + Tailwind CSS). This is a custom implementation for a neurodiversity assessment service provider.
 
+**For site structure and content management information**, see [WEBSITE.md](./WEBSITE.md) which documents:
+
+- All pages and routes
+- CMS collections and what they control
+- Content configuration locations
+- Navigation structure
+
+This file (CLAUDE.md) focuses on **technical architecture**, development workflows, and implementation details.
+
 ## Reference Documentation
 
 - **Template Examples**: Original AstroWind template examples are in `src/reference-examples/` for reference when building new components or understanding component usage patterns
 - **Decap CMS Documentation**: Local documentation for Decap CMS is available in `decap-cms-docs/` for reference on CMS configuration and capabilities
+- **Website Structure**: [WEBSITE.md](./WEBSITE.md) documents the site's pages, CMS collections, and content organisation
 
 ## Language and Spelling
 
@@ -19,13 +29,6 @@ Together Assessments website built on the AstroWind template (Astro 5.0 + Tailwi
 - Vocabulary (e.g., "organisation" not "organization", "favourite" not "favorite")
 - Date formats (DD/MM/YYYY)
 - Any generated content or copy
-
-## Sister Sites
-
-The site is part of a network including:
-
-- Together ADHD (https://togetheradhd.co.uk)
-- Together Autism (https://togetherautism.co.uk)
 
 ## Accessibility Features
 
@@ -194,32 +197,22 @@ The `CHEATSHEET.md` file in this repository is a comprehensive reference guide c
 
 ### Navigation Architecture
 
-The site uses a responsive navigation system with separate configurations for different breakpoints:
+The site uses a responsive navigation system defined in `src/navigation.ts`:
 
-**Desktop Navigation** (`desktopLinks` in `src/navigation.ts`):
-
-- Displays at `xl:` breakpoint and above (1280px+)
-- Simplified menu structure for desktop users
-- Direct links to main pages plus dropdown menus for Resources and Together network
-
-**Tablet Navigation** (`tabletLinks` in `src/navigation.ts`):
-
-- Displays between `md:` and `xl:` breakpoints (768px-1279px)
-- Restructured menu with "Assessments" grouping
-- Includes "Book a Consultation" within menu structure
+- **Desktop Navigation** (`desktopLinks`): Displays at `xl:` breakpoint and above (1280px+)
+- **Tablet Navigation** (`tabletLinks`): Displays between `md:` and `xl:` breakpoints (768px-1279px)
+- **Footer Navigation** (`footerData`): Pulls site name and email from `src/content/site-settings.yaml`
 
 **Implementation:**
 
-- Both menu structures exported from `src/navigation.ts`
-- Header component (`src/components/widgets/Header.astro`) switches between them based on breakpoint
-- Footer navigation (`footerData`) pulls site name and email from `src/content/site-settings.yaml`
-- Permalink utilities used for consistent URL generation
+- Header component (`src/components/widgets/Header.astro`) switches between desktop/tablet menus based on breakpoint
+- Permalink utilities (`getPermalink()`, `getBlogPermalink()`) used for consistent URL generation
+- External links to sister sites use `target: '_blank'`
 
 **When modifying navigation:**
 
-- Update both `desktopLinks` and `tabletLinks` to maintain consistency
-- Use `getPermalink()` for internal links and `getBlogPermalink()` for blog
-- External links to sister sites use `target: '_blank'`
+- Update both `desktopLinks` and `tabletLinks` to maintain consistency across breakpoints
+- See [WEBSITE.md](./WEBSITE.md#navigation) for the full navigation structure
 
 ### Key Technologies & Patterns
 
@@ -237,35 +230,28 @@ The site uses a responsive navigation system with separate configurations for di
 
 ### Content Collections
 
-The site uses Astro Content Collections for structured content management:
+The site uses Astro Content Collections for structured content management. All collections are defined in `src/content/config.ts` with schemas using Zod validation.
 
-#### Blog Posts (`post`)
+**Available Collections:**
 
-- Location: `src/data/post/` (loaded via glob loader)
-- Schema: publishDate, title, excerpt, image, category, tags, author, metadata
-- Dynamic routing with categories, tags, and pagination
-- RSS feed generation at `/rss.xml`
+- `post` - Blog posts (loaded from `src/data/post/`)
+- `faqs_page_items` - FAQ question/answer pairs
+- `faqs_page_top_content` - FAQ page header content
+- `services_page_items` - Service offerings
+- `services_page_top_content` - Services page header content
+- `consultation_page` - Consultation booking page content
+- `site_settings_trust_badges` - Professional accreditation badges
+- `text_pages` - Static content pages (About, Fees, policies, etc.)
 
-#### FAQs (`faqs_page_items`)
+**Technical Details:**
 
-- Location: `src/content/faqs-page/faq-items/`
-- Schema: question, answer, order, published
-- Used on homepage (first 4) and FAQ page (all)
-- Managed via CMS under "FAQs Page / FAQ Items"
+- Collections use glob loaders to watch file changes
+- Schemas enforce data validation and type safety
+- Collections support published/unpublished states via `published` field
+- Display order controlled via `order` field (lower numbers appear first)
+- Access collections in pages using `getCollection('collection_name')` or `getEntry('collection_name', 'entry_id')`
 
-#### Services (`services_page_items`)
-
-- Location: `src/content/services-page/services/`
-- Schema: title, description, anchor, order, icon, published
-- Displayed on homepage and linked to service page sections
-- Managed via CMS under "Services Page / Service Items"
-
-#### Trust Badges (`site_settings_trust_badges`)
-
-- Location: `src/content/site-settings/trust-badges/`
-- Schema: name, display_text, logo_light, logo_dark, alt, order, published
-- Professional accreditations displayed on homepage
-- Managed via CMS under "Site Settings / Trust Badges"
+For detailed information about what each collection contains and controls, see [WEBSITE.md](./WEBSITE.md#content-management-cms).
 
 ### Blog System
 
@@ -358,13 +344,10 @@ Decap CMS (formerly Netlify CMS) is configured for content management with GitHu
 
 - **Config Location**: `public/admin/config.yml`
 - **Backend**: GitHub with Editorial Workflow
-- **Collections** - Organised hierarchically in the CMS UI:
-  - **Site Settings**: General configuration and trust badges
-  - **Home Page**: Homepage content management
-  - **FAQs Page / FAQ Items**: Frequently asked questions
-  - **Services Page / Service Items**: Service offerings
-  - **Blog Posts**: Blog content
 - **Media**: Git-based storage in `src/assets/images/` with Astro optimisation pipeline
+- **Collections**: Organised hierarchically in CMS UI using "/" in labels (e.g., "FAQs Page / FAQ Items")
+
+For details on available CMS collections and what they control, see [WEBSITE.md](./WEBSITE.md#content-management-cms).
 
 ### Authentication Setup
 
@@ -397,3 +380,22 @@ To add new collections:
 2. Create corresponding content directories under `src/content/`
 3. Update `src/content/config.ts` with the collection schema
 4. Import collections in pages using `getCollection('collection_name')`
+5. **Update [WEBSITE.md](./WEBSITE.md)** to document the new collection and what it controls
+
+## Maintaining Documentation
+
+**IMPORTANT**: When adding new features, pages, or CMS collections:
+
+1. **Update WEBSITE.md** to document:
+   - New pages and their routes
+   - New CMS collections and what they control
+   - Changes to navigation structure
+   - New configuration options
+
+2. **Update CLAUDE.md** (this file) only for:
+   - Technical architecture changes
+   - New development workflows or commands
+   - Build system or deployment changes
+   - Component library additions
+
+This separation keeps WEBSITE.md focused on **what the site contains** and CLAUDE.md focused on **how to build and maintain it**.

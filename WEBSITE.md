@@ -1,0 +1,537 @@
+# WEBSITE.md
+
+This document describes the Together Assessments website structure: what pages exist, what can be configured, and where to find content settings. This is a structural/architectural guide - it describes WHAT can be set and WHERE, not the current content values themselves.
+
+For technical implementation details and development workflows, see [CLAUDE.md](./CLAUDE.md).
+
+---
+
+## Table of Contents
+
+1. [Pages](#pages)
+2. [Content Management (CMS)](#content-management-cms)
+3. [Configuration Files](#configuration-files)
+4. [Navigation](#navigation)
+5. [Accessibility Features](#accessibility-features)
+
+---
+
+## Pages
+
+The website consists of the following pages:
+
+### Core Pages
+
+| Page              | Route            | Content Source                                   | Description                                                                                                 |
+| ----------------- | ---------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| **Homepage**      | `/`              | CMS: Home Page                                   | Main landing page with hero, services preview, how-it-works steps, blog preview, FAQs preview, trust badges |
+| **About**         | `/about`         | CMS: Text Pages                                  | Information about the service                                                                               |
+| **Services**      | `/services`      | CMS: Services Page / Top Content + Service Items | List of assessment services offered                                                                         |
+| **Fees**          | `/fees`          | CMS: Text Pages                                  | Pricing information                                                                                         |
+| **FAQs**          | `/faq`           | CMS: FAQs Page / Top Content + FAQ Items         | Frequently asked questions                                                                                  |
+| **Contact**       | `/contact`       | Static page (hardcoded)                          | Contact information and form                                                                                |
+| **Consultation**  | `/consultation`  | CMS: Consultation Page                           | Booking page with Google Calendar integration                                                               |
+| **Self-Help**     | `/self-help`     | CMS: Text Pages                                  | Self-help resources                                                                                         |
+| **Local Support** | `/local-support` | CMS: Text Pages                                  | Local support information                                                                                   |
+
+### Blog System
+
+| Page                 | Route Pattern          | Content Source                 | Description                                          |
+| -------------------- | ---------------------- | ------------------------------ | ---------------------------------------------------- |
+| **Blog Index**       | `/blog`                | Dynamic (from post collection) | Main blog listing with pagination (6 posts per page) |
+| **Blog Post**        | `/{slug}`              | CMS: Blog Posts                | Individual blog post pages                           |
+| **Category Archive** | `/category/{category}` | Dynamic (from post categories) | Posts filtered by category with pagination           |
+| **Tag Archive**      | `/tag/{tag}`           | Dynamic (from post tags)       | Posts filtered by tag with pagination (noindex)      |
+| **RSS Feed**         | `/rss.xml`             | Generated from posts           | RSS feed for blog subscribers                        |
+
+**Blog Configuration:**
+
+- Posts per page: 6 (set in `src/config.yaml`)
+- Related posts: Enabled, 4 posts shown (set in `src/config.yaml`)
+- SEO: Main blog and categories indexed, tags noindex
+- Post URL format: `/{slug}` (configurable in `src/config.yaml`)
+
+### Policy & Legal Pages
+
+All managed via CMS as Text Pages:
+
+| Page                        | Route                      |
+| --------------------------- | -------------------------- |
+| **Privacy Policy**          | `/privacy-policy`          |
+| **Cookie Policy**           | `/cookie-policy`           |
+| **Terms of Service**        | `/terms-of-service`        |
+| **Safeguarding**            | `/safeguarding`            |
+| **Accessibility Statement** | `/accessibility-statement` |
+| **Data Retention & SAR**    | `/data-retention-sar`      |
+| **Refunds/Cancellations**   | `/refunds-cancellations`   |
+| **Complaints**              | `/complaints`              |
+
+### Special Pages
+
+| Page         | Route  | Description                    |
+| ------------ | ------ | ------------------------------ |
+| **404 Page** | `/404` | Custom 404 error page (static) |
+
+---
+
+## Content Management (CMS)
+
+All content is managed through Decap CMS at `/admin/`. The CMS is organised hierarchically with the following collections:
+
+### Site Settings
+
+**Collection:** Site Settings (file-based)
+
+Controls site-wide information displayed throughout the website:
+
+- **Site Information:**
+  - Site name
+  - Site email address
+  - ICO registration number
+
+- **Logo Settings:**
+  - Light mode logo image
+  - Dark mode logo image
+  - Logo alt text
+
+- **Footer Settings:**
+  - Footer title
+  - Business information text
+
+**File Location:** `src/content/site-settings.yaml`
+
+---
+
+**Collection:** Site Settings / Trust Badges (folder-based)
+
+Professional accreditation badges displayed on the homepage:
+
+- Organisation name
+- Display text
+- Light mode logo
+- Dark mode logo
+- Alt text
+- Display order
+- Published status
+
+**File Location:** `src/content/site-settings/trust-badges/`
+
+---
+
+### Home Page
+
+**Collection:** Home Page (file-based)
+
+Controls all content on the homepage:
+
+- **Hero Section:**
+  - Hero image
+  - Main text (location/availability)
+  - Title (main headline)
+  - Subtitle (supporting text)
+
+- **Call to Actions (CTAs):**
+  - Primary CTA (text, link, alt text)
+  - Secondary CTA (text, link, alt text)
+  - Deep CTA (lead text, button text, link, alt text)
+
+- **Section Titles:**
+  - How It Works section title
+  - Services section title
+  - Blog section title
+  - Blog section subtitle
+  - FAQs section title
+
+- **How It Works Steps:**
+  - Step 1 text
+  - Step 2 text
+  - Step 3 text
+
+**File Location:** `src/content/home-page/content.yaml`
+
+**Note:** Homepage also displays:
+
+- First 4 published FAQ items (from FAQs Page / FAQ Items)
+- All published service items (from Services Page / Service Items)
+- Latest blog posts (from Blog Posts)
+- Trust badges (from Site Settings / Trust Badges)
+
+---
+
+### FAQs Page
+
+**Collection:** FAQs Page / Top Content (file-based)
+
+Controls content at the top of the FAQ page:
+
+- Title heading (H1)
+- Sub-heading (optional, H3)
+- Image (optional, centred)
+- Content (optional, markdown support)
+
+**File Location:** `src/content/faqs-page/top-content.yaml`
+
+---
+
+**Collection:** FAQs Page / FAQ Items (folder-based)
+
+Individual FAQ question-answer pairs:
+
+- Question text
+- Answer text
+- Display order
+- Published status
+
+**File Location:** `src/content/faqs-page/faq-items/`
+
+**Note:** First 4 published FAQs also appear on the homepage.
+
+---
+
+### Services Page
+
+**Collection:** Services Page / Top Content (file-based)
+
+Controls content at the top of the Services page:
+
+- Title heading (H1)
+- Sub-heading (optional, H3)
+- Image (optional, centred)
+- Content (optional, markdown support)
+
+**File Location:** `src/content/services-page/top-content.yaml`
+
+---
+
+**Collection:** Services Page / Service Items (folder-based)
+
+Individual service offerings:
+
+- Service title
+- Description
+- Anchor ID (for deep linking)
+- Display order
+- Icon (from Tabler Icons - 5,993 icons available)
+- Published status
+
+**File Location:** `src/content/services-page/services/`
+
+**Note:** Services also appear on the homepage in a preview section.
+
+---
+
+### Consultation Page
+
+**Collection:** Consultation Page (file-based)
+
+Controls the consultation booking page:
+
+- Title heading (H1)
+- Sub-heading (optional, H3)
+- Image (optional, centred)
+- Content (optional, markdown support)
+- Google Calendar booking link (embedded iframe)
+
+**File Location:** `src/content/consultation-page/content.yaml`
+
+---
+
+### Text Pages
+
+**Collection:** Text Pages (folder-based)
+
+Simple markdown-based pages with consistent structure:
+
+- Slug (hidden, auto-set from filename)
+- Title heading (H1)
+- Sub-heading (optional, H3)
+- Image (optional, centred)
+- Content (markdown support)
+
+**File Locations:** `src/content/text-pages/`
+
+**Pre-created pages** (cannot be deleted, but can be edited):
+
+- `about.md`
+- `fees.md`
+- `self-help.md`
+- `local-support.md`
+- `privacy-policy.md`
+- `cookie-policy.md`
+- `terms-of-service.md`
+- `safeguarding.md`
+- `accessibility-statement.md`
+- `data-retention-sar.md`
+- `refunds-cancellations.md`
+- `complaints.md`
+
+**Note:** New text pages cannot be created via CMS (create: false). To add new text pages, developers must create the file and corresponding route.
+
+---
+
+### Blog Posts
+
+**Collection:** Blog Posts (folder-based)
+
+Individual blog articles:
+
+- Title
+- Excerpt (50-160 characters, used in previews and SEO)
+- Category (dropdown: Tutorials, News, Updates, Resources)
+- Tags (1-5 tags)
+- Featured image (optional, auto-optimised)
+- Publish date (British format: DD/MM/YYYY)
+- Author name
+- Draft status (hide from production)
+- Content (markdown with image and code-block support)
+- SEO Metadata (optional):
+  - Canonical URL
+  - No-index flag
+
+**File Location:** `src/data/post/`
+
+**Categories Available:**
+
+- Tutorials
+- News
+- Updates
+- Resources
+
+---
+
+## Configuration Files
+
+### Framework Configuration
+
+**File:** `src/config.yaml`
+
+Controls Astro/AstroWind framework behaviour:
+
+- **Site Settings:**
+  - Site URL (for deployment)
+  - Base path
+  - Trailing slash behaviour
+  - Google Site Verification ID
+
+- **Default SEO Metadata:**
+  - Default title and template
+  - Default description
+  - Default robots settings (index/follow)
+  - OpenGraph defaults (site_name, default image, type)
+  - Twitter Card defaults (handle, site, card type)
+
+- **Internationalisation:**
+  - Language code
+  - Text direction (ltr/rtl)
+
+- **Blog Configuration:**
+  - Enable/disable blog system
+  - Posts per page (currently: 6)
+  - Post URL permalink pattern
+  - Blog main path (currently: 'blog')
+  - Category path (currently: 'category')
+  - Tag path (currently: 'tag')
+  - Related posts count (currently: 4)
+  - SEO settings per section
+
+- **Analytics:**
+  - Google Analytics ID
+
+- **UI Theme:**
+  - Theme mode (system/light/dark/light:only/dark:only)
+
+**Note:** This file OVERRIDES `astro.config.ts` for deployment settings.
+
+---
+
+### CMS Configuration
+
+**File:** `public/admin/config.yml`
+
+Controls Decap CMS behaviour:
+
+- GitHub repository connection
+- Branch configuration
+- Editorial workflow settings
+- Media folder locations
+- Collection definitions and schemas
+- Custom widget configurations
+
+**Key Settings:**
+
+- Media folder: `src/assets/images/`
+- Public folder reference: `~/assets/images/`
+- Site URL for previews
+- Commit message templates
+
+---
+
+### Custom Styles
+
+**File:** `src/components/CustomStyles.astro`
+
+Contains global style definitions:
+
+- CSS custom properties (CSS variables)
+- Font definitions and preloading
+- Colour theming (primary, secondary, accent)
+- Dark mode styles
+- Neurodiversity-friendly font configurations
+
+**Fonts Defined:**
+
+- Sylexiad Sans Medium (default body/serif)
+- OpenDyslexic3 (dyslexia-friendly)
+- Fast Sans (fast-reading alternative)
+- Together Assessments (brand heading font)
+
+---
+
+## Navigation
+
+Navigation is configured in `src/navigation.ts` with responsive breakpoint support.
+
+### Desktop Navigation
+
+Displayed at `xl:` breakpoint and above (1280px+):
+
+- About
+- Services
+- Fees
+- FAQs
+- Resources (dropdown):
+  - Contact
+  - Self-Help
+  - Local Support
+  - Blog
+- Together (dropdown):
+  - Together ADHD (external link)
+  - Together Autism (external link)
+- Book a Consultation (button in header)
+
+### Tablet Navigation
+
+Displayed between `md:` and `xl:` breakpoints (768px-1279px):
+
+- Assessments (dropdown):
+  - About
+  - Services
+  - Fees
+  - FAQs
+  - Book a Consultation
+- Resources (dropdown):
+  - Contact
+  - Self-Help
+  - Local Support
+  - Blog
+- Together (dropdown):
+  - Together ADHD (external link)
+  - Together Autism (external link)
+
+### Footer Navigation
+
+Three columns of links:
+
+**Pages:**
+
+- Home, Book a Consultation, About, Services, Fees, FAQs, Blog, Self-Help, Local Support, Contact
+
+**Website Policies:**
+
+- Privacy Policy, Cookie Policy, Terms of Service
+
+**Support & Standards:**
+
+- Safeguarding, Accessibility Statement, Data Retention & SAR, Refunds/Cancellations, Complaints
+
+**Footer Note:**
+
+- Copyright with dynamic year
+- ICO Registration (from `site-settings.yaml`)
+- Business information (from `site-settings.yaml`)
+- Email address (from `site-settings.yaml`)
+
+---
+
+## Accessibility Features
+
+### Neurodiversity-Friendly Fonts
+
+The site implements a custom font switcher allowing users to select their preferred reading font:
+
+**Available Fonts:**
+
+1. **Sylexiad Sans Medium** (default) - General neurodiversity-friendly design
+2. **OpenDyslexic3** - Specifically designed for dyslexic readers
+3. **Fast Sans** - Optimised for quick reading and reduced eye strain
+4. **Together Assessments** - Brand font used for headings only
+
+**Implementation:**
+
+- Font switcher dropdown in header
+- User preference saved to localStorage
+- Fonts preloaded for performance
+- Consistent metrics across all fonts (size-adjust)
+
+**Technical Details:**
+
+- Font definitions: `src/components/CustomStyles.astro`
+- Font switcher: `src/components/common/ToggleFont.astro`
+- Font files: `public/fonts/`
+
+### Other Accessibility Features
+
+- Dark mode toggle (system/light/dark)
+- Responsive design with mobile-first approach
+- Semantic HTML structure
+- Alt text required for all images in CMS
+- ARIA labels and accessibility attributes
+- Keyboard navigation support
+- Colour contrast compliance
+- Text resizing support without layout breaking
+
+---
+
+## Sister Sites
+
+The website is part of a network:
+
+- Together ADHD: https://togetheradhd.co.uk
+- Together Autism: https://togetherautism.co.uk
+
+These are linked in the navigation under the "Together" dropdown menu.
+
+---
+
+## Additional Notes
+
+### Content Philosophy
+
+This documentation describes the **structure** of the website (what CAN be configured), not the **content** (what IS currently configured). This separation allows:
+
+- Understanding where to make changes without needing to know current values
+- Maintaining consistency as content evolves
+- Clear documentation for new team members or future reference
+
+### Image Management
+
+- All images uploaded via CMS are stored in `src/assets/images/`
+- Images are automatically optimised during build (multiple sizes, WebP conversion)
+- Editorial Workflow prevents orphaned images (images only committed when content is published)
+- Maximum file sizes enforced by CMS for different image types
+
+### Editorial Workflow
+
+The CMS uses Editorial Workflow with three stages:
+
+1. **Draft** - Initial content creation
+2. **In Review** - Creates Pull Request for review
+3. **Ready** - Approved and ready to publish
+4. **Published** - Merged to main branch, triggers build
+
+This prevents race conditions and ensures quality control before content goes live.
+
+---
+
+**Last Updated:** 2025-10-07
+**Note:** As new features are added or pages are created, this document should be updated to reflect the changes.
