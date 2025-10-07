@@ -1,13 +1,67 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
+import { getEntry } from 'astro:content';
+import Image from '~/components/common/Image.astro';
+import { marked } from 'marked';
+
+// Fetch consultation page content
+const content = await getEntry('consultation_page', 'content');
+if (!content) {
+  throw new Error('Consultation page content not found');
+}
+
+const { title, subheading, image, body, google_calendar_link } = content.data;
+
+// Convert markdown to HTML if body exists
+const htmlContent = body ? marked.parse(body) : null;
 
 const metadata = {
-  title: 'Consultation',
+  title: title,
 };
 ---
 
 <Layout metadata={metadata}>
   <div class="container mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold text-center mb-8 font-heading">Consultation</h1>
+    <!-- Title with font-heading -->
+    <h1 class="text-4xl font-bold text-center mb-8 font-heading">{title}</h1>
+
+    <!-- Optional subheading (H3, centred, without font-heading) -->
+    {subheading && <h3 class="text-2xl text-center mb-8">{subheading}</h3>}
+
+    <!-- Optional image (centred) -->
+    {
+      image && (
+        <div class="flex justify-center mb-8">
+          <Image src={image} alt={title} class="max-w-full h-auto" />
+        </div>
+      )
+    }
+
+    <!-- Optional markdown content -->
+    {htmlContent && <div class="prose prose-lg dark:prose-invert mx-auto max-w-4xl mb-12" set:html={htmlContent} />}
+
+    <!-- Accessible booking section -->
+    <div class="max-w-4xl mx-auto">
+      <!-- Accessibility message with link -->
+      <p class="text-center mb-4 text-gray-700 dark:text-gray-300">
+        If you use a screen reader or prefer a more accessible experience, you can <a
+          href={google_calendar_link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-primary underline hover:no-underline">open the booking calendar in a new tab</a
+        > instead.
+      </p>
+
+      <!-- Google Calendar iframe - forced light mode -->
+      <div class="w-full flex justify-center bg-white rounded-lg shadow-lg p-4">
+        <iframe
+          src={google_calendar_link}
+          title="Book a consultation appointment"
+          class="w-full border-0 rounded"
+          style="min-height: 600px; max-width: 100%; color-scheme: light;"
+          width="100%"
+          height="600"></iframe>
+      </div>
+    </div>
   </div>
 </Layout>

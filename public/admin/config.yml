@@ -241,6 +241,41 @@ collections:
   # FAQS PAGE GROUP
   # ============================================
 
+  # FAQs Page - File Collection
+  - name: 'faqs_page'
+    label: 'FAQs Page'
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: 'top_content'
+        label: 'FAQs Page / Top Content'
+        file: 'src/content/faqs-page/top-content.yaml'
+        fields:
+          - { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' }
+          - {
+              label: 'Sub-heading',
+              name: 'subheading',
+              widget: 'string',
+              required: false,
+              hint: 'Optional sub-heading displayed below the title (H3, centred, without font-heading)',
+            }
+          - {
+              label: 'Image',
+              name: 'image',
+              widget: 'image',
+              required: false,
+              hint: 'Optional image displayed after the sub-heading (centred)',
+              media_library: { config: { max_file_size: 2048000 } },
+            }
+          - {
+              label: 'Content',
+              name: 'body',
+              widget: 'markdown',
+              required: false,
+              hint: 'Optional content displayed before the FAQ items. Supports full markdown formatting.',
+            }
+
   # FAQs - Folder Collection
   - name: 'faqs_page_items'
     label: 'FAQs Page / FAQ Items'
@@ -277,6 +312,41 @@ collections:
   # ============================================
   # SERVICES PAGE GROUP
   # ============================================
+
+  # Services Page - File Collection
+  - name: 'services_page'
+    label: 'Services Page'
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: 'top_content'
+        label: 'Services Page / Top Content'
+        file: 'src/content/services-page/top-content.yaml'
+        fields:
+          - { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' }
+          - {
+              label: 'Sub-heading',
+              name: 'subheading',
+              widget: 'string',
+              required: false,
+              hint: 'Optional sub-heading displayed below the title (H3, centred, without font-heading)',
+            }
+          - {
+              label: 'Image',
+              name: 'image',
+              widget: 'image',
+              required: false,
+              hint: 'Optional image displayed after the sub-heading (centred)',
+              media_library: { config: { max_file_size: 2048000 } },
+            }
+          - {
+              label: 'Content',
+              name: 'body',
+              widget: 'markdown',
+              required: false,
+              hint: 'Optional content displayed before the service items. Supports full markdown formatting.',
+            }
 
   # Services - Folder Collection
   - name: 'services_page_items'
@@ -324,6 +394,52 @@ collections:
           default: true,
           hint: 'Whether this service is visible on the site',
         }
+
+  # ============================================
+  # CONSULTATION PAGE GROUP
+  # ============================================
+
+  # Consultation Page - File Collection
+  - name: 'consultation_page'
+    label: 'Consultation Page'
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: 'content'
+        label: 'Consultation Page'
+        file: 'src/content/consultation-page/content.yaml'
+        fields:
+          - { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' }
+          - {
+              label: 'Sub-heading',
+              name: 'subheading',
+              widget: 'string',
+              required: false,
+              hint: 'Optional sub-heading displayed below the title (H3, centred, without font-heading)',
+            }
+          - {
+              label: 'Image',
+              name: 'image',
+              widget: 'image',
+              required: false,
+              hint: 'Optional image displayed after the sub-heading (centred)',
+              media_library: { config: { max_file_size: 2048000 } },
+            }
+          - {
+              label: 'Content',
+              name: 'body',
+              widget: 'markdown',
+              required: false,
+              hint: 'Optional content displayed before the booking calendar. Supports full markdown formatting.',
+            }
+          - {
+              label: 'Google Calendar Booking Link',
+              name: 'google_calendar_link',
+              widget: 'string',
+              pattern: ['^https://calendar\.google\.com/.+$', 'Must be a valid Google Calendar URL'],
+              hint: 'The full Google Calendar Appointments Schedule link (e.g., https://calendar.google.com/calendar/...)',
+            }
 
   # ============================================
   # TEXT PAGES GROUP

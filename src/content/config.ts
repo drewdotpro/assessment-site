@@ -110,10 +110,44 @@ const textPageCollection = defineCollection({
   }),
 });
 
+const servicesPageTopContentCollection = defineCollection({
+  loader: glob({ pattern: 'top-content.yaml', base: 'src/content/services-page' }),
+  schema: z.object({
+    title: z.string(),
+    subheading: z.string().optional(),
+    image: z.string().optional(),
+    body: z.string().optional(),
+  }),
+});
+
+const faqsPageTopContentCollection = defineCollection({
+  loader: glob({ pattern: 'top-content.yaml', base: 'src/content/faqs-page' }),
+  schema: z.object({
+    title: z.string(),
+    subheading: z.string().optional(),
+    image: z.string().optional(),
+    body: z.string().optional(),
+  }),
+});
+
+const consultationPageCollection = defineCollection({
+  loader: glob({ pattern: 'content.yaml', base: 'src/content/consultation-page' }),
+  schema: z.object({
+    title: z.string(),
+    subheading: z.string().optional(),
+    image: z.string().optional(),
+    body: z.string().optional(),
+    google_calendar_link: z.string().url(),
+  }),
+});
+
 export const collections = {
   post: postCollection,
   faqs_page_items: faqCollection,
   services_page_items: serviceCollection,
   site_settings_trust_badges: trustBadgeCollection,
   text_pages: textPageCollection,
+  services_page_top_content: servicesPageTopContentCollection,
+  faqs_page_top_content: faqsPageTopContentCollection,
+  consultation_page: consultationPageCollection,
 };
