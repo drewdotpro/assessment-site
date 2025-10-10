@@ -84,6 +84,7 @@ npm run preview      # Preview built site locally
 **Automated Pre-Commit Checks:**
 
 The repository uses a git pre-commit hook that automatically enforces code quality before every commit:
+
 - `npm run fix` - Auto-fixes all ESLint and Prettier issues
 - `npm run check:astro` - Validates TypeScript types in Astro files
 - Commits are **blocked** if unfixable linting issues or type errors exist

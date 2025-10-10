@@ -3,7 +3,23 @@
   command = "npm run build"
 [build.processing.html]
   pretty_urls = false
+
+# Specific rules FIRST (first match wins)
+
+# Hashed assets (JS, CSS, optimised images) - cache forever
 [[headers]]
   for = "/_astro/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Fonts - cache forever (font files never change)
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# General rule LAST - HTML and everything else
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
