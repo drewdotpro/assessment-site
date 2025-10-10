@@ -75,7 +75,32 @@ import { UI } from 'astrowind:config';
       localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
     });
 
+    // Preload fonts when menu is opened
+    let fontsPreloaded = false;
+    function preloadFonts() {
+      if (fontsPreloaded) return;
+      fontsPreloaded = true;
+
+      const fontsToPreload = [
+        { href: '/fonts/OpenDyslexic3-Regular.woff2', type: 'font/woff2' },
+        { href: '/fonts/SylexiadSansMedium.woff2', type: 'font/woff2' },
+      ];
+
+      fontsToPreload.forEach(({ href, type }) => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'font';
+        link.type = type;
+        link.href = href;
+        link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+      });
+    }
+
     attachEvent('[data-font-toggle-button]', 'click', function (_, elem) {
+      // Preload other fonts when menu is first opened
+      preloadFonts();
+
       // Remove force-hidden when opening dropdown
       const dropdown = elem.closest('.dropdown');
       const menu = dropdown?.querySelector('.font-dropdown-menu');
@@ -86,6 +111,9 @@ import { UI } from 'astrowind:config';
 
     // Remove force-hidden on hover to restore normal hover behaviour
     attachEvent('.dropdown:has([data-font-toggle-button])', 'mouseenter', function (_, elem) {
+      // Preload other fonts when menu is hovered
+      preloadFonts();
+
       const menu = elem.querySelector('.font-dropdown-menu');
       if (menu) {
         menu.classList.remove('force-hidden');

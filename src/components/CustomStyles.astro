@@ -69,6 +69,15 @@
     size-adjust: 100%;
   }
 
+  /* Enable OpenType contextual alternates (calt) feature globally
+     This is needed for Fast Sans letter highlighting to work.
+     Safari enables this by default, but Chrome requires explicit activation.
+     This setting only affects fonts that have the calt feature. */
+  body {
+    font-feature-settings: 'calt';
+    font-variant-ligatures: contextual;
+  }
+
   :root {
     --aw-font-sans: 'Sylexiad Sans Medium', ui-sans-serif, system-ui, sans-serif;
     --aw-font-serif: 'Sylexiad Sans Medium', ui-serif, Georgia, serif;

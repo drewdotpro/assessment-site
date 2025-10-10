@@ -79,17 +79,36 @@ npm run preview      # Preview built site locally
 
 **Note**: The `dev` command runs `concurrently "npx decap-server" "astro dev"` to enable local CMS editing at http://localhost:4321/admin/
 
-### Code Quality
+### Code Quality & Validation
+
+**Automated Pre-Commit Checks:**
+
+The repository uses a git pre-commit hook that automatically enforces code quality before every commit:
+- `npm run fix` - Auto-fixes all ESLint and Prettier issues
+- `npm run check:astro` - Validates TypeScript types in Astro files
+- Commits are **blocked** if unfixable linting issues or type errors exist
+- Can bypass with `git commit --no-verify` (emergencies only)
+
+**Manual Commands:**
 
 ```bash
-npm run check        # Run all checks (astro, eslint, prettier)
-npm run fix          # Auto-fix ESLint and Prettier issues
-npm run check:astro  # Check Astro files
-npm run check:eslint # Check ESLint rules
-npm run check:prettier # Check Prettier formatting
+npm run precommit       # Run pre-commit validation manually (fix + type check)
+npm run check           # Read-only validation (for CI) - checks everything without modifying
+npm run fix             # Auto-fix ESLint and Prettier issues
+npm run check:astro     # Type-check Astro files only
+npm run check:eslint    # Check ESLint rules only
+npm run check:prettier  # Check Prettier formatting only
 ```
 
-**IMPORTANT**: Always run `npm run fix` after making changes to automatically fix linting and formatting issues before committing.
+**Development Workflow:**
+
+1. Write code as normal
+2. Commit when ready - pre-commit hook runs automatically
+3. Hook auto-fixes formatting and validates types
+4. Commit proceeds if all checks pass, blocked if issues remain
+5. Review any auto-fixes in `git diff` if commit was blocked
+
+**For CI/CD:** Use `npm run check` for comprehensive read-only validation without modifying files.
 
 ## Development Tools
 
