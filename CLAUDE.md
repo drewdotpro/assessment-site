@@ -116,6 +116,14 @@ Playwright is available via MCP for visual debugging and verification.
 
 ---
 
+## Port Cleanup
+
+Dev servers automatically free ports 4321 and 8081 before starting via `predev:*` hooks.
+
+**If you get EADDRINUSE errors**: `/stop` or `npx kill-port 4321 8081`
+
+---
+
 ## Working with Content
 
 ### Adding/Editing Content

@@ -12,20 +12,10 @@ Clean up any existing dev server processes and start a fresh instance.
 
 Check for running background bash shells and kill them using KillShell tool.
 
-### 2. Kill processes on ports 8081 and 4321
-
-Check and kill port 8081 (Decap CMS proxy server):
+### 2. Free up ports
 
 ```bash
-netstat -ano | findstr :8081
-taskkill //F //PID <PID>
-```
-
-Check and kill port 4321 (Astro dev server):
-
-```bash
-netstat -ano | findstr :4321
-taskkill //F //PID <PID>
+npx kill-port 4321 8081
 ```
 
 ### 3. Start the dev server
@@ -44,9 +34,7 @@ Development server started:
 - CMS: http://localhost:4321/admin/
 ```
 
-## Important Notes
+## Notes
 
-- Don't add waits or timeouts between killing and starting
-- Just kill the processes then immediately start the server
-- Use `//F` (not `-F`) for taskkill on Windows
-- Use `findstr` (not `grep`) for Windows port checking
+- The `predev:*` hooks automatically kill ports before starting
+- Use this command to force a fresh start
