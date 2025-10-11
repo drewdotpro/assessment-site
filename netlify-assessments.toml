@@ -1,0 +1,10 @@
+# netlify-assessments.toml
+[build]
+  command = "npm run build:assessments"
+  publish = "dist"
+
+[build.environment]
+  SITE_ID = "assessments"
+  ASSESSMENTS_URL = "https://togetherassessments.co.uk"
+  ADHD_URL = "https://togetheradhd.co.uk"
+  AUTISM_URL = "https://togetherautism.co.uk"

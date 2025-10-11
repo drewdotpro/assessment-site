@@ -1,0 +1,636 @@
+/**
+ * CMS Configuration Template
+ * Single source of truth for all CMS collections
+ * Generates site-specific config at BUILD TIME
+ */
+
+export default function generateCMSConfig(siteId, siteUrls) {
+  const siteConfig = {
+    assessments: {
+      name: 'Together Assessments',
+      mediaFolder: 'src/assets/images/assessments',
+      publicFolder: '~/assets/images/assessments',
+    },
+    adhd: {
+      name: 'Together ADHD',
+      mediaFolder: 'src/assets/images/adhd',
+      publicFolder: '~/assets/images/adhd',
+    },
+    autism: {
+      name: 'Together Autism',
+      mediaFolder: 'src/assets/images/autism',
+      publicFolder: '~/assets/images/autism',
+    },
+  }[siteId];
+
+  return {
+    backend: {
+      name: 'github',
+      repo: 'drewdotpro/assessment-site',
+      branch: 'main',
+      commit_messages: {
+        create: `feat(content/${siteId}): Create {{collection}} "{{slug}}"`,
+        update: `feat(content/${siteId}): Update {{collection}} "{{slug}}"`,
+        delete: `feat(content/${siteId}): Delete {{collection}} "{{slug}}"`,
+        uploadMedia: `feat(media/${siteId}): Upload "{{path}}"`,
+        deleteMedia: `feat(media/${siteId}): Delete "{{path}}"`,
+      },
+    },
+    publish_mode: 'editorial_workflow',
+    local_backend: true,
+    media_folder: siteConfig.mediaFolder,
+    public_folder: siteConfig.publicFolder,
+    site_url: siteUrls[siteId],
+    display_url: siteUrls[siteId],
+
+    // ⭐ SINGLE collection definition - change once, applies to all sites
+    collections: [
+      // Site Settings
+      {
+        name: 'site_settings',
+        label: 'Site Settings',
+        delete: false,
+        editor: { preview: false },
+        files: [
+          {
+            name: 'general',
+            label: 'General Settings',
+            file: `src/content/${siteId}/site-settings.yaml`,
+            fields: [
+              {
+                label: 'Site Information',
+                name: 'site',
+                widget: 'object',
+                fields: [
+                  { label: 'Site Name', name: 'name', widget: 'string' },
+                  { label: 'Site Email', name: 'email', widget: 'string' },
+                  { label: 'ICO Registration', name: 'ico_registration', widget: 'string' },
+                ],
+              },
+              {
+                label: 'Logo Settings',
+                name: 'logo',
+                widget: 'object',
+                fields: [
+                  { label: 'Light Mode Logo', name: 'light', widget: 'image' },
+                  { label: 'Dark Mode Logo', name: 'dark', widget: 'image' },
+                  { label: 'Logo Alt Text', name: 'alt', widget: 'string' },
+                ],
+              },
+              {
+                label: 'Footer Settings',
+                name: 'footer',
+                widget: 'object',
+                fields: [
+                  { label: 'Footer Title', name: 'title', widget: 'string' },
+                  { label: 'Business Info', name: 'business_info', widget: 'text' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+
+      // Home Page
+      {
+        name: 'home_page',
+        label: 'Home Page',
+        delete: false,
+        editor: { preview: false },
+        files: [
+          {
+            name: 'content',
+            label: 'Home Page Content',
+            file: `src/content/${siteId}/home-page/content.yaml`,
+            fields: [
+              // Hero Section
+              {
+                label: 'Hero Section',
+                name: 'hero',
+                widget: 'object',
+                fields: [
+                  { label: 'Hero Image', name: 'image', widget: 'image' },
+                  { label: 'Main Text', name: 'text', widget: 'string' },
+                  { label: 'Title', name: 'title', widget: 'string' },
+                  { label: 'Subtitle', name: 'subtitle', widget: 'string' },
+                ],
+              },
+              // Call to Actions
+              {
+                label: 'Call to Actions',
+                name: 'ctas',
+                widget: 'object',
+                fields: [
+                  {
+                    label: 'Primary CTA',
+                    name: 'primary',
+                    widget: 'object',
+                    fields: [
+                      { label: 'Text', name: 'text', widget: 'string' },
+                      { label: 'Link', name: 'link', widget: 'string' },
+                      { label: 'Alt Text', name: 'alt', widget: 'string' },
+                    ],
+                  },
+                  {
+                    label: 'Secondary CTA',
+                    name: 'secondary',
+                    widget: 'object',
+                    fields: [
+                      { label: 'Text', name: 'text', widget: 'string' },
+                      { label: 'Link', name: 'link', widget: 'string' },
+                      { label: 'Alt Text', name: 'alt', widget: 'string' },
+                    ],
+                  },
+                  {
+                    label: 'Deep CTA',
+                    name: 'deep',
+                    widget: 'object',
+                    fields: [
+                      { label: 'Lead Text', name: 'lead_text', widget: 'text' },
+                      { label: 'Text', name: 'text', widget: 'string' },
+                      { label: 'Link', name: 'link', widget: 'string' },
+                      { label: 'Alt Text', name: 'alt', widget: 'string' },
+                    ],
+                  },
+                ],
+              },
+              // Section Titles
+              {
+                label: 'Section Titles',
+                name: 'sections',
+                widget: 'object',
+                fields: [
+                  { label: 'How It Works Title', name: 'how_it_works', widget: 'string' },
+                  { label: 'Services Title', name: 'services', widget: 'string' },
+                  { label: 'Blog Title', name: 'blog', widget: 'string' },
+                  { label: 'Blog Subtitle', name: 'blog_subtitle', widget: 'string' },
+                  { label: 'FAQs Title', name: 'faqs', widget: 'string' },
+                ],
+              },
+              // How It Works Steps
+              {
+                label: 'How It Works Steps',
+                name: 'steps',
+                widget: 'list',
+                max: 3,
+                fields: [{ label: 'Step Text', name: 'text', widget: 'string' }],
+              },
+            ],
+          },
+        ],
+      },
+
+      // Trust Badges
+      {
+        name: 'site_settings_trust_badges',
+        label: 'Site Settings / Trust Badges',
+        label_singular: 'Trust Badge',
+        folder: `src/content/${siteId}/site-settings/trust-badges`,
+        create: true,
+        delete: true,
+        slug: '{{order}}-{{slug}}',
+        identifier_field: 'name',
+        sortable_fields: ['order', 'name'],
+        summary: '{{order}}. {{name}}',
+        editor: { preview: false },
+        fields: [
+          {
+            label: 'Organisation Name',
+            name: 'name',
+            widget: 'string',
+            hint: 'Name of the accrediting organisation (e.g., HCPC, GMC)',
+          },
+          {
+            label: 'Display Text',
+            name: 'display_text',
+            widget: 'string',
+            hint: 'Text to display next to the logo',
+          },
+          {
+            label: 'Light Mode Logo',
+            name: 'logo_light',
+            widget: 'image',
+            hint: 'Logo for light mode display',
+            media_library: { config: { max_file_size: 512000 } },
+          },
+          {
+            label: 'Dark Mode Logo',
+            name: 'logo_dark',
+            widget: 'image',
+            hint: 'Logo for dark mode display',
+            media_library: { config: { max_file_size: 512000 } },
+          },
+          { label: 'Alt Text', name: 'alt', widget: 'string', hint: 'Alternative text for accessibility' },
+          {
+            label: 'Display Order',
+            name: 'order',
+            widget: 'number',
+            default: 1,
+            value_type: 'int',
+            min: 1,
+            hint: 'Order in which this badge appears (1 = first)',
+          },
+          {
+            label: 'Published',
+            name: 'published',
+            widget: 'boolean',
+            default: true,
+            hint: 'Whether this badge is visible on the site',
+          },
+        ],
+      },
+
+      // FAQs Page - Top Content
+      {
+        name: 'faqs_page',
+        label: 'FAQs Page',
+        delete: false,
+        editor: { preview: false },
+        files: [
+          {
+            name: 'top_content',
+            label: 'FAQs Page / Top Content',
+            file: `src/content/${siteId}/faqs-page/top-content.yaml`,
+            fields: [
+              { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' },
+              {
+                label: 'Sub-heading',
+                name: 'subheading',
+                widget: 'string',
+                required: false,
+                hint: 'Optional sub-heading displayed below the title',
+              },
+              {
+                label: 'Image',
+                name: 'image',
+                widget: 'image',
+                required: false,
+                hint: 'Optional image displayed after the sub-heading',
+                media_library: { config: { max_file_size: 2048000 } },
+              },
+              {
+                label: 'Content',
+                name: 'body',
+                widget: 'markdown',
+                required: false,
+                hint: 'Optional content displayed before the FAQ items. Supports full markdown formatting.',
+              },
+            ],
+          },
+        ],
+      },
+
+      // FAQs - Items
+      {
+        name: 'faqs_page_items',
+        label: 'FAQs Page / FAQ Items',
+        label_singular: 'FAQ',
+        folder: `src/content/${siteId}/faqs-page/faq-items`,
+        create: true,
+        delete: true,
+        slug: '{{order}}-{{slug}}',
+        identifier_field: 'question',
+        sortable_fields: ['order', 'question'],
+        summary: '{{order}}. {{question}}',
+        editor: { preview: false },
+        fields: [
+          { label: 'Question', name: 'question', widget: 'string', hint: 'The question to be displayed' },
+          { label: 'Answer', name: 'answer', widget: 'text', hint: 'The answer to the question' },
+          {
+            label: 'Display Order',
+            name: 'order',
+            widget: 'number',
+            default: 1,
+            value_type: 'int',
+            min: 1,
+            hint: 'Order in which this FAQ appears (1 = first)',
+          },
+          {
+            label: 'Published',
+            name: 'published',
+            widget: 'boolean',
+            default: true,
+            hint: 'Whether this FAQ is visible on the site',
+          },
+        ],
+      },
+
+      // Services Page - Top Content
+      {
+        name: 'services_page',
+        label: 'Services Page',
+        delete: false,
+        editor: { preview: false },
+        files: [
+          {
+            name: 'top_content',
+            label: 'Services Page / Top Content',
+            file: `src/content/${siteId}/services-page/top-content.yaml`,
+            fields: [
+              { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' },
+              {
+                label: 'Sub-heading',
+                name: 'subheading',
+                widget: 'string',
+                required: false,
+                hint: 'Optional sub-heading displayed below the title',
+              },
+              {
+                label: 'Image',
+                name: 'image',
+                widget: 'image',
+                required: false,
+                hint: 'Optional image displayed after the sub-heading',
+                media_library: { config: { max_file_size: 2048000 } },
+              },
+              {
+                label: 'Content',
+                name: 'body',
+                widget: 'markdown',
+                required: false,
+                hint: 'Optional content displayed before the service items. Supports full markdown formatting.',
+              },
+            ],
+          },
+        ],
+      },
+
+      // Services - Items
+      {
+        name: 'services_page_items',
+        label: 'Services Page / Service Items',
+        label_singular: 'Service',
+        folder: `src/content/${siteId}/services-page/services`,
+        create: true,
+        delete: true,
+        slug: '{{order}}-{{slug}}',
+        identifier_field: 'title',
+        sortable_fields: ['order', 'title'],
+        summary: '{{order}}. {{title}}',
+        editor: { preview: false },
+        fields: [
+          { label: 'Service Title', name: 'title', widget: 'string', hint: 'The name of the service' },
+          { label: 'Description', name: 'description', widget: 'text', hint: 'Brief description of the service' },
+          {
+            label: 'Anchor ID',
+            name: 'anchor',
+            widget: 'string',
+            pattern: ['^[a-z0-9-]+$', 'Must be lowercase letters, numbers, and hyphens only'],
+            hint: 'URL anchor for linking to this service on the services page (e.g., "adhd-adults")',
+          },
+          {
+            label: 'Display Order',
+            name: 'order',
+            widget: 'number',
+            default: 1,
+            value_type: 'int',
+            min: 1,
+            hint: 'Order in which this service appears (1 = first)',
+          },
+          {
+            label: 'Icon',
+            name: 'icon',
+            widget: 'tabler-icon-picker',
+            required: false,
+            hint: 'Choose an icon for the service card from 5,993 Tabler icons',
+          },
+          {
+            label: 'Published',
+            name: 'published',
+            widget: 'boolean',
+            default: true,
+            hint: 'Whether this service is visible on the site',
+          },
+        ],
+      },
+
+      // Consultation Page
+      {
+        name: 'consultation_page',
+        label: 'Consultation Page',
+        delete: false,
+        editor: { preview: false },
+        files: [
+          {
+            name: 'content',
+            label: 'Consultation Page',
+            file: `src/content/${siteId}/consultation-page/content.yaml`,
+            fields: [
+              { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' },
+              {
+                label: 'Sub-heading',
+                name: 'subheading',
+                widget: 'string',
+                required: false,
+                hint: 'Optional sub-heading displayed below the title',
+              },
+              {
+                label: 'Image',
+                name: 'image',
+                widget: 'image',
+                required: false,
+                hint: 'Optional image displayed after the sub-heading',
+                media_library: { config: { max_file_size: 2048000 } },
+              },
+              {
+                label: 'Content',
+                name: 'body',
+                widget: 'markdown',
+                required: false,
+                hint: 'Optional content displayed before the booking calendar. Supports full markdown formatting.',
+              },
+              {
+                label: 'Google Calendar Booking Link',
+                name: 'google_calendar_link',
+                widget: 'string',
+                pattern: ['^https://calendar\\.google\\.com/.+$', 'Must be a valid Google Calendar URL'],
+                hint: 'The full Google Calendar Appointments Schedule link',
+              },
+            ],
+          },
+        ],
+      },
+
+      // Contact Page
+      {
+        name: 'contact_page',
+        label: 'Contact Page',
+        delete: false,
+        editor: { preview: false },
+        files: [
+          {
+            name: 'content',
+            label: 'Contact Page',
+            file: `src/content/${siteId}/contact-page/content.yaml`,
+            fields: [
+              { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' },
+              {
+                label: 'Sub-heading',
+                name: 'subheading',
+                widget: 'string',
+                required: false,
+                hint: 'Optional sub-heading displayed below the title',
+              },
+              {
+                label: 'Image',
+                name: 'image',
+                widget: 'image',
+                required: false,
+                hint: 'Optional image displayed after the sub-heading',
+                media_library: { config: { max_file_size: 2048000 } },
+              },
+              {
+                label: 'Content',
+                name: 'body',
+                widget: 'markdown',
+                required: false,
+                hint: 'Optional content displayed before the contact button. Supports full markdown formatting.',
+              },
+            ],
+          },
+        ],
+      },
+
+      // Text Pages
+      {
+        name: 'text_pages',
+        label: 'Text Pages',
+        label_singular: 'Text Page',
+        folder: `src/content/${siteId}/text-pages`,
+        create: false,
+        delete: false,
+        slug: '{{slug}}',
+        identifier_field: 'title',
+        sortable_fields: ['title'],
+        summary: '{{title}}',
+        editor: { preview: false },
+        fields: [
+          { label: 'Slug', name: 'slug', widget: 'hidden' },
+          { label: 'Title Heading', name: 'title', widget: 'string', hint: 'The H1 heading displayed on the page' },
+          {
+            label: 'Sub-heading',
+            name: 'subheading',
+            widget: 'string',
+            required: false,
+            hint: 'Optional sub-heading displayed below the title',
+          },
+          {
+            label: 'Image',
+            name: 'image',
+            widget: 'image',
+            required: false,
+            hint: 'Optional image displayed after the sub-heading',
+            media_library: { config: { max_file_size: 2048000 } },
+          },
+          {
+            label: 'Content',
+            name: 'body',
+            widget: 'markdown',
+            hint: 'The main content of the page. Supports full markdown formatting.',
+          },
+        ],
+      },
+
+      // Blog Posts (site-specific)
+      {
+        name: 'post',
+        label: 'Blog Posts',
+        label_singular: 'Blog Post',
+        folder: `src/content/${siteId}/blog-posts`,
+        create: true,
+        delete: true,
+        slug: '{{slug}}',
+        extension: 'md',
+        format: 'frontmatter',
+        preview_path: '/{{slug}}',
+        sortable_fields: ['publishDate', 'title'],
+        view_filters: [
+          { label: 'Published', field: 'draft', pattern: false },
+          { label: 'Drafts', field: 'draft', pattern: true },
+        ],
+        fields: [
+          { label: 'Title', name: 'title', widget: 'string', hint: 'The main title of your blog post' },
+          {
+            label: 'Excerpt',
+            name: 'excerpt',
+            widget: 'text',
+            hint: 'A brief summary that appears in blog lists and social shares',
+            pattern: ['.{50,160}', 'Must be between 50 and 160 characters'],
+          },
+          {
+            label: 'Category',
+            name: 'category',
+            widget: 'select',
+            options: ['Tutorials', 'News', 'Updates', 'Resources'],
+            hint: 'Main category for this post',
+          },
+          {
+            label: 'Tags',
+            name: 'tags',
+            widget: 'list',
+            default: [],
+            hint: 'Add tags to help readers find related content',
+            min: 1,
+            max: 5,
+          },
+          {
+            label: 'Featured Image',
+            name: 'image',
+            widget: 'image',
+            required: false,
+            hint: 'Main image for the post. Will be automatically optimised for different screen sizes.',
+            media_library: { config: { max_file_size: 5120000 } },
+          },
+          {
+            label: 'Publish Date',
+            name: 'publishDate',
+            widget: 'datetime',
+            date_format: 'DD/MM/YYYY',
+            time_format: false,
+            hint: 'When this post should be published',
+          },
+          { label: 'Author', name: 'author', widget: 'string', default: 'Team', hint: 'Author name to display' },
+          {
+            label: 'Draft',
+            name: 'draft',
+            widget: 'boolean',
+            default: false,
+            hint: 'Set to true to hide from production site',
+          },
+          {
+            label: 'Content',
+            name: 'body',
+            widget: 'markdown',
+            hint: 'The main content of your blog post. Supports full markdown.',
+            editor_components: ['image', 'code-block'],
+          },
+          {
+            label: 'SEO Metadata',
+            name: 'metadata',
+            widget: 'object',
+            collapsed: true,
+            required: false,
+            hint: 'Optional SEO settings to override defaults',
+            fields: [
+              {
+                label: 'Canonical URL',
+                name: 'canonical',
+                widget: 'string',
+                required: false,
+                pattern: ['^https?://.+$', 'Must be a valid URL'],
+                hint: 'Use if this content is published elsewhere',
+              },
+              {
+                label: 'No Index',
+                name: 'noindex',
+                widget: 'boolean',
+                required: false,
+                hint: 'Prevent search engines from indexing this page',
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}

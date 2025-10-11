@@ -1,0 +1,13 @@
+site:
+  name: Together Autism
+  email: info@togetherautism.co.uk
+  ico_registration: '00010615323'
+
+logo:
+  light: ~/assets/images/autism/logo-light.svg
+  dark: ~/assets/images/autism/logo-dark.svg
+  alt: Together Autism Logo
+
+footer:
+  title: Together Autism
+  business_info: Sole trader, trading as Together Autism. North Lincolnshire and surrounding areas.

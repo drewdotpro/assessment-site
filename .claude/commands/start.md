@@ -31,7 +31,7 @@ taskkill //F //PID <PID>
 ### 3. Start the dev server
 
 ```bash
-npm run dev
+npm run dev:assessments
 ```
 
 Run in background with timeout 600000ms (10 minutes).

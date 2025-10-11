@@ -8,8 +8,14 @@ import YAML from 'yaml';
 import fs from 'fs';
 import path from 'path';
 
+// Get SITE_ID from environment
+const SITE_ID = process.env.SITE_ID;
+if (!SITE_ID) {
+  throw new Error('SITE_ID environment variable is required');
+}
+
 // Load site settings for email and site name
-const settingsPath = path.join(process.cwd(), 'src/content/site-settings.yaml');
+const settingsPath = path.join(process.cwd(), `src/content/${SITE_ID}/site-settings.yaml`);
 const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
 
 // Fetch contact page content

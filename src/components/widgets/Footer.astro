@@ -5,8 +5,14 @@ import YAML from 'yaml';
 import fs from 'fs';
 import path from 'path';
 
-// Load site settings
-const settingsPath = path.join(process.cwd(), 'src/content/site-settings.yaml');
+// Get SITE_ID from environment
+const SITE_ID = process.env.SITE_ID;
+if (!SITE_ID) {
+  throw new Error('SITE_ID environment variable is required');
+}
+
+// Load site-specific settings
+const settingsPath = path.join(process.cwd(), `src/content/${SITE_ID}/site-settings.yaml`);
 const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
 
 interface Link {

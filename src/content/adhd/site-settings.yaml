@@ -1,0 +1,13 @@
+site:
+  name: Together ADHD
+  email: info@togetheradhd.co.uk
+  ico_registration: '00010615323'
+
+logo:
+  light: ~/assets/images/adhd/logo-light.svg
+  dark: ~/assets/images/adhd/logo-dark.svg
+  alt: Together ADHD Logo
+
+footer:
+  title: Together ADHD
+  business_info: Sole trader, trading as Together ADHD. North Lincolnshire and surrounding areas.

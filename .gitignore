@@ -37,3 +37,6 @@ pnpm-lock.yaml
 temp/
 /decap-cmd-docs/
 /.playwright-mcp/
+
+# Windows reserved device names
+nul

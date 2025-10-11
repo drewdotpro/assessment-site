@@ -1,123 +1,110 @@
 import { getPermalink, getBlogPermalink } from './utils/permalinks';
+import YAML from 'yaml';
+import fs from 'fs';
+import path from 'path';
 
-// Desktop menu links (shows at xl: breakpoint and above)
+// Get SITE_ID from environment
+const SITE_ID = process.env.SITE_ID;
+if (!SITE_ID) {
+  throw new Error('SITE_ID environment variable is required');
+}
+
+// Load site settings using direct YAML reading
+const settingsPath = path.join(process.cwd(), `src/content/${SITE_ID}/site-settings.yaml`);
+const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
+
+// Get site URLs from environment
+const getSiteUrls = () => {
+  const urls = {
+    assessments: process.env.ASSESSMENTS_URL,
+    adhd: process.env.ADHD_URL,
+    autism: process.env.AUTISM_URL,
+  };
+
+  if (!urls.assessments || !urls.adhd || !urls.autism) {
+    throw new Error('All site URLs must be set: ASSESSMENTS_URL, ADHD_URL, AUTISM_URL');
+  }
+
+  return urls;
+};
+
+// Get site config
+const SITE_CONFIG = {
+  assessments: { name: 'Together Assessments' },
+  adhd: { name: 'Together ADHD' },
+  autism: { name: 'Together Autism' },
+};
+
+// Get OTHER sites (for cross-site links in menu)
+const getOtherSites = () => {
+  const urls = getSiteUrls();
+  const allSites = [
+    { id: 'assessments', name: SITE_CONFIG.assessments.name, url: urls.assessments },
+    { id: 'adhd', name: SITE_CONFIG.adhd.name, url: urls.adhd },
+    { id: 'autism', name: SITE_CONFIG.autism.name, url: urls.autism },
+  ];
+
+  // Return all sites EXCEPT current one
+  return allSites.filter((site) => site.id !== SITE_ID);
+};
+
+const otherSites = getOtherSites();
+
+// Desktop menu links
 const desktopLinks = [
-  {
-    text: 'About',
-    href: getPermalink('/about'),
-  },
-  {
-    text: 'Services',
-    href: getPermalink('/services'),
-  },
-  {
-    text: 'Fees',
-    href: getPermalink('/fees'),
-  },
-  {
-    text: 'FAQs',
-    href: getPermalink('/faq'),
-  },
+  { text: 'About', href: getPermalink('/about') },
+  { text: 'Services', href: getPermalink('/services') },
+  { text: 'Fees', href: getPermalink('/fees') },
+  { text: 'FAQs', href: getPermalink('/faq') },
   {
     text: 'Resources',
     links: [
-      {
-        text: 'Contact',
-        href: getPermalink('/contact'),
-      },
-      {
-        text: 'Self-Help',
-        href: getPermalink('/self-help'),
-      },
-      {
-        text: 'Local Support',
-        href: getPermalink('/local-support'),
-      },
-      {
-        text: 'Blog',
-        href: getBlogPermalink(),
-      },
+      { text: 'Contact', href: getPermalink('/contact') },
+      { text: 'Self-Help', href: getPermalink('/self-help') },
+      { text: 'Local Support', href: getPermalink('/local-support') },
+      { text: 'Blog', href: getBlogPermalink() },
     ],
   },
   {
     text: 'Together',
-    links: [
-      {
-        text: 'Together ADHD',
-        href: 'https://togetheradhd.co.uk',
-        target: '_blank',
-      },
-      {
-        text: 'Together Autism',
-        href: 'https://togetherautism.co.uk',
-        target: '_blank',
-      },
-    ],
+    links: otherSites.map((site) => ({
+      text: site.name,
+      href: site.url,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    })),
   },
 ];
 
-// Tablet menu links (shows between md: and xl: breakpoints)
+// Tablet menu links
 const tabletLinks = [
   {
     text: 'Assessments',
     links: [
-      {
-        text: 'About',
-        href: getPermalink('/about'),
-      },
-      {
-        text: 'Services',
-        href: getPermalink('/services'),
-      },
-      {
-        text: 'Fees',
-        href: getPermalink('/fees'),
-      },
-      {
-        text: 'FAQs',
-        href: getPermalink('/faq'),
-      },
-      {
-        text: 'Book a Consultation',
-        href: getPermalink('/consultation'),
-      },
+      { text: 'About', href: getPermalink('/about') },
+      { text: 'Services', href: getPermalink('/services') },
+      { text: 'Fees', href: getPermalink('/fees') },
+      { text: 'FAQs', href: getPermalink('/faq') },
+      { text: 'Book a Consultation', href: getPermalink('/consultation') },
     ],
   },
   {
     text: 'Resources',
     links: [
-      {
-        text: 'Contact',
-        href: getPermalink('/contact'),
-      },
-      {
-        text: 'Self-Help',
-        href: getPermalink('/self-help'),
-      },
-      {
-        text: 'Local Support',
-        href: getPermalink('/local-support'),
-      },
-      {
-        text: 'Blog',
-        href: getBlogPermalink(),
-      },
+      { text: 'Contact', href: getPermalink('/contact') },
+      { text: 'Self-Help', href: getPermalink('/self-help') },
+      { text: 'Local Support', href: getPermalink('/local-support') },
+      { text: 'Blog', href: getBlogPermalink() },
     ],
   },
   {
     text: 'Together',
-    links: [
-      {
-        text: 'Together ADHD',
-        href: 'https://togetheradhd.co.uk',
-        target: '_blank',
-      },
-      {
-        text: 'Together Autism',
-        href: 'https://togetherautism.co.uk',
-        target: '_blank',
-      },
-    ],
+    links: otherSites.map((site) => ({
+      text: site.name,
+      href: site.url,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+    })),
   },
 ];
 
@@ -126,14 +113,6 @@ export const headerData = {
   tabletLinks: tabletLinks,
   actions: [{ text: 'Book a Consultation', href: getPermalink('/consultation') }],
 };
-
-import YAML from 'yaml';
-import fs from 'fs';
-import path from 'path';
-
-// Load site settings for footer
-const settingsPath = path.join(process.cwd(), 'src/content/site-settings.yaml');
-const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
 
 export const footerData = {
   links: [
@@ -173,7 +152,7 @@ export const footerData = {
     },
   ],
   secondaryLinks: [],
-  socialLinks: [],
+  socialLinks: [], // No social links per client request
   footNote: `
     <div class="text-sm">
       <p>Copyright © ${settings.site.name} ${new Date().getFullYear()}. ICO Registration: ${settings.site.ico_registration}</p>

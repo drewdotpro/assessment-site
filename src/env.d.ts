@@ -3,3 +3,14 @@
 /// <reference types="astro/client" />
 /// <reference types="vite/client" />
 /// <reference types="../vendor/integration/types.d.ts" />
+
+interface ImportMetaEnv {
+  readonly SITE_ID: 'assessments' | 'adhd' | 'autism';
+  readonly ASSESSMENTS_URL: string;
+  readonly ADHD_URL: string;
+  readonly AUTISM_URL: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

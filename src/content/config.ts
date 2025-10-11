@@ -1,23 +1,26 @@
 import { z, defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+// Get SITE_ID - build fails if not set
+const SITE_ID = process.env.SITE_ID;
+if (!SITE_ID) {
+  throw new Error('SITE_ID environment variable is required');
+}
+
+// Metadata schema (reused)
 const metadataDefinition = () =>
   z
     .object({
       title: z.string().optional(),
       ignoreTitleTemplate: z.boolean().optional(),
-
       canonical: z.string().url().optional(),
-
       robots: z
         .object({
           index: z.boolean().optional(),
           follow: z.boolean().optional(),
         })
         .optional(),
-
       description: z.string().optional(),
-
       openGraph: z
         .object({
           url: z.string().optional(),
@@ -35,7 +38,6 @@ const metadataDefinition = () =>
           type: z.string().optional(),
         })
         .optional(),
-
       twitter: z
         .object({
           handle: z.string().optional(),
@@ -46,27 +48,26 @@ const metadataDefinition = () =>
     })
     .optional();
 
+// Blog posts (site-specific)
 const postCollection = defineCollection({
-  loader: glob({ pattern: ['*.md', '*.mdx'], base: 'src/data/post' }),
+  loader: glob({ pattern: ['*.md', '*.mdx'], base: `src/content/${SITE_ID}/blog-posts` }),
   schema: z.object({
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
     draft: z.boolean().optional(),
-
     title: z.string(),
     excerpt: z.string().optional(),
     image: z.string().optional(),
-
     category: z.string().optional(),
     tags: z.array(z.string()).optional(),
     author: z.string().optional(),
-
     metadata: metadataDefinition(),
   }),
 });
 
+// FAQ items (site-specific)
 const faqCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/faqs-page/faq-items' }),
+  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/faqs-page/faq-items` }),
   schema: z.object({
     question: z.string(),
     answer: z.string(),
@@ -75,8 +76,9 @@ const faqCollection = defineCollection({
   }),
 });
 
+// Service items (site-specific)
 const serviceCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/services-page/services' }),
+  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/services-page/services` }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -87,8 +89,9 @@ const serviceCollection = defineCollection({
   }),
 });
 
+// Trust badges (site-specific)
 const trustBadgeCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/site-settings/trust-badges' }),
+  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/site-settings/trust-badges` }),
   schema: z.object({
     name: z.string(),
     display_text: z.string(),
@@ -100,8 +103,9 @@ const trustBadgeCollection = defineCollection({
   }),
 });
 
+// Text pages (site-specific)
 const textPageCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: 'src/content/text-pages' }),
+  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/text-pages` }),
   schema: z.object({
     slug: z.string(),
     title: z.string(),
@@ -110,8 +114,9 @@ const textPageCollection = defineCollection({
   }),
 });
 
+// Services page top content (site-specific)
 const servicesPageTopContentCollection = defineCollection({
-  loader: glob({ pattern: 'top-content.yaml', base: 'src/content/services-page' }),
+  loader: glob({ pattern: 'top-content.yaml', base: `src/content/${SITE_ID}/services-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
@@ -120,8 +125,9 @@ const servicesPageTopContentCollection = defineCollection({
   }),
 });
 
+// FAQs page top content (site-specific)
 const faqsPageTopContentCollection = defineCollection({
-  loader: glob({ pattern: 'top-content.yaml', base: 'src/content/faqs-page' }),
+  loader: glob({ pattern: 'top-content.yaml', base: `src/content/${SITE_ID}/faqs-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
@@ -130,8 +136,9 @@ const faqsPageTopContentCollection = defineCollection({
   }),
 });
 
+// Consultation page (site-specific)
 const consultationPageCollection = defineCollection({
-  loader: glob({ pattern: 'content.yaml', base: 'src/content/consultation-page' }),
+  loader: glob({ pattern: 'content.yaml', base: `src/content/${SITE_ID}/consultation-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
@@ -141,8 +148,9 @@ const consultationPageCollection = defineCollection({
   }),
 });
 
+// Contact page (site-specific)
 const contactPageCollection = defineCollection({
-  loader: glob({ pattern: 'content.yaml', base: 'src/content/contact-page' }),
+  loader: glob({ pattern: 'content.yaml', base: `src/content/${SITE_ID}/contact-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),

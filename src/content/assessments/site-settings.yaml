@@ -1,0 +1,13 @@
+site:
+  name: Together Assessments
+  email: info@togetherassessments.co.uk
+  ico_registration: '00010615323'
+
+logo:
+  light: ~/assets/images/assessments/logo-light.svg
+  dark: ~/assets/images/assessments/logo-dark.svg
+  alt: Together Assessments Logo
+
+footer:
+  title: Together Assessments
+  business_info: Sole trader, trading as Together Assessments. North Lincolnshire and surrounding areas.
