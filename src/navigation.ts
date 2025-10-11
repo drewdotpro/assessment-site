@@ -166,6 +166,7 @@ export const footerData = {
         { text: 'Safeguarding', href: getPermalink('/safeguarding') },
         { text: 'Accessibility Statement', href: getPermalink('/accessibility-statement') },
         { text: 'Data Retention & SAR', href: getPermalink('/data-retention-sar') },
+        { text: 'Credits', href: getPermalink('/credits') },
         { text: 'Refunds/Cancellations', href: getPermalink('/refunds-cancellations') },
         { text: 'Complaints', href: getPermalink('/complaints') },
       ],
