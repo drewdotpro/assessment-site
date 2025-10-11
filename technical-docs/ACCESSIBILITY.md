@@ -2,6 +2,8 @@
 
 This document details the accessibility features implemented on the Together Assessments website, with a focus on neurodiversity-friendly design.
 
+**Scope**: This document covers accessibility features, neurodiversity support, WCAG compliance, and testing procedures. For colour system implementation, see [COLOURS.md](./COLOURS.md).
+
 ## Table of Contents
 
 1. [Neurodiversity-Friendly Fonts](#neurodiversity-friendly-fonts)
@@ -194,22 +196,14 @@ body {
 
 ## Dark Mode
 
-The site supports light/dark colour schemes with user control and system preference detection.
+The site supports light/dark colour schemes with user control and system preference detection. This benefits users with:
 
-**For complete dark mode documentation, see [COLOURS.md](./COLOURS.md)**
+- Light sensitivity or photophobia
+- Visual processing differences
+- Migraine triggers from bright screens
+- Preference for high-contrast viewing
 
-### Quick Overview
-
-- **Modes**: System, Light, Dark, Light:only, Dark:only
-- **Toggle**: Button in header (when not set to `:only` mode)
-- **Persistence**: Saved to `localStorage.theme`
-- **System detection**: Respects `prefers-color-scheme` media query
-
-### User Control
-
-1. **System preference** (default) - Follows operating system setting
-2. **Manual override** - Click sun/moon icon to toggle
-3. **Persistent choice** - Remembers user's preference
+For complete implementation details, see [COLOURS.md](./COLOURS.md#dark-mode-toggle-mechanism).
 
 ---
 

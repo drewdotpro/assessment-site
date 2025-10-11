@@ -37,6 +37,25 @@ Determine which documentation files in `technical-docs/` need updating:
 | CMS changes               | **CMS.md**           | CMS collections added, editorial workflow changed, authentication modified |
 | Accessibility changes     | **ACCESSIBILITY.md** | Fonts added, WCAG features implemented, accessibility features changed     |
 
+**IMPORTANT - Documentation Boundaries and Single Source of Truth:**
+
+Each documentation file has a defined scope. **Never duplicate information** across files. Use cross-references instead:
+
+- **Multi-site architecture** → ARCHITECTURE.md only (CMS.md and WEBSITE.md reference it)
+- **Environment variables** → ARCHITECTURE.md only (don't duplicate in Build & Deployment section)
+- **Dark mode implementation** → COLOURS.md only (ACCESSIBILITY.md explains user benefits + references COLOURS.md)
+- **Blog system technical details** → ARCHITECTURE.md (WEBSITE.md describes content structure)
+- **Content collection schemas** → ARCHITECTURE.md (WEBSITE.md describes what collections control)
+- **Image optimization** → CMS.md (ARCHITECTURE.md brief mention only)
+- **Editorial workflow** → CMS.md only (WEBSITE.md references it)
+
+When content could fit in multiple docs, ask yourself:
+
+1. Which doc is the "single source of truth" for this information?
+2. Can other docs reference it instead of duplicating it?
+
+**Always use cross-references like:** "For complete details, see [FILENAME.md](./FILENAME.md#section)"
+
 ## Step 3: Update Relevant Documentation
 
 For EACH relevant documentation file:
@@ -196,6 +215,10 @@ Before finishing, verify:
 - [ ] "Last Updated" dates updated
 - [ ] New files added to git (if created)
 - [ ] CLAUDE.md updated if new doc files created
+- [ ] **No information is duplicated across multiple files** (use cross-references instead)
+- [ ] Each piece of information has a single source of truth
+- [ ] Scope statements exist at the top of each file (after intro, before TOC)
+- [ ] Cross-references use proper markdown links to specific sections
 - [ ] Clear summary provided to user
 
 Remember: Your goal is to ensure the next Claude session has accurate, complete documentation to work with. Take the time to do this thoroughly.

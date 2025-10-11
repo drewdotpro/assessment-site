@@ -2,6 +2,8 @@
 
 This document provides detailed information about the Decap CMS implementation, configuration, and workflows for the Together Assessments website.
 
+**Scope**: This document focuses on CMS user workflows, editorial process, authentication, and configuration. For multi-site architecture details, see [ARCHITECTURE.md](./ARCHITECTURE.md). For site content structure (what pages exist, what content controls what), see [WEBSITE.md](./WEBSITE.md).
+
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -228,38 +230,75 @@ If not using Netlify, GitHub OAuth application required:
 
 ## Configuration
 
-### Main Configuration File
+### Multi-Site Architecture
 
-**Location**: `public/admin/config.yml`
+**Important**: This project uses a multi-site architecture that generates three separate websites (assessments, adhd, autism) from a single codebase. The CMS configuration is generated at build time based on which site is being built.
 
-**Key sections**:
+**For complete multi-site architecture details**, including how WEBSITE_ID works, environment variables, and site-specific resources, see **[ARCHITECTURE.md](./ARCHITECTURE.md#multi-site-architecture)**.
+
+### CMS Configuration Files
+
+The CMS uses a template-based configuration system:
+
+**Template File (Source of Truth)**:
+
+- **Location**: `public/admin/config.template.yml`
+- **Purpose**: Single source of truth for ALL CMS configuration across all three sites
+- **Edit THIS file** to modify CMS configuration
+- **Placeholders**: `{{WEBSITE_ID}}`, `{{MEDIA_FOLDER}}`, `{{PUBLIC_FOLDER}}`, `{{SITE_URL}}`
+
+**Generated Configuration File**:
+
+- **Location**: `public/admin/config.yml`
+- **Purpose**: Auto-generated, site-specific CMS configuration
+- ⚠️ **DO NOT EDIT** - Regenerated on every dev/build
+- Not version controlled (in `.gitignore`)
+
+**Generation Process**:
+
+- Script: `scripts/generate-cms-config.js`
+- Triggered automatically by `predev:*` and `prebuild:*` hooks
+- Reads template, replaces placeholders, writes site-specific config
+
+### Main Configuration Structure
+
+**Key sections** in generated `config.yml`:
 
 ```yaml
 backend:
   name: github
   repo: owner/repo-name
   branch: main
+  commit_messages:
+    create: 'feat(content/{siteId}): Create {{collection}} "{{slug}}"'
 
 publish_mode: editorial_workflow
+local_backend: true
 
-media_folder: src/assets/images
-public_folder: ~/assets/images
+media_folder: src/assets/images/{siteId}
+public_folder: ~/assets/images/{siteId}
 
 site_url: https://yoursite.com
 display_url: https://yoursite.com
 
 collections:
-  # Collection definitions
+  # Site-specific collection definitions
 ```
 
 ### Collection Definitions
 
-Collections defined in `public/admin/config.yml` with additional per-collection YAML files in `public/admin/collections/`.
+Collections defined inline in `public/admin/config.template.yml`.
 
 **Collection types**:
 
 - **File collections** - Single configuration files (e.g., Site Settings, Home Page)
 - **Folder collections** - Multiple items (e.g., FAQ Items, Blog Posts)
+
+**All collections are site-specific**:
+
+- Each collection's paths include `{{WEBSITE_ID}}` placeholder
+- Content kept separate per site (no cross-contamination)
+- CMS shows only the current site's content
 
 ### Field Types
 
@@ -316,17 +355,17 @@ The CMS UI uses "/" in labels to create logical groupings:
 
 To add a new content type to the CMS:
 
-### 1. Edit CMS Configuration
+### 1. Edit CMS Configuration Template
 
-**File**: `public/admin/config.yml`
+**File**: `public/admin/config.template.yml` (NOT config.yml!)
 
-Add collection definition following hierarchical naming pattern:
+Add collection definition following hierarchical naming pattern and using `{{WEBSITE_ID}}` placeholder:
 
 ```yaml
 collections:
   - name: 'new_collection_items'
     label: 'New Collection / Items'
-    folder: 'src/content/new-collection/items'
+    folder: 'src/content/{{WEBSITE_ID}}/new-collection/items'
     create: true
     fields:
       - { label: 'Title', name: 'title', widget: 'string' }
@@ -335,10 +374,16 @@ collections:
       - { label: 'Published', name: 'published', widget: 'boolean', default: true }
 ```
 
-### 2. Create Content Directory
+**Important**: Use `{{WEBSITE_ID}}` in all folder paths to ensure collection works for all three sites.
+
+### 2. Create Content Directories
+
+Create directories for ALL three sites:
 
 ```bash
-mkdir -p src/content/new-collection/items
+mkdir -p src/content/assessments/new-collection/items
+mkdir -p src/content/adhd/new-collection/items
+mkdir -p src/content/autism/new-collection/items
 ```
 
 ### 3. Define Collection Schema
@@ -457,9 +502,24 @@ For bulk updates, consider editing files directly:
 
 ### CMS showing old structure
 
-- Redeploy CMS configuration (`public/admin/config.yml`)
+- Regenerate config: `cross-env WEBSITE_ID={site} node scripts/generate-cms-config.js`
+- Restart dev server: `npm run dev:{site}`
 - Clear browser cache and reload `/admin/`
 - Check for JavaScript console errors
+
+### CMS showing wrong site's content
+
+- Verify you're running the correct site-specific command (e.g., `npm run dev:assessments`)
+- Check generated `public/admin/config.yml` to see which site it's configured for
+- Regenerate config for correct site
+- Clear browser cache
+
+### Changes to config.template.yml not appearing
+
+- Config is only regenerated when running dev/build commands
+- Restart dev server to trigger regeneration
+- Verify placeholders (`{{WEBSITE_ID}}`, etc.) are correct in template
+- Check generated `config.yml` to see if placeholders were replaced
 
 ---
 

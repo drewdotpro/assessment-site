@@ -1,19 +1,39 @@
+# ============================================================================
+# CMS CONFIGURATION TEMPLATE - SOURCE FILE
+# ============================================================================
+#
+# This is the SOURCE template for Decap CMS configuration.
+#
+# TO MODIFY CMS CONFIGURATION:
+#   - Edit THIS file (public/admin/config.template.yml)
+#   - Changes apply to ALL sites (assessments, adhd, autism)
+#   - Regenerate with: npm run dev:assessments (or adhd/autism)
+#
+# DO NOT edit public/admin/config.yml - it's auto-generated from this template
+#
+# Placeholders that get replaced during generation:
+#   {{WEBSITE_ID}} - Site identifier (assessments/adhd/autism)
+#   {{MEDIA_FOLDER}} - Site-specific media path
+#   {{PUBLIC_FOLDER}} - Site-specific public path
+#   {{SITE_URL}} - Site-specific URL
+# ============================================================================
+
 backend:
   name: github
   repo: drewdotpro/assessment-site
   branch: main
   commit_messages:
-    create: 'feat(content/adhd): Create {{collection}} "{{slug}}"'
-    update: 'feat(content/adhd): Update {{collection}} "{{slug}}"'
-    delete: 'feat(content/adhd): Delete {{collection}} "{{slug}}"'
-    uploadMedia: 'feat(media/adhd): Upload "{{path}}"'
-    deleteMedia: 'feat(media/adhd): Delete "{{path}}"'
+    create: 'feat(content/{{WEBSITE_ID}}): Create {{collection}} "{{slug}}"'
+    update: 'feat(content/{{WEBSITE_ID}}): Update {{collection}} "{{slug}}"'
+    delete: 'feat(content/{{WEBSITE_ID}}): Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'feat(media/{{WEBSITE_ID}}): Upload "{{path}}"'
+    deleteMedia: 'feat(media/{{WEBSITE_ID}}): Delete "{{path}}"'
 publish_mode: editorial_workflow
 local_backend: true
-media_folder: src/assets/images/adhd
-public_folder: ~/assets/images/adhd
-site_url: http://localhost:4321
-display_url: http://localhost:4321
+media_folder: { { MEDIA_FOLDER } }
+public_folder: { { PUBLIC_FOLDER } }
+site_url: { { SITE_URL } }
+display_url: { { SITE_URL } }
 collections:
   - name: site_settings
     label: Site Settings
@@ -23,7 +43,7 @@ collections:
     files:
       - name: general
         label: General Settings
-        file: src/content/adhd/site-settings.yaml
+        file: src/content/{{WEBSITE_ID}}/site-settings.yaml
         fields:
           - label: Site Information
             name: site
@@ -74,7 +94,7 @@ collections:
     files:
       - name: content
         label: Home Page Content
-        file: src/content/adhd/home-page/content.yaml
+        file: src/content/{{WEBSITE_ID}}/home-page/content.yaml
         fields:
           - label: Hero Section
             name: hero
@@ -177,7 +197,7 @@ collections:
   - name: site_settings_trust_badges
     label: Site Settings / Trust Badges
     label_singular: Trust Badge
-    folder: src/content/adhd/site-settings/trust-badges
+    folder: src/content/{{WEBSITE_ID}}/site-settings/trust-badges
     create: true
     delete: true
     slug: '{{order}}-{{slug}}'
@@ -235,7 +255,7 @@ collections:
     files:
       - name: top_content
         label: FAQs Page / Top Content
-        file: src/content/adhd/faqs-page/top-content.yaml
+        file: src/content/{{WEBSITE_ID}}/faqs-page/top-content.yaml
         fields:
           - label: Title Heading
             name: title
@@ -262,7 +282,7 @@ collections:
   - name: faqs_page_items
     label: FAQs Page / FAQ Items
     label_singular: FAQ
-    folder: src/content/adhd/faqs-page/faq-items
+    folder: src/content/{{WEBSITE_ID}}/faqs-page/faq-items
     create: true
     delete: true
     slug: '{{order}}-{{slug}}'
@@ -302,7 +322,7 @@ collections:
     files:
       - name: top_content
         label: Services Page / Top Content
-        file: src/content/adhd/services-page/top-content.yaml
+        file: src/content/{{WEBSITE_ID}}/services-page/top-content.yaml
         fields:
           - label: Title Heading
             name: title
@@ -329,7 +349,7 @@ collections:
   - name: services_page_items
     label: Services Page / Service Items
     label_singular: Service
-    folder: src/content/adhd/services-page/services
+    folder: src/content/{{WEBSITE_ID}}/services-page/services
     create: true
     delete: true
     slug: '{{order}}-{{slug}}'
@@ -381,7 +401,7 @@ collections:
     files:
       - name: content
         label: Consultation Page
-        file: src/content/adhd/consultation-page/content.yaml
+        file: src/content/{{WEBSITE_ID}}/consultation-page/content.yaml
         fields:
           - label: Title Heading
             name: title
@@ -420,7 +440,7 @@ collections:
     files:
       - name: content
         label: Contact Page
-        file: src/content/adhd/contact-page/content.yaml
+        file: src/content/{{WEBSITE_ID}}/contact-page/content.yaml
         fields:
           - label: Title Heading
             name: title
@@ -452,7 +472,7 @@ collections:
     files:
       - name: content
         label: Waitlist Page
-        file: src/content/adhd/waitlist-page/content.yaml
+        file: src/content/{{WEBSITE_ID}}/waitlist-page/content.yaml
         fields:
           - label: Title Heading
             name: title
@@ -486,7 +506,7 @@ collections:
   - name: text_pages
     label: Text Pages
     label_singular: Text Page
-    folder: src/content/adhd/text-pages
+    folder: src/content/{{WEBSITE_ID}}/text-pages
     create: false
     delete: false
     slug: '{{slug}}'
@@ -524,7 +544,7 @@ collections:
   - name: post
     label: Blog Posts
     label_singular: Blog Post
-    folder: src/content/adhd/blog-posts
+    folder: src/content/{{WEBSITE_ID}}/blog-posts
     create: true
     delete: true
     slug: '{{slug}}'

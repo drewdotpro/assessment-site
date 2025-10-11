@@ -4,6 +4,8 @@ This document describes the Together Assessments website structure: what pages e
 
 For technical implementation details and development workflows, see [CLAUDE.md](./CLAUDE.md).
 
+**Scope**: This document describes site structure and content organisation from a content editor's perspective. For technical implementation details, see [ARCHITECTURE.md](./ARCHITECTURE.md). For CMS workflows, see [CMS.md](./CMS.md).
+
 ---
 
 ## Table of Contents
@@ -80,6 +82,8 @@ All managed via CMS as Text Pages:
 
 All content is managed through Decap CMS at `/admin/`. The CMS is organised hierarchically with the following collections:
 
+**Note:** For CMS editorial workflow and authentication details, see [CMS.md](./CMS.md). For collection schemas and technical details, see [ARCHITECTURE.md](./ARCHITECTURE.md#content-collections).
+
 ### Site Settings
 
 **Collection:** Site Settings (file-based)
@@ -101,7 +105,9 @@ Controls site-wide information displayed throughout the website:
   - Footer title
   - Business information text
 
-**File Location:** `src/content/site-settings.yaml`
+**File Location:** `src/content/{siteId}/site-settings.yaml`
+
+Example: `src/content/assessments/site-settings.yaml`
 
 ---
 
@@ -117,7 +123,9 @@ Professional accreditation badges displayed on the homepage:
 - Display order
 - Published status
 
-**File Location:** `src/content/site-settings/trust-badges/`
+**File Location:** `src/content/{siteId}/site-settings/trust-badges/`
+
+Example: `src/content/assessments/site-settings/trust-badges/`
 
 ---
 
@@ -151,7 +159,9 @@ Controls all content on the homepage:
   - Step 2 text
   - Step 3 text
 
-**File Location:** `src/content/home-page/content.yaml`
+**File Location:** `src/content/{siteId}/home-page/content.yaml`
+
+Example: `src/content/assessments/home-page/content.yaml`
 
 **Note:** Homepage also displays:
 
@@ -173,7 +183,9 @@ Controls content at the top of the FAQ page:
 - Image (optional, centred)
 - Content (optional, markdown support)
 
-**File Location:** `src/content/faqs-page/top-content.yaml`
+**File Location:** `src/content/{siteId}/faqs-page/top-content.yaml`
+
+Example: `src/content/assessments/faqs-page/top-content.yaml`
 
 ---
 
@@ -186,7 +198,9 @@ Individual FAQ question-answer pairs:
 - Display order
 - Published status
 
-**File Location:** `src/content/faqs-page/faq-items/`
+**File Location:** `src/content/{siteId}/faqs-page/faq-items/`
+
+Example: `src/content/assessments/faqs-page/faq-items/`
 
 **Note:** First 4 published FAQs also appear on the homepage.
 
@@ -203,7 +217,9 @@ Controls content at the top of the Services page:
 - Image (optional, centred)
 - Content (optional, markdown support)
 
-**File Location:** `src/content/services-page/top-content.yaml`
+**File Location:** `src/content/{siteId}/services-page/top-content.yaml`
+
+Example: `src/content/assessments/services-page/top-content.yaml`
 
 ---
 
@@ -218,7 +234,9 @@ Individual service offerings:
 - Icon (from Tabler Icons - 5,993 icons available)
 - Published status
 
-**File Location:** `src/content/services-page/services/`
+**File Location:** `src/content/{siteId}/services-page/services/`
+
+Example: `src/content/assessments/services-page/services/`
 
 **Note:** Services also appear on the homepage in a preview section.
 
@@ -236,7 +254,9 @@ Controls the consultation booking page:
 - Content (optional, markdown support)
 - Google Calendar booking link (embedded iframe)
 
-**File Location:** `src/content/consultation-page/content.yaml`
+**File Location:** `src/content/{siteId}/consultation-page/content.yaml`
+
+Example: `src/content/assessments/consultation-page/content.yaml`
 
 **Special Features:**
 
@@ -258,7 +278,9 @@ Controls the waitlist form page:
 - Content (optional, markdown support)
 - Google Form link (embedded iframe)
 
-**File Location:** `src/content/waitlist-page/content.yaml`
+**File Location:** `src/content/{siteId}/waitlist-page/content.yaml`
+
+Example: `src/content/assessments/waitlist-page/content.yaml`
 
 **Special Features:**
 
@@ -282,7 +304,9 @@ Controls the contact page with email functionality:
 - Image (optional, centred)
 - Content (optional, markdown support)
 
-**File Location:** `src/content/contact-page/content.yaml`
+**File Location:** `src/content/{siteId}/contact-page/content.yaml`
+
+Example: `src/content/assessments/contact-page/content.yaml`
 
 **Special Features:**
 
@@ -305,7 +329,9 @@ Simple markdown-based pages with consistent structure:
 - Image (optional, centred)
 - Content (markdown support)
 
-**File Locations:** `src/content/text-pages/`
+**File Locations:** `src/content/{siteId}/text-pages/`
+
+Example: `src/content/assessments/text-pages/`
 
 **Pre-created pages** (cannot be deleted, but can be edited):
 
@@ -346,7 +372,9 @@ Individual blog articles:
   - Canonical URL
   - No-index flag
 
-**File Location:** `src/data/post/`
+**File Location:** `src/content/{siteId}/blog-posts/`
+
+Example: `src/content/assessments/blog-posts/`
 
 **Categories Available:**
 
@@ -404,23 +432,74 @@ Controls Astro/AstroWind framework behaviour:
 
 ### CMS Configuration
 
-**File:** `public/admin/config.yml`
+#### Multi-Site Configuration System
+
+This project supports **three separate websites** from a single codebase:
+
+- Together Assessments (assessments)
+- Together ADHD (adhd)
+- Together Autism (autism)
+
+The CMS configuration is **generated at build time** based on which site is being built.
+
+**Template File (SOURCE):**
+
+- **File:** `public/admin/config.template.yml`
+- **Purpose:** Single source of truth for ALL CMS configuration across all three sites
+- **Important:** Edit THIS file to modify CMS configuration
+- **Placeholders:**
+  - `{{WEBSITE_ID}}` - Replaced with: assessments, adhd, or autism
+  - `{{MEDIA_FOLDER}}` - Replaced with: `src/assets/images/{siteId}`
+  - `{{PUBLIC_FOLDER}}` - Replaced with: `~/assets/images/{siteId}`
+  - `{{SITE_URL}}` - Replaced with site-specific URL
+
+**Generated Configuration File:**
+
+- **File:** `public/admin/config.yml`
+- **Purpose:** Auto-generated, site-specific CMS configuration
+- **Important:** ⚠️ **DO NOT EDIT THIS FILE** - It's regenerated on every dev/build
+- **Status:** Added to `.gitignore` (not version controlled)
+- **Generated by:** `scripts/generate-cms-config.js`
+
+**How Configuration Generation Works:**
+
+1. Developer runs site-specific command (e.g., `npm run dev:assessments`)
+2. Pre-hook calls `scripts/generate-cms-config.js` with `WEBSITE_ID` environment variable
+3. Script reads `config.template.yml`
+4. Script replaces placeholders with site-specific values
+5. Script writes to `config.yml`
+6. CMS loads the site-specific configuration
+
+**Site-Specific Content Separation:**
+
+- **Assessments:** `src/content/assessments/*`, `src/assets/images/assessments/`
+- **ADHD:** `src/content/adhd/*`, `src/assets/images/adhd/`
+- **Autism:** `src/content/autism/*`, `src/assets/images/autism/`
+
+Each site's content is completely isolated - no cross-contamination between sites.
+
+#### CMS Settings
 
 Controls Decap CMS behaviour:
 
 - GitHub repository connection
 - Branch configuration
 - Editorial workflow settings
-- Media folder locations
+- Media folder locations (site-specific)
 - Collection definitions and schemas
 - Custom widget configurations
 
-**Key Settings:**
+**Key Settings (site-specific examples):**
 
-- Media folder: `src/assets/images/`
-- Public folder reference: `~/assets/images/`
-- Site URL for previews
-- Commit message templates
+For assessments site:
+
+- Media folder: `src/assets/images/assessments/`
+- Public folder reference: `~/assets/images/assessments/`
+- Content location: `src/content/assessments/`
+- Site URL for previews: (set via environment variables)
+- Commit message templates (include site ID)
+
+For adhd/autism sites: Similar structure with their respective site IDs.
 
 ---
 
@@ -531,6 +610,8 @@ Three columns of links:
 
 ## Accessibility Features
 
+**Note:** For complete accessibility documentation including WCAG compliance and testing procedures, see [ACCESSIBILITY.md](./ACCESSIBILITY.md).
+
 ### Neurodiversity-Friendly Fonts
 
 The site implements a custom font switcher allowing users to select their preferred reading font:
@@ -591,10 +672,14 @@ This documentation describes the **structure** of the website (what CAN be confi
 
 ### Image Management
 
-- All images uploaded via CMS are stored in `src/assets/images/`
+- All images uploaded via CMS are stored in site-specific folders:
+  - Assessments: `src/assets/images/assessments/`
+  - ADHD: `src/assets/images/adhd/`
+  - Autism: `src/assets/images/autism/`
 - Images are automatically optimised during build (multiple sizes, WebP conversion)
 - Editorial Workflow prevents orphaned images (images only committed when content is published)
 - Maximum file sizes enforced by CMS for different image types
+- Each site's images are completely separate (no cross-contamination)
 
 ### Editorial Workflow
 

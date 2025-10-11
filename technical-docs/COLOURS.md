@@ -2,6 +2,8 @@
 
 This document provides a comprehensive overview of the light/dark colour system used throughout the Together Assessments website.
 
+**Scope**: This document covers the colour system, theming architecture, and dark mode implementation. For accessibility testing and WCAG compliance, see [ACCESSIBILITY.md](./ACCESSIBILITY.md).
+
 ## Architecture Overview
 
 The colour system uses a hierarchical architecture with CSS custom properties at its core, ensuring consistent theming across light and dark modes.
