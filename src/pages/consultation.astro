@@ -28,7 +28,7 @@ if (!content) {
   throw new Error('Consultation page content not found');
 }
 
-const { title, subheading, image, body, google_calendar_link } = content.data;
+const { title, subheading, image, image_alt, body, google_calendar_link } = content.data;
 
 // Convert markdown to HTML if body exists
 const htmlContent = body ? marked.parse(body) : null;
@@ -50,7 +50,7 @@ const metadata = {
     {
       image && (
         <div class="flex justify-center mb-8">
-          <Image src={image} alt={title} class="max-w-full h-auto" />
+          <Image src={image} alt={image_alt || title} class="max-w-full h-auto" />
         </div>
       )
     }

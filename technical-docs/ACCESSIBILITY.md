@@ -320,19 +320,55 @@ Custom focus styles in Tailwind:
 
 ### Images
 
-All CMS image fields require alt text:
+All CMS image fields include optional alt text fields. When provided, alt text is used; when omitted, sensible fallbacks are used (e.g., page title, excerpt).
+
+**Implementation**: All 8 image locations in the CMS have dedicated `image_alt` fields:
+
+1. **Home Page Hero** (`config.template.yml:106-110`)
+2. **FAQs Page Top Content** (`config.template.yml:282-286`)
+3. **Services Page Top Content** (`config.template.yml:354-358`)
+4. **Consultation Page** (`config.template.yml:438-442`)
+5. **Contact Page** (`config.template.yml:482-486`)
+6. **Waitlist Page** (`config.template.yml:519-523`)
+7. **Text Pages** (`config.template.yml:570-574`)
+8. **Blog Posts Featured Image** (`config.template.yml:635-639`)
+
+**CMS Configuration Example**:
 
 ```yaml
-- label: 'Image'
+- label: 'Hero Image'
   name: 'image'
   widget: 'image'
-  required: false
-- label: 'Image Alt Text'
+- label: 'Hero Image Alt Text'
   name: 'image_alt'
   widget: 'string'
   required: false
-  hint: 'Describe the image for screen readers'
+  hint: 'Describe what the image shows (e.g., "Person using laptop in bright office space"). Leave empty for decorative images.'
 ```
+
+**Fallback Strategy**:
+
+All image rendering templates use fallback chains to ensure images always have alt text:
+
+```typescript
+// Hero image
+alt={homePageContent.hero.image_alt || 'Hero image'}
+
+// Page images (FAQ, Services, Contact, etc.)
+alt={image_alt || title}
+
+// Blog featured images
+alt={post?.image_alt || post?.excerpt || 'Blog post featured image'}
+```
+
+**Enforcement**: The `Image.astro` component (src/components/common/Image.astro:20-22) throws an error if alt text is undefined or null, ensuring no images render without accessibility text.
+
+**Content Editor Guidance**: Each CMS alt text field includes hints with good/bad examples:
+
+- ✓ Good: "Therapist reviewing assessment notes"
+- ✗ Bad: "Image of consultation", "FAQ image"
+
+For complete CMS configuration, see [CMS.md](./CMS.md#image-alt-text-fields).
 
 ### Buttons and Controls
 

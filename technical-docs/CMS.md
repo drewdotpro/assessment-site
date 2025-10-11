@@ -315,6 +315,26 @@ Decap CMS supports numerous field types:
 
 Full documentation: See `decap-cms-docs/` directory
 
+### Image Alt Text Fields
+
+All 8 CMS image fields include optional alt text fields for accessibility:
+
+1. **Home Page Hero** - `hero.image` + `hero.image_alt`
+2. **FAQs Page Top Content** - `image` + `image_alt`
+3. **Services Page Top Content** - `image` + `image_alt`
+4. **Consultation Page** - `image` + `image_alt`
+5. **Contact Page** - `image` + `image_alt`
+6. **Waitlist Page** - `image` + `image_alt`
+7. **Text Pages** - `image` + `image_alt`
+8. **Blog Posts** - `image` + `image_alt`
+
+Each `image_alt` field is configured with helpful hints and examples for content editors:
+
+- ✓ Good: "Therapist reviewing assessment notes"
+- ✗ Bad: "Image of consultation", "FAQ image"
+
+For complete accessibility implementation and fallback strategy, see [ACCESSIBILITY.md](./ACCESSIBILITY.md#images).
+
 ---
 
 ## Content Organisation

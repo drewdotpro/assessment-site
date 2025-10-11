@@ -204,6 +204,7 @@ Review the documentation changes and commit when ready.
 4. **Be specific**: Include file paths, line numbers, and code examples where helpful
 5. **Think forward**: Write documentation that will be useful to future Claude sessions
 6. **Don't guess**: If unsure about something, note it in your summary for the user to verify
+7. **NEVER reference temp folder**: The `temp/` folder contains temporary working files that are not tracked by git and will be deleted. Never create cross-references to files in `temp/` from permanent documentation. All important information must be documented in `technical-docs/` instead.
 
 ## Quality Checklist
 

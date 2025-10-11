@@ -58,6 +58,7 @@ const postCollection = defineCollection({
     title: z.string(),
     excerpt: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
     category: z.string().optional(),
     tags: z.array(z.string()).optional(),
     author: z.string().optional(),
@@ -111,6 +112,7 @@ const textPageCollection = defineCollection({
     title: z.string(),
     subheading: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
   }),
 });
 
@@ -121,6 +123,7 @@ const servicesPageTopContentCollection = defineCollection({
     title: z.string(),
     subheading: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
     body: z.string().optional(),
   }),
 });
@@ -132,6 +135,7 @@ const faqsPageTopContentCollection = defineCollection({
     title: z.string(),
     subheading: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
     body: z.string().optional(),
   }),
 });
@@ -143,6 +147,7 @@ const consultationPageCollection = defineCollection({
     title: z.string(),
     subheading: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
     body: z.string().optional(),
     google_calendar_link: z.string().url(),
   }),
@@ -155,6 +160,7 @@ const contactPageCollection = defineCollection({
     title: z.string(),
     subheading: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
     body: z.string().optional(),
   }),
 });
@@ -166,6 +172,7 @@ const waitlistPageCollection = defineCollection({
     title: z.string(),
     subheading: z.string().optional(),
     image: z.string().optional(),
+    image_alt: z.string().optional(),
     body: z.string().optional(),
     google_form_link: z.string().url(),
   }),

@@ -16,7 +16,7 @@ if (!page) {
   throw new Error(`Text page not found: ${slug}. Available pages: ${textPages.map((p) => p.data.slug).join(', ')}`);
 }
 
-const { title, subheading, image } = page.data;
+const { title, subheading, image, image_alt } = page.data;
 const { Content } = await render(page);
 ---
 
@@ -31,7 +31,7 @@ const { Content } = await render(page);
   {
     image && (
       <div class="flex justify-center mb-8">
-        <Image src={image} alt={title} class="max-w-full h-auto" />
+        <Image src={image} alt={image_alt || title} class="max-w-full h-auto" />
       </div>
     )
   }

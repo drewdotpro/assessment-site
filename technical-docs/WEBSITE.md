@@ -641,7 +641,7 @@ The site implements a custom font switcher allowing users to select their prefer
 - Dark mode toggle (system/light/dark)
 - Responsive design with mobile-first approach
 - Semantic HTML structure
-- Alt text required for all images in CMS
+- Optional alt text fields for all CMS images with sensible fallbacks
 - ARIA labels and accessibility attributes
 - Keyboard navigation support
 - Colour contrast compliance

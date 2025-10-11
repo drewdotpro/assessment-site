@@ -11,7 +11,7 @@ if (!topContent) {
   throw new Error('FAQs page top content not found');
 }
 
-const { title, subheading, image, body } = topContent.data;
+const { title, subheading, image, image_alt, body } = topContent.data;
 
 // Convert markdown to HTML if body exists
 const htmlContent = body ? marked.parse(body) : null;
@@ -37,7 +37,7 @@ const metadata = {
     {
       image && (
         <div class="flex justify-center mb-8">
-          <Image src={image} alt={title} class="max-w-full h-auto" />
+          <Image src={image} alt={image_alt || title} class="max-w-full h-auto" />
         </div>
       )
     }
