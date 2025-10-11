@@ -1,6 +1,15 @@
+# Netlify configuration for multi-site deployment from single repository
+# IMPORTANT: Set WEBSITE_ID environment variable in each Netlify site's settings
+# Valid WEBSITE_ID values: assessments, adhd, autism
+
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm run build:${WEBSITE_ID}"
+
+[build.environment]
+  ASSESSMENTS_URL = "https://nd-assessment-site.netlify.app/"
+  ADHD_URL = "https://nd-assessment-site.netlify.app/"
+  AUTISM_URL = "https://nd-assessment-site.netlify.app/"
 [build.processing.html]
   pretty_urls = false
 

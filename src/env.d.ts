@@ -5,7 +5,7 @@
 /// <reference types="../vendor/integration/types.d.ts" />
 
 interface ImportMetaEnv {
-  readonly SITE_ID: 'assessments' | 'adhd' | 'autism';
+  readonly WEBSITE_ID: 'assessments' | 'adhd' | 'autism';
   readonly ASSESSMENTS_URL: string;
   readonly ADHD_URL: string;
   readonly AUTISM_URL: string;

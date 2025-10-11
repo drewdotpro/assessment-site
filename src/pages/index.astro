@@ -14,17 +14,17 @@ import YAML from 'yaml';
 import fs from 'fs';
 import path from 'path';
 
-// Get SITE_ID from environment
-const SITE_ID = process.env.SITE_ID;
-if (!SITE_ID) {
-  throw new Error('SITE_ID environment variable is required');
+// Get WEBSITE_ID from environment
+const WEBSITE_ID = process.env.WEBSITE_ID;
+if (!WEBSITE_ID) {
+  throw new Error('WEBSITE_ID environment variable is required');
 }
 
-// Load site settings and homepage content with SITE_ID
-const settingsPath = path.join(process.cwd(), `src/content/${SITE_ID}/site-settings.yaml`);
+// Load site settings and homepage content with WEBSITE_ID
+const settingsPath = path.join(process.cwd(), `src/content/${WEBSITE_ID}/site-settings.yaml`);
 const settings = YAML.parse(fs.readFileSync(settingsPath, 'utf8'));
 
-const homePagePath = path.join(process.cwd(), `src/content/${SITE_ID}/home-page/content.yaml`);
+const homePagePath = path.join(process.cwd(), `src/content/${WEBSITE_ID}/home-page/content.yaml`);
 const homePageContent = YAML.parse(fs.readFileSync(homePagePath, 'utf8'));
 
 // Load content collections - filter for published items

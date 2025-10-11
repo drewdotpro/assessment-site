@@ -9,20 +9,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Get environment variables
-const SITE_ID = process.env.SITE_ID;
+const WEBSITE_ID = process.env.WEBSITE_ID;
 const ASSESSMENTS_URL = process.env.ASSESSMENTS_URL;
 const ADHD_URL = process.env.ADHD_URL;
 const AUTISM_URL = process.env.AUTISM_URL;
 
 // Validate required environment variables
-if (!SITE_ID) {
-  console.error('❌ ERROR: SITE_ID environment variable is required');
-  console.error('   Use: SITE_ID=assessments npm run dev');
+if (!WEBSITE_ID) {
+  console.error('❌ ERROR: WEBSITE_ID environment variable is required');
+  console.error('   Use: WEBSITE_ID=assessments npm run dev');
   process.exit(1);
 }
 
-if (!['assessments', 'adhd', 'autism'].includes(SITE_ID)) {
-  console.error(`❌ ERROR: Invalid SITE_ID "${SITE_ID}"`);
+if (!['assessments', 'adhd', 'autism'].includes(WEBSITE_ID)) {
+  console.error(`❌ ERROR: Invalid WEBSITE_ID "${WEBSITE_ID}"`);
   console.error('   Must be: assessments, adhd, or autism');
   process.exit(1);
 }
@@ -41,10 +41,10 @@ const siteUrls = {
 };
 
 // Generate config
-console.log(`\n🔧 Generating CMS config for: ${SITE_ID}`);
-console.log(`   URL: ${siteUrls[SITE_ID]}\n`);
+console.log(`\n🔧 Generating CMS config for: ${WEBSITE_ID}`);
+console.log(`   URL: ${siteUrls[WEBSITE_ID]}\n`);
 
-const config = generateCMSConfig(SITE_ID, siteUrls);
+const config = generateCMSConfig(WEBSITE_ID, siteUrls);
 
 // Convert to YAML
 const yamlConfig = yaml.dump(config, {

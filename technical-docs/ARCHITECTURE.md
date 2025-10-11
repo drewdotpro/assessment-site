@@ -26,18 +26,18 @@ This project uses a multi-site architecture that generates three separate websit
 
 ### How It Works
 
-The `SITE_ID` environment variable determines which site is being built. All site-specific behaviour is resolved at **build time** - there is zero runtime site detection.
+The `WEBSITE_ID` environment variable determines which site is being built. All site-specific behaviour is resolved at **build time** - there is zero runtime site detection.
 
 ```bash
 # Build commands (one site at a time)
-npm run build:assessments  # SITE_ID=assessments
-npm run build:adhd         # SITE_ID=adhd
-npm run build:autism       # SITE_ID=autism
+npm run build:assessments  # WEBSITE_ID=assessments
+npm run build:adhd         # WEBSITE_ID=adhd
+npm run build:autism       # WEBSITE_ID=autism
 
 # Development commands
-npm run dev:assessments    # SITE_ID=assessments
-npm run dev:adhd           # SITE_ID=adhd
-npm run dev:autism         # SITE_ID=autism
+npm run dev:assessments    # WEBSITE_ID=assessments
+npm run dev:adhd           # WEBSITE_ID=adhd
+npm run dev:autism         # WEBSITE_ID=autism
 ```
 
 ### Site-Specific Resources
@@ -66,15 +66,15 @@ Each site has its own:
 
 ### Key Implementation Files
 
-| File                                  | Purpose             | Implementation                                                  |
-| ------------------------------------- | ------------------- | --------------------------------------------------------------- |
-| `src/env.d.ts`                        | Environment types   | Defines `SITE_ID` type as `'assessments' \| 'adhd' \| 'autism'` |
-| `src/content/config.ts`               | Content collections | Uses `process.env.SITE_ID` to load site-specific content paths  |
-| `src/components/Logo.astro`           | Dynamic logos       | Uses `import.meta.glob()` + SITE_ID to load correct logo        |
-| `src/navigation.ts`                   | Dynamic navigation  | Filters "Together" menu to show other 2 sites                   |
-| `src/components/widgets/Footer.astro` | Site settings       | Loads site-specific `site-settings.yaml`                        |
-| `src/pages/index.astro`               | Homepage            | Loads site-specific `home-page/content.yaml`                    |
-| `src/pages/contact.astro`             | Contact page        | Uses site-specific email from settings                          |
+| File                                  | Purpose             | Implementation                                                     |
+| ------------------------------------- | ------------------- | ------------------------------------------------------------------ |
+| `src/env.d.ts`                        | Environment types   | Defines `WEBSITE_ID` type as `'assessments' \| 'adhd' \| 'autism'` |
+| `src/content/config.ts`               | Content collections | Uses `process.env.WEBSITE_ID` to load site-specific content paths  |
+| `src/components/Logo.astro`           | Dynamic logos       | Uses `import.meta.glob()` + WEBSITE_ID to load correct logo        |
+| `src/navigation.ts`                   | Dynamic navigation  | Filters "Together" menu to show other 2 sites                      |
+| `src/components/widgets/Footer.astro` | Site settings       | Loads site-specific `site-settings.yaml`                           |
+| `src/pages/index.astro`               | Homepage            | Loads site-specific `home-page/content.yaml`                       |
+| `src/pages/contact.astro`             | Contact page        | Uses site-specific email from settings                             |
 
 ### Dynamic Together Menu
 
@@ -92,7 +92,7 @@ Implementation: `src/navigation.ts` filters the current site from the list at bu
 
 All builds require these environment variables:
 
-- `SITE_ID` - Which site to build (`assessments`, `adhd`, or `autism`)
+- `WEBSITE_ID` - Which site to build (`assessments`, `adhd`, or `autism`)
 - `ASSESSMENTS_URL` - URL for Together Assessments site
 - `ADHD_URL` - URL for Together ADHD site
 - `AUTISM_URL` - URL for Together Autism site
@@ -115,7 +115,7 @@ Environment variables set in Netlify TOML files:
 
 ```toml
 [build.environment]
-  SITE_ID = "assessments"
+  WEBSITE_ID = "assessments"
   ASSESSMENTS_URL = "https://togetherassessments.co.uk"
   ADHD_URL = "https://togetheradhd.co.uk"
   AUTISM_URL = "https://togetherautism.co.uk"
@@ -140,8 +140,8 @@ This ensures:
 
 The architecture enforces correctness at build time:
 
-- ❌ Missing `SITE_ID` → Build fails with error
-- ❌ Invalid `SITE_ID` → Build fails with error
+- ❌ Missing `WEBSITE_ID` → Build fails with error
+- ❌ Invalid `WEBSITE_ID` → Build fails with error
 - ❌ Missing site URLs → Build fails with error
 - ❌ Missing logo file → Build fails with error
 - ✅ All site logic resolved during build
@@ -153,7 +153,7 @@ The architecture enforces correctness at build time:
 2. **Clean dev experience** - Simple `npm run dev:*` commands
 3. **Single codebase** - Bug fixes apply to all sites
 4. **Flexible URLs** - Easy to change domains via environment variables
-5. **Type safety** - TypeScript enforces correct SITE_ID values
+5. **Type safety** - TypeScript enforces correct WEBSITE_ID values
 6. **CMS efficiency** - Define collections once, used by all sites
 
 ---
@@ -171,17 +171,17 @@ The site uses a multi-layered configuration system with **site-specific** conten
    - UI theme settings
    - **IMPORTANT**: This file OVERRIDES `astro.config.ts` settings
 
-2. **Site-specific content configuration** - Loaded based on `SITE_ID`:
-   - `src/content/{SITE_ID}/site-settings.yaml` - Company information (name, email, ICO registration), logo settings, footer information
-   - `src/content/{SITE_ID}/home-page/content.yaml` - Homepage-specific content including hero section, CTAs, section titles, and how-it-works steps
-   - Where `{SITE_ID}` is one of: `assessments`, `adhd`, `autism`
+2. **Site-specific content configuration** - Loaded based on `WEBSITE_ID`:
+   - `src/content/{WEBSITE_ID}/site-settings.yaml` - Company information (name, email, ICO registration), logo settings, footer information
+   - `src/content/{WEBSITE_ID}/home-page/content.yaml` - Homepage-specific content including hero section, CTAs, section titles, and how-it-works steps
+   - Where `{WEBSITE_ID}` is one of: `assessments`, `adhd`, `autism`
 
 3. **astro.config.ts** - Astro build configuration, integrations, and markdown plugins (shared across all sites)
 
 4. **vendor/integration/** - Custom AstroWind integration that processes config.yaml and makes it available via virtual module `astrowind:config`
 
 5. **Environment-driven configuration**:
-   - `SITE_ID` - Determines which site is being built
+   - `WEBSITE_ID` - Determines which site is being built
    - Site URLs (`ASSESSMENTS_URL`, `ADHD_URL`, `AUTISM_URL`) - Used for cross-site navigation
    - Netlify TOML files provide production environment variables
 
@@ -210,7 +210,7 @@ src/
 │   ├── ui/                        # UI primitives (Button, Form, Headline, etc.)
 │   └── widgets/                   # Page sections (Header, Footer, Hero, Features, etc.)
 ├── content/                       # Site-specific content (MULTI-SITE)
-│   ├── config.ts                  # Collection schemas (uses SITE_ID)
+│   ├── config.ts                  # Collection schemas (uses WEBSITE_ID)
 │   ├── assessments/               # Together Assessments content
 │   │   ├── blog-posts/
 │   │   ├── home-page/content.yaml
@@ -341,23 +341,23 @@ Custom remark/rehype plugins provide:
 
 The site uses Astro Content Collections for structured content management. All collections are defined in `src/content/config.ts` with Zod validation schemas.
 
-**IMPORTANT**: All collection paths are **site-specific**, using `process.env.SITE_ID` to load content from the correct site folder (`assessments`, `adhd`, or `autism`).
+**IMPORTANT**: All collection paths are **site-specific**, using `process.env.WEBSITE_ID` to load content from the correct site folder (`assessments`, `adhd`, or `autism`).
 
 ### Available Collections
 
-| Collection                   | Type   | Location Pattern                                       | Purpose                   |
-| ---------------------------- | ------ | ------------------------------------------------------ | ------------------------- |
-| `post`                       | Folder | `src/content/{SITE_ID}/blog-posts/`                    | Blog posts                |
-| `faqs_page_items`            | Folder | `src/content/{SITE_ID}/faqs-page/faq-items/`           | FAQ Q&A pairs             |
-| `faqs_page_top_content`      | File   | `src/content/{SITE_ID}/faqs-page/top-content.yaml`     | FAQ page header           |
-| `services_page_items`        | Folder | `src/content/{SITE_ID}/services-page/services/`        | Service offerings         |
-| `services_page_top_content`  | File   | `src/content/{SITE_ID}/services-page/top-content.yaml` | Services page header      |
-| `consultation_page`          | File   | `src/content/{SITE_ID}/consultation-page/content.yaml` | Consultation booking page |
-| `contact_page`               | File   | `src/content/{SITE_ID}/contact-page/content.yaml`      | Contact page content      |
-| `site_settings_trust_badges` | Folder | `src/content/{SITE_ID}/site-settings/trust-badges/`    | Professional badges       |
-| `text_pages`                 | Folder | `src/content/{SITE_ID}/text-pages/`                    | Static content pages      |
+| Collection                   | Type   | Location Pattern                                          | Purpose                   |
+| ---------------------------- | ------ | --------------------------------------------------------- | ------------------------- |
+| `post`                       | Folder | `src/content/{WEBSITE_ID}/blog-posts/`                    | Blog posts                |
+| `faqs_page_items`            | Folder | `src/content/{WEBSITE_ID}/faqs-page/faq-items/`           | FAQ Q&A pairs             |
+| `faqs_page_top_content`      | File   | `src/content/{WEBSITE_ID}/faqs-page/top-content.yaml`     | FAQ page header           |
+| `services_page_items`        | Folder | `src/content/{WEBSITE_ID}/services-page/services/`        | Service offerings         |
+| `services_page_top_content`  | File   | `src/content/{WEBSITE_ID}/services-page/top-content.yaml` | Services page header      |
+| `consultation_page`          | File   | `src/content/{WEBSITE_ID}/consultation-page/content.yaml` | Consultation booking page |
+| `contact_page`               | File   | `src/content/{WEBSITE_ID}/contact-page/content.yaml`      | Contact page content      |
+| `site_settings_trust_badges` | Folder | `src/content/{WEBSITE_ID}/site-settings/trust-badges/`    | Professional badges       |
+| `text_pages`                 | Folder | `src/content/{WEBSITE_ID}/text-pages/`                    | Static content pages      |
 
-Where `{SITE_ID}` is one of: `assessments`, `adhd`, `autism`
+Where `{WEBSITE_ID}` is one of: `assessments`, `adhd`, `autism`
 
 ### Collection Features
 
@@ -430,7 +430,7 @@ apps:
 
 ### File Structure (Multi-Site)
 
-- **Posts location**: `src/content/{SITE_ID}/blog-posts/` (site-specific)
+- **Posts location**: `src/content/{WEBSITE_ID}/blog-posts/` (site-specific)
 - **File formats**: `.md` or `.mdx`
 - **Dynamic routing**: `src/pages/[...blog]/` (shared)
 - Each site has its own blog posts, completely independent
@@ -513,7 +513,7 @@ Each site has its own:
   publish = "dist"
 
 [build.environment]
-  SITE_ID = "assessments"
+  WEBSITE_ID = "assessments"
   ASSESSMENTS_URL = "https://togetherassessments.co.uk"
   ADHD_URL = "https://togetheradhd.co.uk"
   AUTISM_URL = "https://togetherautism.co.uk"
@@ -527,7 +527,7 @@ Each site has its own:
   publish = "dist"
 
 [build.environment]
-  SITE_ID = "adhd"
+  WEBSITE_ID = "adhd"
   ASSESSMENTS_URL = "https://togetherassessments.co.uk"
   ADHD_URL = "https://togetheradhd.co.uk"
   AUTISM_URL = "https://togetherautism.co.uk"
@@ -541,7 +541,7 @@ Each site has its own:
   publish = "dist"
 
 [build.environment]
-  SITE_ID = "autism"
+  WEBSITE_ID = "autism"
   ASSESSMENTS_URL = "https://togetherassessments.co.uk"
   ADHD_URL = "https://togetheradhd.co.uk"
   AUTISM_URL = "https://togetherautism.co.uk"
@@ -570,7 +570,7 @@ Each site will:
 2. Run `node scripts/generate-cms-config.js` (prebuild hook)
 3. Generate site-specific CMS config to `public/admin/config.yml`
 4. Run `npm run build:{site}` command
-5. Build Astro with site-specific SITE_ID
+5. Build Astro with site-specific WEBSITE_ID
 6. Output to `dist/` folder
 7. Deploy to respective domain
 
@@ -603,7 +603,7 @@ npm run preview            # Serve dist/ locally
 
 **Required for all builds:**
 
-- `SITE_ID` - Which site to build (`assessments`, `adhd`, or `autism`)
+- `WEBSITE_ID` - Which site to build (`assessments`, `adhd`, or `autism`)
 - `ASSESSMENTS_URL` - URL for Together Assessments site
 - `ADHD_URL` - URL for Together ADHD site
 - `AUTISM_URL` - URL for Together Autism site
@@ -620,7 +620,7 @@ AUTISM_URL=http://localhost:4321
 
 **Access in code:**
 
-- Build-time: `process.env.SITE_ID`
+- Build-time: `process.env.WEBSITE_ID`
 - Runtime: `import.meta.env` (standard Astro pattern)
 
 ---

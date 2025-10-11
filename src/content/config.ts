@@ -1,10 +1,10 @@
 import { z, defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 
-// Get SITE_ID - build fails if not set
-const SITE_ID = process.env.SITE_ID;
-if (!SITE_ID) {
-  throw new Error('SITE_ID environment variable is required');
+// Get WEBSITE_ID - build fails if not set
+const WEBSITE_ID = process.env.WEBSITE_ID;
+if (!WEBSITE_ID) {
+  throw new Error('WEBSITE_ID environment variable is required');
 }
 
 // Metadata schema (reused)
@@ -50,7 +50,7 @@ const metadataDefinition = () =>
 
 // Blog posts (site-specific)
 const postCollection = defineCollection({
-  loader: glob({ pattern: ['*.md', '*.mdx'], base: `src/content/${SITE_ID}/blog-posts` }),
+  loader: glob({ pattern: ['*.md', '*.mdx'], base: `src/content/${WEBSITE_ID}/blog-posts` }),
   schema: z.object({
     publishDate: z.date().optional(),
     updateDate: z.date().optional(),
@@ -67,7 +67,7 @@ const postCollection = defineCollection({
 
 // FAQ items (site-specific)
 const faqCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/faqs-page/faq-items` }),
+  loader: glob({ pattern: '*.md', base: `src/content/${WEBSITE_ID}/faqs-page/faq-items` }),
   schema: z.object({
     question: z.string(),
     answer: z.string(),
@@ -78,7 +78,7 @@ const faqCollection = defineCollection({
 
 // Service items (site-specific)
 const serviceCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/services-page/services` }),
+  loader: glob({ pattern: '*.md', base: `src/content/${WEBSITE_ID}/services-page/services` }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -91,7 +91,7 @@ const serviceCollection = defineCollection({
 
 // Trust badges (site-specific)
 const trustBadgeCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/site-settings/trust-badges` }),
+  loader: glob({ pattern: '*.md', base: `src/content/${WEBSITE_ID}/site-settings/trust-badges` }),
   schema: z.object({
     name: z.string(),
     display_text: z.string(),
@@ -105,7 +105,7 @@ const trustBadgeCollection = defineCollection({
 
 // Text pages (site-specific)
 const textPageCollection = defineCollection({
-  loader: glob({ pattern: '*.md', base: `src/content/${SITE_ID}/text-pages` }),
+  loader: glob({ pattern: '*.md', base: `src/content/${WEBSITE_ID}/text-pages` }),
   schema: z.object({
     slug: z.string(),
     title: z.string(),
@@ -116,7 +116,7 @@ const textPageCollection = defineCollection({
 
 // Services page top content (site-specific)
 const servicesPageTopContentCollection = defineCollection({
-  loader: glob({ pattern: 'top-content.yaml', base: `src/content/${SITE_ID}/services-page` }),
+  loader: glob({ pattern: 'top-content.yaml', base: `src/content/${WEBSITE_ID}/services-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
@@ -127,7 +127,7 @@ const servicesPageTopContentCollection = defineCollection({
 
 // FAQs page top content (site-specific)
 const faqsPageTopContentCollection = defineCollection({
-  loader: glob({ pattern: 'top-content.yaml', base: `src/content/${SITE_ID}/faqs-page` }),
+  loader: glob({ pattern: 'top-content.yaml', base: `src/content/${WEBSITE_ID}/faqs-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
@@ -138,7 +138,7 @@ const faqsPageTopContentCollection = defineCollection({
 
 // Consultation page (site-specific)
 const consultationPageCollection = defineCollection({
-  loader: glob({ pattern: 'content.yaml', base: `src/content/${SITE_ID}/consultation-page` }),
+  loader: glob({ pattern: 'content.yaml', base: `src/content/${WEBSITE_ID}/consultation-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
@@ -150,7 +150,7 @@ const consultationPageCollection = defineCollection({
 
 // Contact page (site-specific)
 const contactPageCollection = defineCollection({
-  loader: glob({ pattern: 'content.yaml', base: `src/content/${SITE_ID}/contact-page` }),
+  loader: glob({ pattern: 'content.yaml', base: `src/content/${WEBSITE_ID}/contact-page` }),
   schema: z.object({
     title: z.string(),
     subheading: z.string().optional(),
