@@ -28,6 +28,8 @@ This project uses a multi-site architecture that generates three separate websit
 
 The `WEBSITE_ID` environment variable determines which site is being built. All site-specific behaviour is resolved at **build time** - there is zero runtime site detection.
 
+**IMPORTANT**: `WEBSITE_ID` must be set as an environment variable in Netlify (not in the TOML file) for each site deployment.
+
 ```bash
 # Build commands (one site at a time)
 npm run build:assessments  # WEBSITE_ID=assessments
@@ -59,10 +61,9 @@ Each site has its own:
    - `scripts/generate-cms-config.js` generates site-specific `public/admin/config.yml`
    - Runs automatically via `predev` and `prebuild` hooks
 
-4. **Deployment Configuration** - Separate Netlify TOML files
-   - `netlify-assessments.toml`
-   - `netlify-adhd.toml`
-   - `netlify-autism.toml`
+4. **Deployment Configuration** - Single Netlify TOML file
+   - `netlify.toml` - Uses `${WEBSITE_ID}` variable in build command
+   - Each Netlify site sets `WEBSITE_ID` environment variable
 
 ### Key Implementation Files
 
@@ -111,15 +112,35 @@ AUTISM_URL=http://localhost:4321
 
 #### Production (Netlify)
 
-Environment variables set in Netlify TOML files:
+**IMPORTANT**: Environment variables must be set in Netlify UI for each site:
 
-```toml
-[build.environment]
-  WEBSITE_ID = "assessments"
-  ASSESSMENTS_URL = "https://togetherassessments.co.uk"
-  ADHD_URL = "https://togetheradhd.co.uk"
-  AUTISM_URL = "https://togetherautism.co.uk"
+**Site Settings → Environment Variables:**
+
+For Together Assessments site:
 ```
+WEBSITE_ID = assessments
+ASSESSMENTS_URL = https://togetherassessments.co.uk
+ADHD_URL = https://togetheradhd.co.uk
+AUTISM_URL = https://togetherautism.co.uk
+```
+
+For Together ADHD site:
+```
+WEBSITE_ID = adhd
+ASSESSMENTS_URL = https://togetherassessments.co.uk
+ADHD_URL = https://togetheradhd.co.uk
+AUTISM_URL = https://togetherautism.co.uk
+```
+
+For Together Autism site:
+```
+WEBSITE_ID = autism
+ASSESSMENTS_URL = https://togetherassessments.co.uk
+ADHD_URL = https://togetheradhd.co.uk
+AUTISM_URL = https://togetherautism.co.uk
+```
+
+The `netlify.toml` file uses `${WEBSITE_ID}` to dynamically select the correct build command.
 
 ### CMS Configuration Generation
 
@@ -274,9 +295,7 @@ scripts/
 
 cms-config.template.js             # CMS config template (single source of truth)
 
-netlify-assessments.toml           # Netlify config for Assessments site
-netlify-adhd.toml                  # Netlify config for ADHD site
-netlify-autism.toml                # Netlify config for Autism site
+netlify.toml                       # Netlify config (uses ${WEBSITE_ID} variable)
 
 .env                               # Local development environment variables
 
@@ -500,67 +519,77 @@ Each site has its own:
 
 - Netlify project
 - Custom domain
-- Build configuration (TOML file)
-- Environment variables
+- Environment variables (set in Netlify UI)
 
-#### Netlify Configuration Files
+#### Netlify Configuration
 
-**netlify-assessments.toml**:
-
-```toml
-[build]
-  command = "npm run build:assessments"
-  publish = "dist"
-
-[build.environment]
-  WEBSITE_ID = "assessments"
-  ASSESSMENTS_URL = "https://togetherassessments.co.uk"
-  ADHD_URL = "https://togetheradhd.co.uk"
-  AUTISM_URL = "https://togetherautism.co.uk"
-```
-
-**netlify-adhd.toml**:
+**Single `netlify.toml` file** shared by all sites:
 
 ```toml
 [build]
-  command = "npm run build:adhd"
   publish = "dist"
+  command = "npm run build:${WEBSITE_ID}"
 
 [build.environment]
-  WEBSITE_ID = "adhd"
-  ASSESSMENTS_URL = "https://togetherassessments.co.uk"
-  ADHD_URL = "https://togetheradhd.co.uk"
-  AUTISM_URL = "https://togetherautism.co.uk"
+  ASSESSMENTS_URL = "https://nd-assessment-site.netlify.app/"
+  ADHD_URL = "https://nd-assessment-site.netlify.app/"
+  AUTISM_URL = "https://nd-assessment-site.netlify.app/"
+
+[build.processing.html]
+  pretty_urls = false
+
+# Caching headers for optimized performance
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 ```
 
-**netlify-autism.toml**:
-
-```toml
-[build]
-  command = "npm run build:autism"
-  publish = "dist"
-
-[build.environment]
-  WEBSITE_ID = "autism"
-  ASSESSMENTS_URL = "https://togetherassessments.co.uk"
-  ADHD_URL = "https://togetheradhd.co.uk"
-  AUTISM_URL = "https://togetherautism.co.uk"
-```
+The `${WEBSITE_ID}` variable expands to the value set in each Netlify site's environment variables.
 
 #### Netlify Setup (Per Site)
+
+**IMPORTANT**: Each site must have `WEBSITE_ID` set as an environment variable.
 
 1. Create new Netlify site
 2. Connect to repository: `drewdotpro/assessment-site`
 3. Set branch: `main`
-4. Set config file path (site-specific):
-   - Assessments: `netlify-assessments.toml`
-   - ADHD: `netlify-adhd.toml`
-   - Autism: `netlify-autism.toml`
-5. Do NOT set environment variables in Netlify dashboard (all in TOML)
-6. Configure domain (site-specific):
+4. **Site Settings → Environment Variables** - Add the following:
+
+   **For Together Assessments:**
+   - `WEBSITE_ID` = `assessments`
+   - `ASSESSMENTS_URL` = `https://togetherassessments.co.uk`
+   - `ADHD_URL` = `https://togetheradhd.co.uk`
+   - `AUTISM_URL` = `https://togetherautism.co.uk`
+
+   **For Together ADHD:**
+   - `WEBSITE_ID` = `adhd`
+   - `ASSESSMENTS_URL` = `https://togetherassessments.co.uk`
+   - `ADHD_URL` = `https://togetheradhd.co.uk`
+   - `AUTISM_URL` = `https://togetherautism.co.uk`
+
+   **For Together Autism:**
+   - `WEBSITE_ID` = `autism`
+   - `ASSESSMENTS_URL` = `https://togetherassessments.co.uk`
+   - `ADHD_URL` = `https://togetheradhd.co.uk`
+   - `AUTISM_URL` = `https://togetherautism.co.uk`
+
+5. Configure domain (site-specific):
    - Assessments: `togetherassessments.co.uk`
    - ADHD: `togetheradhd.co.uk`
    - Autism: `togetherautism.co.uk`
+
+**Note**: Netlify protects the `SITE_ID` environment variable name, so we use `WEBSITE_ID` instead.
 
 #### Build Process (Per Site)
 
@@ -616,7 +645,7 @@ ADHD_URL=http://localhost:4321
 AUTISM_URL=http://localhost:4321
 ```
 
-**Production**: Set in Netlify TOML files (see Deployment section above)
+**Production**: Set in Netlify UI environment variables (see Deployment section above)
 
 **Access in code:**
 
