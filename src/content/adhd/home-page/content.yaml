@@ -4,10 +4,12 @@ hero:
   title: Specialist neurodiversity assessments & formulations.
   subtitle: Independent, friendly, evidence‑based. Clear recommendations you can act on.
 ctas:
-  primary:
+  consultation:
     text: Book a free 15‑minute consultation
-    link: /consultation
     alt: Book a consultation
+  waitlist:
+    text: Join the waitlist
+    alt: Join the waitlist
   secondary:
     text: See assessment options
     link: /services

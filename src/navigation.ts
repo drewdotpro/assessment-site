@@ -50,6 +50,10 @@ const getOtherSites = () => {
 
 const otherSites = getOtherSites();
 
+// Dynamic booking link based on waitlist_only flag
+const bookingLink = settings.site.waitlist_only ? getPermalink('/waitlist') : getPermalink('/consultation');
+const bookingText = settings.site.waitlist_only ? 'Join the Waitlist' : 'Book a Consultation';
+
 // Desktop menu links
 const desktopLinks = [
   { text: 'About', href: getPermalink('/about') },
@@ -85,7 +89,7 @@ const tabletLinks = [
       { text: 'Services', href: getPermalink('/services') },
       { text: 'Fees', href: getPermalink('/fees') },
       { text: 'FAQs', href: getPermalink('/faq') },
-      { text: 'Book a Consultation', href: getPermalink('/consultation') },
+      { text: bookingText, href: bookingLink },
     ],
   },
   {
@@ -111,7 +115,7 @@ const tabletLinks = [
 export const headerData = {
   links: desktopLinks,
   tabletLinks: tabletLinks,
-  actions: [{ text: 'Book a Consultation', href: getPermalink('/consultation') }],
+  actions: [{ text: bookingText, href: bookingLink }],
 };
 
 export const footerData = {
@@ -120,7 +124,7 @@ export const footerData = {
       title: 'Pages',
       links: [
         { text: 'Home', href: getPermalink('/') },
-        { text: 'Book a Consultation', href: getPermalink('/consultation') },
+        { text: bookingText, href: bookingLink },
         { text: 'About', href: getPermalink('/about') },
         { text: 'Services', href: getPermalink('/services') },
         { text: 'Fees', href: getPermalink('/fees') },

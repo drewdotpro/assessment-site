@@ -2,6 +2,7 @@ site:
   name: Together Assessments
   email: info@togetherassessments.co.uk
   ico_registration: '00010615323'
+  waitlist_only: false
 
 logo:
   light: ~/assets/images/assessments/logo-light.svg

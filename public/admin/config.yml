@@ -38,6 +38,11 @@ collections:
               - label: ICO Registration
                 name: ico_registration
                 widget: string
+              - label: Waitlist Only Mode
+                name: waitlist_only
+                widget: boolean
+                default: false
+                hint: When enabled, all consultation links become waitlist links and /consultation redirects to /waitlist
           - label: Logo Settings
             name: logo
             widget: object
@@ -91,15 +96,24 @@ collections:
             name: ctas
             widget: object
             fields:
-              - label: Primary CTA
-                name: primary
+              - label: Consultation CTA
+                name: consultation
                 widget: object
+                hint: Shown when Waitlist Only Mode is inactive. Always links to /consultation.
                 fields:
                   - label: Text
                     name: text
                     widget: string
-                  - label: Link
-                    name: link
+                  - label: Alt Text
+                    name: alt
+                    widget: string
+              - label: Waitlist CTA
+                name: waitlist
+                widget: object
+                hint: Shown when Waitlist Only Mode is active. Always links to /waitlist.
+                fields:
+                  - label: Text
+                    name: text
                     widget: string
                   - label: Alt Text
                     name: alt
@@ -430,6 +444,45 @@ collections:
             widget: markdown
             required: false
             hint: Optional content displayed before the contact button. Supports full markdown formatting.
+  - name: waitlist_page
+    label: Waitlist Page
+    delete: false
+    editor:
+      preview: false
+    files:
+      - name: content
+        label: Waitlist Page
+        file: src/content/adhd/waitlist-page/content.yaml
+        fields:
+          - label: Title Heading
+            name: title
+            widget: string
+            hint: The H1 heading displayed on the page
+          - label: Sub-heading
+            name: subheading
+            widget: string
+            required: false
+            hint: Optional sub-heading displayed below the title
+          - label: Image
+            name: image
+            widget: image
+            required: false
+            hint: Optional image displayed after the sub-heading
+            media_library:
+              config:
+                max_file_size: 2048000
+          - label: Content
+            name: body
+            widget: markdown
+            required: false
+            hint: Optional content displayed before the waitlist form. Supports full markdown formatting.
+          - label: Google Form Link
+            name: google_form_link
+            widget: string
+            pattern:
+              - ^https://docs\.google\.com/forms/.+$
+              - Must be a valid Google Forms URL
+            hint: The full Google Form link
   - name: text_pages
     label: Text Pages
     label_singular: Text Page

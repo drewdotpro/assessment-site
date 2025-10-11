@@ -75,8 +75,8 @@ const metadata = {
     actions={[
       {
         variant: 'primary',
-        text: homePageContent.ctas.primary.text,
-        href: homePageContent.ctas.primary.link,
+        text: settings.site.waitlist_only ? homePageContent.ctas.waitlist.text : homePageContent.ctas.consultation.text,
+        href: settings.site.waitlist_only ? '/waitlist' : '/consultation',
         icon: 'tabler:calendar',
       },
     ]}

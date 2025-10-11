@@ -31,6 +31,7 @@ The website consists of the following pages:
 | **FAQs**          | `/faq`           | CMS: FAQs Page / Top Content + FAQ Items         | Frequently asked questions                                                                                  |
 | **Contact**       | `/contact`       | CMS: Contact Page                                | Contact page with configurable content and email button                                                     |
 | **Consultation**  | `/consultation`  | CMS: Consultation Page                           | Booking page with Google Calendar integration                                                               |
+| **Waitlist**      | `/waitlist`      | CMS: Waitlist Page                               | Waitlist form with Google Form integration (not in navigation/footer, accessed via consultation page link)  |
 | **Self-Help**     | `/self-help`     | CMS: Text Pages                                  | Self-help resources                                                                                         |
 | **Local Support** | `/local-support` | CMS: Text Pages                                  | Local support information                                                                                   |
 
@@ -89,6 +90,7 @@ Controls site-wide information displayed throughout the website:
   - Site name
   - Site email address
   - ICO registration number
+  - Waitlist Only Mode toggle (when enabled, all consultation links become waitlist links and /consultation redirects to /waitlist)
 
 - **Logo Settings:**
   - Light mode logo image
@@ -132,7 +134,8 @@ Controls all content on the homepage:
   - Subtitle (supporting text)
 
 - **Call to Actions (CTAs):**
-  - Primary CTA (text, link, alt text)
+  - Consultation CTA (text, alt text) - shown when Waitlist Only Mode is inactive, always links to /consultation
+  - Waitlist CTA (text, alt text) - shown when Waitlist Only Mode is active, always links to /waitlist
   - Secondary CTA (text, link, alt text)
   - Deep CTA (lead text, button text, link, alt text)
 
@@ -234,6 +237,37 @@ Controls the consultation booking page:
 - Google Calendar booking link (embedded iframe)
 
 **File Location:** `src/content/consultation-page/content.yaml`
+
+**Special Features:**
+
+- Link to waitlist page displayed below the booking calendar
+- Text: "No appointments available? Join the waitlist."
+- When Waitlist Only Mode is active, visiting /consultation redirects to /waitlist
+
+---
+
+### Waitlist Page
+
+**Collection:** Waitlist Page (file-based)
+
+Controls the waitlist form page:
+
+- Title heading (H1)
+- Sub-heading (optional, H3)
+- Image (optional, centred)
+- Content (optional, markdown support)
+- Google Form link (embedded iframe)
+
+**File Location:** `src/content/waitlist-page/content.yaml`
+
+**Special Features:**
+
+- Similar structure to Consultation Page but uses Google Forms instead of Google Calendar
+- Accessibility text: "open the waitlist form in a new tab"
+- Page route: `/waitlist`
+- **Dynamic navigation presence:**
+  - When Waitlist Only Mode is inactive: Page accessible via link on Consultation Page, not in menus
+  - When Waitlist Only Mode is active: Replaces all "Book a Consultation" links throughout navigation, header, and footer
 
 ---
 
@@ -413,7 +447,25 @@ Contains global style definitions:
 
 ## Navigation
 
-Navigation is configured in `src/navigation.ts` with responsive breakpoint support.
+Navigation is configured in `src/navigation.ts` with responsive breakpoint support and dynamic booking links.
+
+### Dynamic Booking Links
+
+The navigation system responds to the **Waitlist Only Mode** toggle in Site Settings:
+
+- **When `waitlist_only: false` (default):**
+  - All booking links say "Book a Consultation" and link to `/consultation`
+
+- **When `waitlist_only: true`:**
+  - All booking links say "Join the Waitlist" and link to `/waitlist`
+
+This affects:
+
+- Header button (desktop xl+ and tablet/mobile)
+- Tablet menu "Assessments" dropdown
+- Footer "Pages" section
+
+**Implementation:** `src/navigation.ts` lines 53-55 create `bookingLink` and `bookingText` variables based on `settings.site.waitlist_only` flag.
 
 ### Desktop Navigation
 
@@ -431,7 +483,7 @@ Displayed at `xl:` breakpoint and above (1280px+):
 - Together (dropdown):
   - Together ADHD (external link)
   - Together Autism (external link)
-- Book a Consultation (button in header)
+- **Dynamic booking button** in header (text and link respond to Waitlist Only Mode)
 
 ### Tablet Navigation
 
@@ -442,7 +494,7 @@ Displayed between `md:` and `xl:` breakpoints (768px-1279px):
   - Services
   - Fees
   - FAQs
-  - Book a Consultation
+  - **Dynamic booking link** (responds to Waitlist Only Mode)
 - Resources (dropdown):
   - Contact
   - Self-Help
@@ -458,7 +510,7 @@ Three columns of links:
 
 **Pages:**
 
-- Home, Book a Consultation, About, Services, Fees, FAQs, Blog, Self-Help, Local Support, Contact
+- Home, **Dynamic booking link** (responds to Waitlist Only Mode), About, Services, Fees, FAQs, Blog, Self-Help, Local Support, Contact
 
 **Website Policies:**
 
@@ -557,5 +609,5 @@ This prevents race conditions and ensures quality control before content goes li
 
 ---
 
-**Last Updated:** 2025-10-07
+**Last Updated:** 2025-10-11
 **Note:** As new features are added or pages are created, this document should be updated to reflect the changes.

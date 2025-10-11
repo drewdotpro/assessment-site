@@ -159,6 +159,18 @@ const contactPageCollection = defineCollection({
   }),
 });
 
+// Waitlist page (site-specific)
+const waitlistPageCollection = defineCollection({
+  loader: glob({ pattern: 'content.yaml', base: `src/content/${WEBSITE_ID}/waitlist-page` }),
+  schema: z.object({
+    title: z.string(),
+    subheading: z.string().optional(),
+    image: z.string().optional(),
+    body: z.string().optional(),
+    google_form_link: z.string().url(),
+  }),
+});
+
 export const collections = {
   post: postCollection,
   faqs_page_items: faqCollection,
@@ -169,4 +181,5 @@ export const collections = {
   faqs_page_top_content: faqsPageTopContentCollection,
   consultation_page: consultationPageCollection,
   contact_page: contactPageCollection,
+  waitlist_page: waitlistPageCollection,
 };
