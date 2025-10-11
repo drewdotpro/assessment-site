@@ -50,9 +50,10 @@ Location: `src/components/CustomStyles.astro:24-70`
 ```css
 @font-face {
   font-family: 'Sylexiad Sans Medium';
-  src: url('/fonts/SylexiadSansMedium.woff2') format('woff2'),
-       url('/fonts/SylexiadSansMedium.woff') format('woff'),
-       url('/fonts/SylexiadSansMedium.ttf') format('truetype');
+  src:
+    url('/fonts/SylexiadSansMedium.woff2') format('woff2'),
+    url('/fonts/SylexiadSansMedium.woff') format('woff'),
+    url('/fonts/SylexiadSansMedium.ttf') format('truetype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -123,6 +124,7 @@ attachEvent('[data-font-button]', 'click', function (_, elem) {
 **Location**: `public/fonts/`
 
 **Formats provided**:
+
 - `.woff2` - Modern browsers (primary)
 - `.woff` - Fallback for older browsers
 - `.ttf` - Ultimate fallback
@@ -145,22 +147,22 @@ Additional fonts preloaded when menu is opened (performance optimisation).
 ```css
 @font-face {
   font-family: 'Sylexiad Sans Medium';
-  size-adjust: 120%;  /* Slightly larger for readability */
+  size-adjust: 120%; /* Slightly larger for readability */
 }
 
 @font-face {
   font-family: 'OpenDyslexic3';
-  size-adjust: 85%;   /* Smaller to compensate for large x-height */
+  size-adjust: 85%; /* Smaller to compensate for large x-height */
 }
 
 @font-face {
   font-family: 'Fast Sans';
-  size-adjust: 100%;  /* No adjustment needed */
+  size-adjust: 100%; /* No adjustment needed */
 }
 
 @font-face {
   font-family: 'Together Assessments';
-  size-adjust: 115%;  /* Slightly larger for headings */
+  size-adjust: 115%; /* Slightly larger for headings */
 }
 ```
 
@@ -183,6 +185,7 @@ body {
 ```
 
 **Purpose**: Enable Fast Sans letter highlighting feature
+
 - Safari enables by default
 - Chrome requires explicit activation
 - Only affects fonts with calt feature
@@ -326,15 +329,15 @@ Custom focus styles in Tailwind:
 All CMS image fields require alt text:
 
 ```yaml
-- label: "Image"
-  name: "image"
-  widget: "image"
+- label: 'Image'
+  name: 'image'
+  widget: 'image'
   required: false
-- label: "Image Alt Text"
-  name: "image_alt"
-  widget: "string"
+- label: 'Image Alt Text'
+  name: 'image_alt'
+  widget: 'string'
   required: false
-  hint: "Describe the image for screen readers"
+  hint: 'Describe the image for screen readers'
 ```
 
 ### Buttons and Controls
@@ -383,11 +386,13 @@ Target: **WCAG 2.1 Level AA**
 Colours tested for contrast in both light and dark modes:
 
 **Light mode**:
+
 - Primary purple (`rgb(78 35 95)`) on white background
 - Text (`rgb(16 16 16)`) on white background
 - Muted text (`rgb(16 16 16 / 66%)`) on white background
 
 **Dark mode**:
+
 - Primary purple (`rgb(78 35 95)`) on dark background
 - Text (`rgb(229 236 246)`) on dark background (`rgb(18 16 20)`)
 - Muted text (`rgb(229 236 246 / 66%)`) on dark background
@@ -433,11 +438,13 @@ Information not conveyed by colour alone:
 ### Automated Testing
 
 **Browser tools**:
+
 - Chrome DevTools Lighthouse (Accessibility audit)
 - axe DevTools browser extension
 - WAVE Web Accessibility Evaluation Tool
 
 **Command line**:
+
 ```bash
 # Install pa11y
 npm install -g pa11y

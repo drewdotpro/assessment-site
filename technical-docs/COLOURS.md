@@ -29,28 +29,20 @@ The colour system uses a hierarchical architecture with CSS custom properties at
 ### Light Mode (`:root`)
 
 ```css
---aw-color-primary: rgb(78 35 95)      /* Purple */
---aw-color-secondary: rgb(65 28 80)    /* Darker purple */
---aw-color-accent: rgb(29 121 99)      /* Teal/green */
-
---aw-color-text-heading: rgb(0 0 0)               /* Black */
---aw-color-text-default: rgb(16 16 16)            /* Near black */
---aw-color-text-muted: rgb(16 16 16 / 66%)        /* Grey (66% opacity) */
---aw-color-bg-page: rgb(255 255 255)              /* White */
---aw-color-bg-page-dark: rgb(18 16 20)            /* Dark background */
+--aw-color-primary: rgb(78 35 95) /* Purple */ --aw-color-secondary: rgb(65 28 80) /* Darker purple */
+  --aw-color-accent: rgb(29 121 99) /* Teal/green */ --aw-color-text-heading: rgb(0 0 0) /* Black */
+  --aw-color-text-default: rgb(16 16 16) /* Near black */ --aw-color-text-muted: rgb(16 16 16 / 66%)
+  /* Grey (66% opacity) */ --aw-color-bg-page: rgb(255 255 255) /* White */ --aw-color-bg-page-dark: rgb(18 16 20)
+  /* Dark background */;
 ```
 
 ### Dark Mode (`.dark`)
 
 ```css
---aw-color-primary: rgb(78 35 95)      /* Purple (same) */
---aw-color-secondary: rgb(65 28 80)    /* Darker purple (same) */
---aw-color-accent: rgb(29 121 99)      /* Teal/green (same) */
-
---aw-color-text-heading: rgb(247 248 248)         /* Off-white */
---aw-color-text-default: rgb(229 236 246)         /* Light blue-white */
---aw-color-text-muted: rgb(229 236 246 / 66%)     /* Muted light (66% opacity) */
---aw-color-bg-page: rgb(18 16 20)                 /* Dark purple-black */
+--aw-color-primary: rgb(78 35 95) /* Purple (same) */ --aw-color-secondary: rgb(65 28 80) /* Darker purple (same) */
+  --aw-color-accent: rgb(29 121 99) /* Teal/green (same) */ --aw-color-text-heading: rgb(247 248 248) /* Off-white */
+  --aw-color-text-default: rgb(229 236 246) /* Light blue-white */ --aw-color-text-muted: rgb(229 236 246 / 66%)
+  /* Muted light (66% opacity) */ --aw-color-bg-page: rgb(18 16 20) /* Dark purple-black */;
 ```
 
 **Key Insight**: Primary, secondary, and accent colours remain **identical** in both modes. Only text and background colours change.
@@ -78,11 +70,21 @@ colors: {
 **Location**: `src/assets/styles/tailwind.css:5-21`
 
 ```css
-.bg-page { background-color: var(--aw-color-bg-page); }
-.bg-dark { background-color: var(--aw-color-bg-page-dark); }
-.bg-light { background-color: var(--aw-color-bg-page); }
-.text-page { color: var(--aw-color-text-page); }
-.text-muted { color: var(--aw-color-text-muted); }
+.bg-page {
+  background-color: var(--aw-color-bg-page);
+}
+.bg-dark {
+  background-color: var(--aw-color-bg-page-dark);
+}
+.bg-light {
+  background-color: var(--aw-color-bg-page);
+}
+.text-page {
+  color: var(--aw-color-text-page);
+}
+.text-muted {
+  color: var(--aw-color-text-muted);
+}
 ```
 
 ## Dark Mode Toggle Mechanism
@@ -93,7 +95,7 @@ colors: {
 
 ```yaml
 ui:
-  theme: 'system'  # Options: 'system' | 'light' | 'dark' | 'light:only' | 'dark:only'
+  theme: 'system' # Options: 'system' | 'light' | 'dark' | 'light:only' | 'dark:only'
 ```
 
 ### UI Component
@@ -177,27 +179,29 @@ These are intentionally hardcoded for specific visual effects and don't need to 
 
 ```css
 :root {
-  --aw-color-primary: rgb(120 50 140);  /* New purple */
+  --aw-color-primary: rgb(120 50 140); /* New purple */
 }
 
 .dark {
-  --aw-color-primary: rgb(120 50 140);  /* Keep same in dark mode */
+  --aw-color-primary: rgb(120 50 140); /* Keep same in dark mode */
 }
 ```
 
 ### To Add a New Theme Colour
 
 1. Add CSS variable in `CustomStyles.astro`:
+
    ```css
    :root {
      --aw-color-tertiary: rgb(255 100 50);
    }
    .dark {
-     --aw-color-tertiary: rgb(255 120 70);  /* Lighter in dark mode */
+     --aw-color-tertiary: rgb(255 120 70); /* Lighter in dark mode */
    }
    ```
 
 2. Map it in `tailwind.config.js`:
+
    ```javascript
    colors: {
      // ... existing colours
@@ -214,34 +218,34 @@ These are intentionally hardcoded for specific visual effects and don't need to 
 
 ### Brand Colours
 
-| Colour | RGB Value | Usage |
-|--------|-----------|-------|
-| Primary | `rgb(78 35 95)` | Main brand colour (purple) |
-| Secondary | `rgb(65 28 80)` | Darker brand colour (hover states) |
-| Accent | `rgb(29 121 99)` | Accent colour (teal/green) |
+| Colour    | RGB Value        | Usage                              |
+| --------- | ---------------- | ---------------------------------- |
+| Primary   | `rgb(78 35 95)`  | Main brand colour (purple)         |
+| Secondary | `rgb(65 28 80)`  | Darker brand colour (hover states) |
+| Accent    | `rgb(29 121 99)` | Accent colour (teal/green)         |
 
 ### Light Mode Text
 
-| Colour | RGB Value | Usage |
-|--------|-----------|-------|
-| Heading | `rgb(0 0 0)` | Headings (black) |
-| Default | `rgb(16 16 16)` | Body text (near black) |
-| Muted | `rgb(16 16 16 / 66%)` | Secondary text (grey) |
+| Colour  | RGB Value             | Usage                  |
+| ------- | --------------------- | ---------------------- |
+| Heading | `rgb(0 0 0)`          | Headings (black)       |
+| Default | `rgb(16 16 16)`       | Body text (near black) |
+| Muted   | `rgb(16 16 16 / 66%)` | Secondary text (grey)  |
 
 ### Dark Mode Text
 
-| Colour | RGB Value | Usage |
-|--------|-----------|-------|
-| Heading | `rgb(247 248 248)` | Headings (off-white) |
-| Default | `rgb(229 236 246)` | Body text (light blue-white) |
-| Muted | `rgb(229 236 246 / 66%)` | Secondary text (muted light) |
+| Colour  | RGB Value                | Usage                        |
+| ------- | ------------------------ | ---------------------------- |
+| Heading | `rgb(247 248 248)`       | Headings (off-white)         |
+| Default | `rgb(229 236 246)`       | Body text (light blue-white) |
+| Muted   | `rgb(229 236 246 / 66%)` | Secondary text (muted light) |
 
 ### Backgrounds
 
-| Mode | Colour | RGB Value |
-|------|--------|-----------|
-| Light | Page background | `rgb(255 255 255)` (white) |
-| Dark | Page background | `rgb(18 16 20)` (dark purple-black) |
+| Mode  | Colour          | RGB Value                           |
+| ----- | --------------- | ----------------------------------- |
+| Light | Page background | `rgb(255 255 255)` (white)          |
+| Dark  | Page background | `rgb(18 16 20)` (dark purple-black) |
 
 ## Best Practices
 

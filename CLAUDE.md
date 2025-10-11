@@ -9,6 +9,7 @@ Together Assessments website built on the AstroWind template (Astro 5.0 + Tailwi
 ## Starting a New Session
 
 **IMPORTANT**: At the start of every new session, run the `/start` command to ensure the development server is running cleanly. This will:
+
 - Kill any lingering processes from previous sessions
 - Free up ports 8081 and 4321
 - Start a fresh dev server
@@ -20,14 +21,14 @@ This prevents port conflicts and ensures you have a clean development environmen
 
 All detailed technical documentation is in the `technical-docs/` folder. Use this guide to know which documentation to reference based on your task:
 
-| Working on... | See documentation | Contains |
-|---------------|------------------|----------|
-| **Site structure, pages, routes** | [WEBSITE.md](./technical-docs/WEBSITE.md) | Pages, CMS collections, what controls what |
-| **Components** | [CHEATSHEET.md](./technical-docs/CHEATSHEET.md) | 55+ components with usage examples and props |
-| **Colours, theming, dark mode** | [COLOURS.md](./technical-docs/COLOURS.md) | Complete colour system and theme architecture |
-| **Architecture, config, build** | [ARCHITECTURE.md](./technical-docs/ARCHITECTURE.md) | Technical architecture, directory structure, build system |
-| **CMS, content management** | [CMS.md](./technical-docs/CMS.md) | Decap CMS setup, editorial workflow, adding collections |
-| **Accessibility, fonts** | [ACCESSIBILITY.md](./technical-docs/ACCESSIBILITY.md) | Neurodiversity features, WCAG compliance, testing |
+| Working on...                     | See documentation                                     | Contains                                                  |
+| --------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
+| **Site structure, pages, routes** | [WEBSITE.md](./technical-docs/WEBSITE.md)             | Pages, CMS collections, what controls what                |
+| **Components**                    | [CHEATSHEET.md](./technical-docs/CHEATSHEET.md)       | 55+ components with usage examples and props              |
+| **Colours, theming, dark mode**   | [COLOURS.md](./technical-docs/COLOURS.md)             | Complete colour system and theme architecture             |
+| **Architecture, config, build**   | [ARCHITECTURE.md](./technical-docs/ARCHITECTURE.md)   | Technical architecture, directory structure, build system |
+| **CMS, content management**       | [CMS.md](./technical-docs/CMS.md)                     | Decap CMS setup, editorial workflow, adding collections   |
+| **Accessibility, fonts**          | [ACCESSIBILITY.md](./technical-docs/ACCESSIBILITY.md) | Neurodiversity features, WCAG compliance, testing         |
 
 **Pro tip**: Always load the relevant technical documentation into your context based on the task you're working on. Don't try to work from memory alone.
 
@@ -99,6 +100,7 @@ npm run check:prettier  # Check Prettier formatting only
 Playwright is available via MCP for visual debugging and verification.
 
 **When to use:**
+
 - Debugging visual issues and layout problems
 - Verifying UI component implementations
 - Testing responsive designs at different viewport sizes

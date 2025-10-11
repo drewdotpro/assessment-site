@@ -28,14 +28,14 @@ Review the conversation history in this session and identify:
 
 Determine which documentation files in `technical-docs/` need updating:
 
-| Change Type | Documentation File | Update When... |
-|-------------|-------------------|----------------|
-| New pages, routes | **WEBSITE.md** | Pages added, routes changed, CMS collections modified, navigation updated |
-| New/modified components | **CHEATSHEET.md** | Components added, component props changed, usage patterns changed |
-| Colour/theme changes | **COLOURS.md** | Colours added/changed, dark mode modified, theme system updated |
-| Config/build/architecture | **ARCHITECTURE.md** | Configuration changed, build system modified, directory structure changed |
-| CMS changes | **CMS.md** | CMS collections added, editorial workflow changed, authentication modified |
-| Accessibility changes | **ACCESSIBILITY.md** | Fonts added, WCAG features implemented, accessibility features changed |
+| Change Type               | Documentation File   | Update When...                                                             |
+| ------------------------- | -------------------- | -------------------------------------------------------------------------- |
+| New pages, routes         | **WEBSITE.md**       | Pages added, routes changed, CMS collections modified, navigation updated  |
+| New/modified components   | **CHEATSHEET.md**    | Components added, component props changed, usage patterns changed          |
+| Colour/theme changes      | **COLOURS.md**       | Colours added/changed, dark mode modified, theme system updated            |
+| Config/build/architecture | **ARCHITECTURE.md**  | Configuration changed, build system modified, directory structure changed  |
+| CMS changes               | **CMS.md**           | CMS collections added, editorial workflow changed, authentication modified |
+| Accessibility changes     | **ACCESSIBILITY.md** | Fonts added, WCAG features implemented, accessibility features changed     |
 
 ## Step 3: Update Relevant Documentation
 
@@ -54,36 +54,42 @@ For EACH relevant documentation file:
 ### Documentation File Formats
 
 **WEBSITE.md**: Content-focused, describes WHAT exists and WHERE to find it
+
 - Update page tables with new routes
 - Add new CMS collections to the CMS section
 - Update navigation structure if changed
 - Keep focused on what content editors need to know
 
 **CHEATSHEET.md**: Implementation-focused, HOW to use components
+
 - Add component with import statement
 - List all props with types and defaults
 - Include usage example
 - Note any special behaviour or requirements
 
 **COLOURS.md**: Design system-focused, colour architecture
+
 - Document new colour variables
 - Update RGB value tables
 - Add usage examples
 - Include both light and dark mode values
 
 **ARCHITECTURE.md**: Architecture-focused, technical structure
+
 - Update directory structure if changed
 - Document configuration changes
 - Update build/deployment info
 - Keep technically detailed
 
 **CMS.md**: Workflow-focused, content management processes
+
 - Document new collection types
 - Update workflow information
 - Add configuration examples
 - Include troubleshooting if relevant
 
 **ACCESSIBILITY.md**: Compliance-focused, accessibility features
+
 - Document new accessibility features
 - Update font system if changed
 - Include WCAG compliance notes
@@ -124,6 +130,7 @@ Only update CLAUDE.md if:
 - The guidance on WHERE to find information needs updating
 
 DO NOT update CLAUDE.md for:
+
 - Implementation details (those go in technical-docs/)
 - Content changes (those are documented in WEBSITE.md)
 - Component details (those are documented in CHEATSHEET.md)
@@ -152,14 +159,17 @@ After completing all updates, provide a clear summary to the user:
 ## Documentation Updated
 
 **Files updated:**
+
 - technical-docs/WEBSITE.md - Added Credits page to all relevant sections
 - technical-docs/COLOURS.md - Updated with new accent colour
 
 **Files created:**
+
 - technical-docs/AUTHENTICATION.md - New documentation for auth system
 - Updated CLAUDE.md to reference new authentication docs
 
 **Files staged for commit:**
+
 - technical-docs/AUTHENTICATION.md
 - CLAUDE.md
 

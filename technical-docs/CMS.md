@@ -285,11 +285,13 @@ Full documentation: See `decap-cms-docs/` directory
 The CMS UI uses "/" in labels to create logical groupings:
 
 **Example**:
+
 - `label: "FAQs Page / Top Content"`
 - `label: "FAQs Page / FAQ Items"`
 - `label: "Services Page / Service Items"`
 
 **Benefits**:
+
 - Groups related content visually in CMS
 - Clear hierarchy in sidebar
 - Intuitive navigation for editors
@@ -322,15 +324,15 @@ Add collection definition following hierarchical naming pattern:
 
 ```yaml
 collections:
-  - name: "new_collection_items"
-    label: "New Collection / Items"
-    folder: "src/content/new-collection/items"
+  - name: 'new_collection_items'
+    label: 'New Collection / Items'
+    folder: 'src/content/new-collection/items'
     create: true
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Content", name: "body", widget: "markdown" }
-      - { label: "Order", name: "order", widget: "number", default: 0 }
-      - { label: "Published", name: "published", widget: "boolean", default: true }
+      - { label: 'Title', name: 'title', widget: 'string' }
+      - { label: 'Content', name: 'body', widget: 'markdown' }
+      - { label: 'Order', name: 'order', widget: 'number', default: 0 }
+      - { label: 'Published', name: 'published', widget: 'boolean', default: true }
 ```
 
 ### 2. Create Content Directory
@@ -377,6 +379,7 @@ const sorted = items.sort((a, b) => a.data.order - b.data.order);
 ### 5. Update Documentation
 
 **Update**: [WEBSITE.md](./WEBSITE.md) to document:
+
 - New collection and what it controls
 - Where content appears on site
 - Field descriptions

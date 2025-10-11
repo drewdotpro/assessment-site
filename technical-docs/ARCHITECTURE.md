@@ -160,17 +160,17 @@ The site uses Astro Content Collections for structured content management. All c
 
 ### Available Collections
 
-| Collection | Type | Location | Purpose |
-|------------|------|----------|---------|
-| `post` | Folder | `src/data/post/` | Blog posts |
-| `faqs_page_items` | Folder | `src/content/faqs-page/faq-items/` | FAQ Q&A pairs |
-| `faqs_page_top_content` | File | `src/content/faqs-page/top-content.yaml` | FAQ page header |
-| `services_page_items` | Folder | `src/content/services-page/services/` | Service offerings |
-| `services_page_top_content` | File | `src/content/services-page/top-content.yaml` | Services page header |
-| `consultation_page` | File | `src/content/consultation-page/content.yaml` | Consultation booking page |
-| `contact_page` | File | `src/content/contact-page/content.yaml` | Contact page content |
-| `site_settings_trust_badges` | Folder | `src/content/site-settings/trust-badges/` | Professional badges |
-| `text_pages` | Folder | `src/content/text-pages/` | Static content pages |
+| Collection                   | Type   | Location                                     | Purpose                   |
+| ---------------------------- | ------ | -------------------------------------------- | ------------------------- |
+| `post`                       | Folder | `src/data/post/`                             | Blog posts                |
+| `faqs_page_items`            | Folder | `src/content/faqs-page/faq-items/`           | FAQ Q&A pairs             |
+| `faqs_page_top_content`      | File   | `src/content/faqs-page/top-content.yaml`     | FAQ page header           |
+| `services_page_items`        | Folder | `src/content/services-page/services/`        | Service offerings         |
+| `services_page_top_content`  | File   | `src/content/services-page/top-content.yaml` | Services page header      |
+| `consultation_page`          | File   | `src/content/consultation-page/content.yaml` | Consultation booking page |
+| `contact_page`               | File   | `src/content/contact-page/content.yaml`      | Contact page content      |
+| `site_settings_trust_badges` | Folder | `src/content/site-settings/trust-badges/`    | Professional badges       |
+| `text_pages`                 | Folder | `src/content/text-pages/`                    | Static content pages      |
 
 ### Collection Features
 
@@ -218,24 +218,24 @@ apps:
     postsPerPage: 6
 
     post:
-      permalink: '/%slug%'  # Post URL pattern
+      permalink: '/%slug%' # Post URL pattern
       robots:
         index: true
 
     list:
-      pathname: 'blog'      # Main blog path
+      pathname: 'blog' # Main blog path
       robots:
         index: true
 
     category:
-      pathname: 'category'  # Category path
+      pathname: 'category' # Category path
       robots:
         index: true
 
     tag:
-      pathname: 'tag'       # Tag path
+      pathname: 'tag' # Tag path
       robots:
-        index: false        # Tags are noindex
+        index: false # Tags are noindex
 
     isRelatedPostsEnabled: true
     relatedPostsCount: 4
@@ -394,7 +394,7 @@ Google Analytics support configured in `src/config.yaml`:
 analytics:
   vendors:
     googleAnalytics:
-      id: null  # Set to "G-XXXXXXXXXX" to enable
+      id: null # Set to "G-XXXXXXXXXX" to enable
 ```
 
 ### Internationalization (i18n)
@@ -408,6 +408,7 @@ i18n:
 ```
 
 Future multi-language support would require:
+
 - Additional language files
 - Route prefixing (`/en/`, `/cy/`, etc.)
 - Content duplication or translation system
