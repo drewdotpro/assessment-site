@@ -65,6 +65,7 @@ All managed via CMS as Text Pages:
 | **Data Retention & SAR**    | `/data-retention-sar`      |
 | **Refunds/Cancellations**   | `/refunds-cancellations`   |
 | **Complaints**              | `/complaints`              |
+| **Credits**                 | `/credits`                 |
 
 ### Special Pages
 
@@ -286,6 +287,7 @@ Simple markdown-based pages with consistent structure:
 - `data-retention-sar.md`
 - `refunds-cancellations.md`
 - `complaints.md`
+- `credits.md`
 
 **Note:** New text pages cannot be created via CMS (create: false). To add new text pages, developers must create the file and corresponding route.
 
@@ -464,7 +466,7 @@ Three columns of links:
 
 **Support & Standards:**
 
-- Safeguarding, Accessibility Statement, Data Retention & SAR, Refunds/Cancellations, Complaints
+- Safeguarding, Accessibility Statement, Data Retention & SAR, Credits, Refunds/Cancellations, Complaints
 
 **Footer Note:**
 

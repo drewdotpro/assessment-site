@@ -26,7 +26,7 @@ pnpm-debug.log*
 *.swo
 
 # Claude Code settings
-.claude/
+.claude/settings.local.json
 claude-instruction.md
 
 pnpm-lock.yaml
