@@ -157,6 +157,38 @@ On page load, determines theme by:
 }
 ```
 
+## Dark Mode Hyperlink Styling
+
+**Location**: `src/components/CustomStyles.astro:122-132`
+
+All hyperlinks in dark mode are styled to match the default text colour but with bold weight and no underline:
+
+```css
+/* Dark mode hyperlink styling - match text colour but bold */
+.dark a {
+  color: var(--aw-color-text-default) !important;
+  font-weight: 700;
+  text-decoration: none !important;
+}
+
+.dark a:hover {
+  color: var(--aw-color-text-default) !important;
+  text-decoration: none !important;
+}
+```
+
+**Why `!important` is needed:**
+
+- Individual components (like Footer) use specific Tailwind classes (e.g., `dark:text-gray-400`)
+- These component-specific classes have higher specificity than general `.dark a` rules
+- `!important` ensures consistent hyperlink styling across all components in dark mode
+
+**Result:**
+
+- All hyperlinks in dark mode display as `rgb(229, 236, 246)` (light colour)
+- All hyperlinks are bold (font-weight: 700)
+- No underlines (for cleaner appearance whilst maintaining bold for distinction)
+
 ## Hardcoded Colours (Edge Cases)
 
 A few colours are hardcoded outside the main system for specific effects:
@@ -275,3 +307,14 @@ These are intentionally hardcoded for specific visual effects and don't need to 
 - This is expected for text and background colours
 - Brand colours (primary, secondary, accent) should remain the same
 - Check if you need to add a `dark:` variant for the specific element
+
+### Hyperlinks not styled correctly in dark mode
+
+- All hyperlinks should be light colour and bold with no underline in dark mode
+- This is handled globally by `.dark a` rules in `CustomStyles.astro:122-132`
+- If a component's hyperlinks aren't styled correctly, check if it has component-specific Tailwind classes that override the global rules
+- The global rules use `!important` to override most component-specific styles
+
+---
+
+**Last Updated**: 2025-10-11

@@ -14,7 +14,7 @@
     },
     "playwright": {
       "command": "cmd",
-      "args": ["/c", "npx", "-y", "@playwright/mcp@latest", "--allowed-hosts=*"]
+      "args": ["/c", "npx", "-y", "@playwright/mcp@latest", "--allowed-hosts=*", "--isolated"]
     }
   }
 }
