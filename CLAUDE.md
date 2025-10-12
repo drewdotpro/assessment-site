@@ -114,6 +114,36 @@ Playwright is available via MCP for visual debugging and verification.
 4. Capture visual: `browser_take_screenshot` when needed
 5. Debug JavaScript: `browser_evaluate` and `browser_console_messages`
 
+### Plan Oversight Reviewer Agent
+
+The plan-oversight-reviewer agent provides continuous review and support when implementing complex work from a plan file. It verifies that implementations match documented plans and function correctly for end users.
+
+**When to use:**
+
+- **ALWAYS** when implementing complex work from a plan file (e.g., `temp/ACCESSIBILITY-CONTROLS-MENU-PLAN.md`)
+- At key implementation stages where you want verification
+- When you've completed a significant phase or component
+- When you need guidance on whether you're on track with the plan
+- When you want to test that functionality works as intended for users
+
+**Important:**
+
+- **Always start by referencing the plan file** you're working from so the agent knows the plan
+- Use throughout implementation, not just at the end
+- The agent provides continuous review and support at each stage
+- The agent will test user functionality and provide feedback
+- Use this agent proactively - don't wait to be asked
+
+**Common workflow:**
+
+1. Start implementing work following a plan document
+2. At key stages, launch plan-oversight-reviewer agent via Task tool
+3. Reference the plan file path in your prompt to the agent
+4. Agent reviews progress against plan and tests functionality
+5. Agent reports on alignment, issues, and recommendations
+6. Address feedback and continue to next stage
+7. Repeat review at subsequent key stages until complete
+
 ---
 
 ## Port Cleanup

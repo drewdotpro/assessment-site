@@ -8,7 +8,15 @@ You are being run AFTER a task has been completed in this session. Your job is t
 
 ## Step 1: Analyze What Was Done
 
-Review the conversation history in this session and identify:
+**CRITICAL**: Review the **ENTIRE SESSION** from the very beginning, not just recent conversation since the last compaction.
+
+**How to find the full session history:**
+- Look for plan documents in the `temp/` folder (e.g., `temp/*-PLAN.md`) that may have been created at session start
+- Check the conversation summary that appears after compaction - it contains the full session history
+- Review ALL file changes made during the session, not just recent ones
+- If unsure about session start, ask the user: "Did this session start with earlier work before compaction?"
+
+Review the complete conversation history and identify:
 
 1. **What was the end result?** (Not the journey, but what now exists or changed)
    - New pages added?
@@ -18,11 +26,18 @@ Review the conversation history in this session and identify:
    - Colour system changes?
    - Architecture changes?
    - Accessibility features added?
+   - Major refactoring or reorganisation?
 
 2. **What files were created or modified?**
-   - List all new files
-   - List all modified files
+   - List all new files created during the session
+   - List all modified files throughout the session
    - Understand the purpose of each change
+   - Check for deleted files (obsolete components removed)
+
+3. **What was the original plan or intent?**
+   - Look for plan documents in `temp/` folder
+   - Understand the full scope of what was implemented
+   - Identify which planned features were completed vs. placeholder UI
 
 ## Step 2: Map Changes to Documentation Files
 

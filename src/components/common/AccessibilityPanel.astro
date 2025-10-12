@@ -1,0 +1,819 @@
+---
+// Main accessibility settings panel
+import { DEFAULT_SETTINGS } from './AccessibilitySettings';
+
+// Server-side: use default settings for initial state (client-side will load from localStorage)
+const settings = DEFAULT_SETTINGS;
+---
+
+<!-- Panel -->
+<aside
+  id="accessibility-panel"
+  class="accessibility-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Accessibility Settings"
+>
+  <div class="accessibility-panel-header">
+    <h2 class="accessibility-panel-title">Accessibility Settings</h2>
+    <button
+      id="accessibility-close"
+      type="button"
+      class="accessibility-panel-close"
+      aria-label="Close accessibility settings"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="accessibility-panel-content">
+
+    <!-- Font Selection -->
+    <section class="accessibility-section">
+      <h3 class="accessibility-section-title">Font</h3>
+      <div class="accessibility-radio-group" role="radiogroup" aria-label="Font selection">
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="font"
+            value="sylexiad"
+            checked={settings.font === 'sylexiad'}
+            class="accessibility-radio"
+          />
+          <span class="font-preview" style="font-family: 'Sylexiad Sans Medium', sans-serif;">Sylexiad Sans</span>
+        </label>
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="font"
+            value="opendyslexic"
+            checked={settings.font === 'opendyslexic'}
+            class="accessibility-radio"
+          />
+          <span class="font-preview" style="font-family: 'OpenDyslexic3', sans-serif;">OpenDyslexic</span>
+        </label>
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="font"
+            value="fast"
+            checked={settings.font === 'fast'}
+            class="accessibility-radio"
+          />
+          <span class="font-preview" style="font-family: 'Fast Sans', sans-serif;">Fast Sans</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Theme Selection -->
+    <section class="accessibility-section">
+      <h3 class="accessibility-section-title">Theme</h3>
+      <div class="accessibility-radio-group" role="radiogroup" aria-label="Theme selection">
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="theme"
+            value="light"
+            checked={settings.theme === 'light'}
+            class="accessibility-radio"
+          />
+          <span>Light</span>
+        </label>
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="theme"
+            value="dark"
+            checked={settings.theme === 'dark'}
+            class="accessibility-radio"
+          />
+          <span>Dark</span>
+        </label>
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="theme"
+            value="system"
+            checked={settings.theme === 'system'}
+            class="accessibility-radio"
+          />
+          <span>System</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Text Size (Placeholder) -->
+    <section class="accessibility-section">
+      <h3 class="accessibility-section-title">Text Size</h3>
+      <div class="accessibility-button-group" role="group" aria-label="Text size selection">
+        <button
+          type="button"
+          data-text-size="xs"
+          class="accessibility-size-btn"
+          aria-pressed={settings.textSize === 'xs'}
+        >
+          A-
+        </button>
+        <button
+          type="button"
+          data-text-size="sm"
+          class="accessibility-size-btn"
+          aria-pressed={settings.textSize === 'sm'}
+        >
+          A-
+        </button>
+        <button
+          type="button"
+          data-text-size="base"
+          class="accessibility-size-btn active"
+          aria-pressed={settings.textSize === 'base'}
+        >
+          A
+        </button>
+        <button
+          type="button"
+          data-text-size="lg"
+          class="accessibility-size-btn"
+          aria-pressed={settings.textSize === 'lg'}
+        >
+          A+
+        </button>
+        <button
+          type="button"
+          data-text-size="xl"
+          class="accessibility-size-btn"
+          aria-pressed={settings.textSize === 'xl'}
+        >
+          A+
+        </button>
+      </div>
+      <p class="accessibility-size-label">Current: <span id="text-size-label">Normal</span></p>
+    </section>
+
+    <!-- Line Height (Placeholder) -->
+    <section class="accessibility-section">
+      <h3 class="accessibility-section-title">Line Height</h3>
+      <div class="accessibility-radio-group" role="radiogroup" aria-label="Line height selection">
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="lineHeight"
+            value="compact"
+            checked={settings.lineHeight === 'compact'}
+            class="accessibility-radio"
+          />
+          <span>Compact</span>
+        </label>
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="lineHeight"
+            value="normal"
+            checked={settings.lineHeight === 'normal'}
+            class="accessibility-radio"
+          />
+          <span>Normal</span>
+        </label>
+        <label class="accessibility-radio-label">
+          <input
+            type="radio"
+            name="lineHeight"
+            value="relaxed"
+            checked={settings.lineHeight === 'relaxed'}
+            class="accessibility-radio"
+          />
+          <span>Relaxed</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Reading Ruler (Placeholder) -->
+    <section class="accessibility-section">
+      <h3 class="accessibility-section-title">Reading Ruler</h3>
+      <label class="accessibility-toggle-label">
+        <input
+          type="checkbox"
+          id="reading-ruler"
+          checked={settings.readingRuler}
+          class="accessibility-toggle"
+        />
+        <span class="accessibility-toggle-slider"></span>
+        <span class="accessibility-toggle-text">Highlight current line</span>
+      </label>
+    </section>
+
+    <!-- Reset Button -->
+    <section class="accessibility-section">
+      <button
+        id="reset-settings"
+        type="button"
+        class="accessibility-reset-btn"
+      >
+        Reset to Defaults
+      </button>
+    </section>
+
+  </div>
+</aside>
+
+<!-- Backdrop -->
+<div
+  id="accessibility-backdrop"
+  class="accessibility-backdrop"
+  aria-hidden="true"
+></div>
+
+<style>
+  /* Backdrop */
+  .accessibility-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms ease, visibility 300ms ease;
+    z-index: 999;
+  }
+
+  .accessibility-panel.open ~ .accessibility-backdrop {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Panel */
+  .accessibility-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 360px;
+    max-width: 100vw;
+    height: 100vh;
+    background: var(--aw-color-bg-page);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 300ms ease;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .accessibility-panel.open {
+    transform: translateX(0);
+  }
+
+  /* Mobile: slide up from bottom */
+  @media (max-width: 767px) {
+    .accessibility-panel {
+      top: auto;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 80vh;
+      max-height: 600px;
+      transform: translateY(100%);
+    }
+
+    .accessibility-panel.open {
+      transform: translateY(0);
+    }
+  }
+
+  /* Header */
+  .accessibility-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--aw-color-border);
+    position: sticky;
+    top: 0;
+    background: var(--aw-color-bg-page);
+    z-index: 1;
+  }
+
+  .accessibility-panel-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .accessibility-panel-close {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--aw-color-text-muted);
+    transition: background-color 200ms, color 200ms;
+  }
+
+  .accessibility-panel-close:hover {
+    background: var(--aw-color-bg-hover);
+    color: var(--aw-color-text);
+  }
+
+  /* Content */
+  .accessibility-panel-content {
+    padding: 1.5rem;
+  }
+
+  .accessibility-section {
+    margin-bottom: 2rem;
+  }
+
+  .accessibility-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .accessibility-section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--aw-color-text-muted);
+    margin: 0 0 0.75rem 0;
+  }
+
+  /* Radio Groups */
+  .accessibility-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .accessibility-radio-label {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 200ms;
+  }
+
+  .accessibility-radio-label:hover {
+    background: var(--aw-color-bg-hover);
+  }
+
+  .accessibility-radio {
+    margin-right: 0.75rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+  }
+
+  /* Button Groups */
+  .accessibility-button-group {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .accessibility-size-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--aw-color-border);
+    border-radius: 0.375rem;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 200ms;
+  }
+
+  .accessibility-size-btn:hover {
+    background: var(--aw-color-bg-hover);
+  }
+
+  .accessibility-size-btn.active,
+  .accessibility-size-btn[aria-pressed="true"] {
+    background: var(--aw-color-primary);
+    color: white;
+    border-color: var(--aw-color-primary);
+  }
+
+  .accessibility-size-label {
+    font-size: 0.875rem;
+    color: var(--aw-color-text-muted);
+    margin: 0;
+  }
+
+  /* Toggle Switch */
+  .accessibility-toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: background-color 200ms;
+  }
+
+  .accessibility-toggle-label:hover {
+    background: var(--aw-color-bg-hover);
+  }
+
+  .accessibility-toggle {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .accessibility-toggle-slider {
+    position: relative;
+    width: 3rem;
+    height: 1.5rem;
+    background: rgba(107, 114, 128, 0.3);
+    border-radius: 9999px;
+    margin-right: 0.75rem;
+    transition: background-color 200ms;
+    border: 1px solid rgba(107, 114, 128, 0.4);
+  }
+
+  .accessibility-toggle-slider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 2px;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    background: white;
+    border-radius: 50%;
+    transition: all 200ms;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  }
+
+  /* Dark mode specific overrides for toggle */
+  :global(.dark) .accessibility-toggle-slider {
+    background: rgba(156, 163, 175, 0.3);
+    border-color: rgba(156, 163, 175, 0.5);
+  }
+
+  :global(.dark) .accessibility-toggle-slider::before {
+    background: rgb(229, 231, 235);
+  }
+
+  .accessibility-toggle:checked + .accessibility-toggle-slider {
+    background: var(--aw-color-primary);
+    border-color: var(--aw-color-primary);
+  }
+
+  .accessibility-toggle:checked + .accessibility-toggle-slider::before {
+    transform: translateX(1.5rem) translateY(-50%);
+  }
+
+  .accessibility-toggle-text {
+    font-size: 0.9375rem;
+  }
+
+  /* Reset Button */
+  .accessibility-reset-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--aw-color-border);
+    border-radius: 0.375rem;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: var(--aw-color-text-muted);
+    transition: all 200ms;
+  }
+
+  .accessibility-reset-btn:hover {
+    background: var(--aw-color-bg-hover);
+    color: var(--aw-color-text);
+    border-color: var(--aw-color-text-muted);
+  }
+
+  /* Prevent body scroll when panel open */
+  :global(body.accessibility-panel-open) {
+    overflow: hidden;
+  }
+</style>
+
+<script is:inline>
+(function() {
+  // Local copy of AccessibilitySettings utilities (inline scripts can't use imports)
+  const DEFAULT_SETTINGS = {
+    font: 'sylexiad',
+    theme: 'system',
+    textSize: 'base',
+    lineHeight: 'normal',
+    readingRuler: false,
+  };
+
+  function getSettings() {
+    if (typeof localStorage === 'undefined') return DEFAULT_SETTINGS;
+    const stored = localStorage.getItem('accessibility-preferences');
+    if (!stored) return DEFAULT_SETTINGS;
+    try {
+      return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+    } catch {
+      return DEFAULT_SETTINGS;
+    }
+  }
+
+  function saveSettings(settings) {
+    if (typeof localStorage === 'undefined') return;
+    localStorage.setItem('accessibility-preferences', JSON.stringify(settings));
+  }
+
+  function resetSettings() {
+    if (typeof localStorage === 'undefined') return DEFAULT_SETTINGS;
+    localStorage.removeItem('accessibility-preferences');
+    return DEFAULT_SETTINGS;
+  }
+
+  // Initialize settings from localStorage
+  let currentSettings = getSettings();
+
+  // Apply settings on load
+  applySettings(currentSettings);
+
+  // Update UI to match loaded settings
+  updateUI(currentSettings);
+
+  // === TOGGLE BUTTON EVENT DELEGATION ===
+  // Handle clicks on any button with [data-accessibility-toggle]
+  // This supports multiple toggle buttons (mobile + desktop) without duplicate IDs
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('[data-accessibility-toggle]');
+    if (!target) return;
+
+    const panel = document.getElementById('accessibility-panel');
+    const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+    const isOpen = panel?.classList.contains('open');
+
+    if (isOpen) {
+      panel?.classList.remove('open');
+      allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+      document.body.classList.remove('accessibility-panel-open');
+    } else {
+      panel?.classList.add('open');
+      allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
+      document.body.classList.add('accessibility-panel-open');
+      setupFocusTrap();
+    }
+  });
+
+  // Font selection
+  document.querySelectorAll('input[name="font"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      const target = e.target;
+      currentSettings.font = target.value;
+      saveSettings(currentSettings);
+      applyFont(currentSettings.font);
+    });
+  });
+
+  // Theme selection
+  document.querySelectorAll('input[name="theme"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      const target = e.target;
+      currentSettings.theme = target.value;
+      saveSettings(currentSettings);
+      applyTheme(currentSettings.theme);
+    });
+  });
+
+  // Text size (placeholder - console.log only)
+  document.querySelectorAll('.accessibility-size-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const target = e.target;
+      const size = target.dataset.textSize;
+
+      if (!size) return;
+
+      currentSettings.textSize = size;
+      saveSettings(currentSettings);
+
+      // Update active state
+      document.querySelectorAll('.accessibility-size-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      target.classList.add('active');
+      target.setAttribute('aria-pressed', 'true');
+
+      // Update label
+      const labels = {
+        xs: 'Extra Small',
+        sm: 'Small',
+        base: 'Normal',
+        lg: 'Large',
+        xl: 'Extra Large'
+      };
+      const label = document.getElementById('text-size-label');
+      if (label) label.textContent = labels[size] || 'Normal';
+
+      // PLACEHOLDER: Console log instead of applying
+      console.log('📏 Text size changed to:', size);
+      console.log('   Implementation pending - would scale font-size here');
+    });
+  });
+
+  // Line height (placeholder - console.log only)
+  document.querySelectorAll('input[name="lineHeight"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      const target = e.target;
+      currentSettings.lineHeight = target.value;
+      saveSettings(currentSettings);
+
+      // PLACEHOLDER: Console log instead of applying
+      console.log('📐 Line height changed to:', currentSettings.lineHeight);
+      console.log('   Implementation pending - would adjust line-height CSS here');
+    });
+  });
+
+  // Reading ruler (placeholder - console.log only)
+  document.getElementById('reading-ruler')?.addEventListener('change', (e) => {
+    const target = e.target;
+    currentSettings.readingRuler = target.checked;
+    saveSettings(currentSettings);
+
+    // PLACEHOLDER: Console log instead of applying
+    console.log('📏 Reading ruler toggled:', currentSettings.readingRuler ? 'ON' : 'OFF');
+    console.log('   Implementation pending - would enable line highlighting here');
+  });
+
+  // Reset button
+  document.getElementById('reset-settings')?.addEventListener('click', () => {
+    currentSettings = resetSettings();
+    applySettings(currentSettings);
+
+    // Update UI to reflect reset
+    location.reload(); // Simple way to reset all UI elements
+  });
+
+  // Close button
+  document.getElementById('accessibility-close')?.addEventListener('click', closePanel);
+
+  // Close on backdrop click
+  document.getElementById('accessibility-backdrop')?.addEventListener('click', closePanel);
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const panel = document.getElementById('accessibility-panel');
+      if (panel?.classList.contains('open')) {
+        closePanel();
+      }
+    }
+  });
+
+  // Keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac)
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+      e.preventDefault();
+      const panel = document.getElementById('accessibility-panel');
+      const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+
+      if (panel?.classList.contains('open')) {
+        closePanel();
+      } else {
+        panel?.classList.add('open');
+        allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
+        document.body.classList.add('accessibility-panel-open');
+        setupFocusTrap();
+      }
+    }
+  });
+
+  // Focus trap implementation
+  const panel = document.getElementById('accessibility-panel');
+  const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+  let firstFocusableElement = null;
+  let lastFocusableElement = null;
+
+  function setupFocusTrap() {
+    if (!panel) return;
+
+    const focusableContent = panel.querySelectorAll(focusableElements);
+    firstFocusableElement = focusableContent[0];
+    lastFocusableElement = focusableContent[focusableContent.length - 1];
+
+    // Focus first element when panel opens
+    if (firstFocusableElement) firstFocusableElement.focus();
+  }
+
+  // Trap focus within panel
+  document.addEventListener('keydown', (e) => {
+    if (!panel || !panel.classList.contains('open')) return;
+
+    if (e.key === 'Tab') {
+      if (e.shiftKey) {
+        // Shift+Tab: going backwards
+        if (document.activeElement === firstFocusableElement) {
+          e.preventDefault();
+          if (lastFocusableElement) lastFocusableElement.focus();
+        }
+      } else {
+        // Tab: going forwards
+        if (document.activeElement === lastFocusableElement) {
+          e.preventDefault();
+          if (firstFocusableElement) firstFocusableElement.focus();
+        }
+      }
+    }
+  });
+
+  // Setup focus trap when panel opens
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'class') {
+        const target = mutation.target;
+        if (target.classList.contains('open')) {
+          setupFocusTrap();
+        }
+      }
+    });
+  });
+
+  if (panel) {
+    observer.observe(panel, { attributes: true });
+  }
+
+  function closePanel() {
+    const panelElement = document.getElementById('accessibility-panel');
+    const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+
+    if (panelElement) panelElement.classList.remove('open');
+    allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+    document.body.classList.remove('accessibility-panel-open');
+  }
+
+  function updateUI(settings) {
+    // Update font radio buttons
+    const fontRadio = document.querySelector(`input[name="font"][value="${settings.font}"]`);
+    if (fontRadio) fontRadio.checked = true;
+
+    // Update theme radio buttons
+    const themeRadio = document.querySelector(`input[name="theme"][value="${settings.theme}"]`);
+    if (themeRadio) themeRadio.checked = true;
+
+    // Update text size buttons
+    document.querySelectorAll('.accessibility-size-btn').forEach(btn => {
+      const button = btn;
+      const size = button.dataset.textSize;
+      if (size === settings.textSize) {
+        button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
+      } else {
+        button.classList.remove('active');
+        button.setAttribute('aria-pressed', 'false');
+      }
+    });
+
+    // Update text size label
+    const labels = {
+      xs: 'Extra Small',
+      sm: 'Small',
+      base: 'Normal',
+      lg: 'Large',
+      xl: 'Extra Large'
+    };
+    const label = document.getElementById('text-size-label');
+    if (label) label.textContent = labels[settings.textSize] || 'Normal';
+
+    // Update line height radio buttons
+    const lineHeightRadio = document.querySelector(`input[name="lineHeight"][value="${settings.lineHeight}"]`);
+    if (lineHeightRadio) lineHeightRadio.checked = true;
+
+    // Update reading ruler checkbox
+    const rulerCheckbox = document.getElementById('reading-ruler');
+    if (rulerCheckbox) rulerCheckbox.checked = settings.readingRuler;
+  }
+
+  function applySettings(settings) {
+    applyFont(settings.font);
+    applyTheme(settings.theme);
+    // Text size, line height, reading ruler are placeholders (console.log only)
+  }
+
+  function applyFont(font) {
+    // Copy existing ToggleFont logic
+    const fonts = {
+      sylexiad: 'Sylexiad Sans Medium, ui-sans-serif, system-ui, -apple-system',
+      opendyslexic: 'OpenDyslexic3, ui-sans-serif, system-ui, -apple-system',
+      fast: 'Fast Sans, ui-sans-serif, system-ui, -apple-system',
+    };
+
+    document.documentElement.style.setProperty('--aw-font-sans', fonts[font]);
+  }
+
+  function applyTheme(theme) {
+    // Copy existing ToggleTheme logic
+    if (theme === 'system') {
+      localStorage.removeItem('theme');
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
+    } else {
+      localStorage.setItem('theme', theme);
+      document.documentElement.classList.toggle('dark', theme === 'dark');
+    }
+  }
+})();
+</script>
+
