@@ -11,6 +11,7 @@ You are being run AFTER a task has been completed in this session. Your job is t
 **CRITICAL**: Review the **ENTIRE SESSION** from the very beginning, not just recent conversation since the last compaction.
 
 **How to find the full session history:**
+
 - Look for plan documents in the `temp/` folder (e.g., `temp/*-PLAN.md`) that may have been created at session start
 - Check the conversation summary that appears after compaction - it contains the full session history
 - Review ALL file changes made during the session, not just recent ones

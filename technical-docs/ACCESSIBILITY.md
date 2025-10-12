@@ -37,9 +37,11 @@ The button appears in both mobile and desktop navigation with synchronised state
 The accessibility panel includes the following controls:
 
 #### 1. Font Selection
+
 **Status**: Fully Implemented
 
 Three neurodiversity-friendly font options with visual preview:
+
 - **Sylexiad Sans** (default) - General neurodiversity support
 - **OpenDyslexic** - Specialised dyslexia support
 - **Fast Sans** - Quick reading optimisation
@@ -49,9 +51,11 @@ Font names are displayed in their own typeface, allowing users to preview the fo
 See [Neurodiversity-Friendly Fonts](#neurodiversity-friendly-fonts) section for detailed implementation.
 
 #### 2. Theme Selection
+
 **Status**: Fully Implemented
 
 Three colour scheme options:
+
 - **Light** - High contrast with dark text on light background
 - **Dark** - Reduced brightness with light text on dark background
 - **System** - Automatically matches operating system preference
@@ -61,14 +65,17 @@ Theme changes apply instantly and persist across sessions.
 See [Dark Mode](#dark-mode) section and [COLOURS.md](./COLOURS.md) for detailed implementation.
 
 #### 3. Text Size
+
 **Status**: Placeholder UI
 
 Five text size options from extra small (XS) to extra large (XL). Currently logs selection to console but does not apply changes. Intended for future implementation.
 
 #### 4. Line Height
+
 **Status**: Placeholder UI
 
 Three line spacing options:
+
 - **Compact** - Tighter spacing for faster scanning
 - **Normal** - Standard line height
 - **Relaxed** - Increased spacing for easier tracking
@@ -76,14 +83,17 @@ Three line spacing options:
 Currently logs selection to console but does not apply changes. Intended for future implementation.
 
 #### 5. Reading Ruler
+
 **Status**: Placeholder UI
 
 Toggle switch to enable/disable a reading ruler that follows the user's cursor. Currently logs state to console but does not render ruler. Intended for future implementation to help users with tracking difficulties focus on one line at a time.
 
 #### 6. Reset to Defaults
+
 **Status**: Fully Implemented
 
 Button that resets all accessibility settings to their default values:
+
 - Font: Sylexiad Sans
 - Theme: System
 - Text Size: Base (when implemented)
@@ -138,13 +148,14 @@ document.addEventListener('click', (e) => {
 
   // Toggle panel and sync aria-expanded on ALL buttons
   const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
-  allToggleButtons.forEach(btn => {
+  allToggleButtons.forEach((btn) => {
     btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
   });
 });
 ```
 
 This approach ensures that:
+
 - Multiple toggle buttons can exist (mobile + desktop views)
 - All buttons stay synchronised
 - No duplicate ID conflicts
@@ -153,6 +164,7 @@ This approach ensures that:
 **Focus Trap**:
 
 When the panel opens, keyboard focus is trapped within the panel:
+
 - `Tab` cycles forward through controls
 - `Shift + Tab` cycles backward
 - `Esc` closes the panel and returns focus to the toggle button
@@ -182,7 +194,7 @@ When the panel opens, keyboard focus is trapped within the panel:
   aria-modal="true"
   aria-label="Accessibility Settings"
   class="accessibility-panel"
->
+></aside>
 ```
 
 - `role="dialog"` - Identifies as modal dialog
@@ -214,13 +226,13 @@ import AccessibilityPanel from '~/components/common/AccessibilityPanel.astro';
 ```javascript
 const settings = JSON.parse(
   localStorage.getItem('accessibility-preferences') ||
-  JSON.stringify({
-    font: 'sylexiad',
-    theme: 'system',
-    textSize: 'base',
-    lineHeight: 'normal',
-    readingRuler: false
-  })
+    JSON.stringify({
+      font: 'sylexiad',
+      theme: 'system',
+      textSize: 'base',
+      lineHeight: 'normal',
+      readingRuler: false,
+    })
 );
 ```
 
@@ -326,9 +338,7 @@ The font selection interface is part of the Accessibility Settings panel:
 ```html
 <label class="accessibility-radio-label">
   <input type="radio" name="font" value="sylexiad" />
-  <span class="font-preview" style="font-family: 'Sylexiad Sans Medium', sans-serif;">
-    Sylexiad Sans
-  </span>
+  <span class="font-preview" style="font-family: 'Sylexiad Sans Medium', sans-serif;"> Sylexiad Sans </span>
 </label>
 ```
 
@@ -372,6 +382,7 @@ All four fonts are preloaded immediately on page load to eliminate FOUT (Flash o
 ```
 
 **Why preload all fonts?**
+
 - Ensures instant font switching with no loading delay
 - Eliminates FOUT when accessibility panel is opened
 - Small performance trade-off (~200KB compressed) for significantly better user experience
@@ -557,6 +568,7 @@ Custom focus styles in Tailwind:
 **Focus Trap Implementation**:
 
 The accessibility panel implements focus trapping when open:
+
 - Focus cycles only through panel controls
 - `Tab` moves to next control, wrapping to first when reaching last
 - `Shift + Tab` moves to previous control, wrapping to last when reaching first
@@ -568,12 +580,14 @@ Location: `src/components/common/AccessibilityPanel.astro`
 ### Keyboard Shortcuts
 
 **Global**:
+
 - `Tab` - Next focusable element
 - `Shift + Tab` - Previous focusable element
 - `Enter` / `Space` - Activate buttons and links
 - `Esc` - Close dropdowns and modals
 
 **Accessibility Panel**:
+
 - `Ctrl + Shift + A` (Windows/Linux) or `Cmd + Shift + A` (Mac) - Open accessibility settings panel
 - `Esc` - Close panel and return focus to toggle button
 - Arrow keys - Navigate radio button groups
@@ -651,14 +665,19 @@ Location: `src/components/common/ToggleAccessibility.astro`
 >
   <!-- Universal accessibility icon (person in circle) -->
   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+    />
   </svg>
   <span class="ml-1 hidden xl:inline">Accessibility</span>
 </button>
 ```
 
 The accessibility panel includes proper ARIA attributes:
+
 - `role="dialog"` - Identifies the panel as a modal dialog
 - `aria-modal="true"` - Indicates modal behaviour
 - `aria-label="Accessibility Settings"` - Provides context for screen readers

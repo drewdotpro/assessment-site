@@ -23,13 +23,12 @@ const settings = DEFAULT_SETTINGS;
       aria-label="Close accessibility settings"
     >
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
   </div>
 
   <div class="accessibility-panel-content">
-
     <!-- Font Selection -->
     <section class="accessibility-section">
       <h3 class="accessibility-section-title">Font</h3>
@@ -55,13 +54,7 @@ const settings = DEFAULT_SETTINGS;
           <span class="font-preview" style="font-family: 'OpenDyslexic3', sans-serif;">OpenDyslexic</span>
         </label>
         <label class="accessibility-radio-label">
-          <input
-            type="radio"
-            name="font"
-            value="fast"
-            checked={settings.font === 'fast'}
-            class="accessibility-radio"
-          />
+          <input type="radio" name="font" value="fast" checked={settings.font === 'fast'} class="accessibility-radio" />
           <span class="font-preview" style="font-family: 'Fast Sans', sans-serif;">Fast Sans</span>
         </label>
       </div>
@@ -193,12 +186,7 @@ const settings = DEFAULT_SETTINGS;
     <section class="accessibility-section">
       <h3 class="accessibility-section-title">Reading Ruler</h3>
       <label class="accessibility-toggle-label">
-        <input
-          type="checkbox"
-          id="reading-ruler"
-          checked={settings.readingRuler}
-          class="accessibility-toggle"
-        />
+        <input type="checkbox" id="reading-ruler" checked={settings.readingRuler} class="accessibility-toggle" />
         <span class="accessibility-toggle-slider"></span>
         <span class="accessibility-toggle-text">Highlight current line</span>
       </label>
@@ -206,24 +194,13 @@ const settings = DEFAULT_SETTINGS;
 
     <!-- Reset Button -->
     <section class="accessibility-section">
-      <button
-        id="reset-settings"
-        type="button"
-        class="accessibility-reset-btn"
-      >
-        Reset to Defaults
-      </button>
+      <button id="reset-settings" type="button" class="accessibility-reset-btn"> Reset to Defaults </button>
     </section>
-
   </div>
 </aside>
 
 <!-- Backdrop -->
-<div
-  id="accessibility-backdrop"
-  class="accessibility-backdrop"
-  aria-hidden="true"
-></div>
+<div id="accessibility-backdrop" class="accessibility-backdrop" aria-hidden="true"></div>
 
 <style>
   /* Backdrop */
@@ -233,7 +210,9 @@ const settings = DEFAULT_SETTINGS;
     background: rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 300ms ease, visibility 300ms ease;
+    transition:
+      opacity 300ms ease,
+      visibility 300ms ease;
     z-index: 999;
   }
 
@@ -306,7 +285,9 @@ const settings = DEFAULT_SETTINGS;
     border: none;
     cursor: pointer;
     color: var(--aw-color-text-muted);
-    transition: background-color 200ms, color 200ms;
+    transition:
+      background-color 200ms,
+      color 200ms;
   }
 
   .accessibility-panel-close:hover {
@@ -387,7 +368,7 @@ const settings = DEFAULT_SETTINGS;
   }
 
   .accessibility-size-btn.active,
-  .accessibility-size-btn[aria-pressed="true"] {
+  .accessibility-size-btn[aria-pressed='true'] {
     background: var(--aw-color-primary);
     color: white;
     border-color: var(--aw-color-primary);
@@ -493,327 +474,326 @@ const settings = DEFAULT_SETTINGS;
 </style>
 
 <script is:inline>
-(function() {
-  // Local copy of AccessibilitySettings utilities (inline scripts can't use imports)
-  const DEFAULT_SETTINGS = {
-    font: 'sylexiad',
-    theme: 'system',
-    textSize: 'base',
-    lineHeight: 'normal',
-    readingRuler: false,
-  };
+  (function () {
+    // Local copy of AccessibilitySettings utilities (inline scripts can't use imports)
+    const DEFAULT_SETTINGS = {
+      font: 'sylexiad',
+      theme: 'system',
+      textSize: 'base',
+      lineHeight: 'normal',
+      readingRuler: false,
+    };
 
-  function getSettings() {
-    if (typeof localStorage === 'undefined') return DEFAULT_SETTINGS;
-    const stored = localStorage.getItem('accessibility-preferences');
-    if (!stored) return DEFAULT_SETTINGS;
-    try {
-      return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
-    } catch {
+    function getSettings() {
+      if (typeof localStorage === 'undefined') return DEFAULT_SETTINGS;
+      const stored = localStorage.getItem('accessibility-preferences');
+      if (!stored) return DEFAULT_SETTINGS;
+      try {
+        return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+      } catch {
+        return DEFAULT_SETTINGS;
+      }
+    }
+
+    function saveSettings(settings) {
+      if (typeof localStorage === 'undefined') return;
+      localStorage.setItem('accessibility-preferences', JSON.stringify(settings));
+    }
+
+    function resetSettings() {
+      if (typeof localStorage === 'undefined') return DEFAULT_SETTINGS;
+      localStorage.removeItem('accessibility-preferences');
       return DEFAULT_SETTINGS;
     }
-  }
 
-  function saveSettings(settings) {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.setItem('accessibility-preferences', JSON.stringify(settings));
-  }
+    // Initialize settings from localStorage
+    let currentSettings = getSettings();
 
-  function resetSettings() {
-    if (typeof localStorage === 'undefined') return DEFAULT_SETTINGS;
-    localStorage.removeItem('accessibility-preferences');
-    return DEFAULT_SETTINGS;
-  }
+    // Apply settings on load
+    applySettings(currentSettings);
 
-  // Initialize settings from localStorage
-  let currentSettings = getSettings();
+    // Update UI to match loaded settings
+    updateUI(currentSettings);
 
-  // Apply settings on load
-  applySettings(currentSettings);
+    // === TOGGLE BUTTON EVENT DELEGATION ===
+    // Handle clicks on any button with [data-accessibility-toggle]
+    // This supports multiple toggle buttons (mobile + desktop) without duplicate IDs
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-accessibility-toggle]');
+      if (!target) return;
 
-  // Update UI to match loaded settings
-  updateUI(currentSettings);
+      const panel = document.getElementById('accessibility-panel');
+      const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+      const isOpen = panel?.classList.contains('open');
 
-  // === TOGGLE BUTTON EVENT DELEGATION ===
-  // Handle clicks on any button with [data-accessibility-toggle]
-  // This supports multiple toggle buttons (mobile + desktop) without duplicate IDs
-  document.addEventListener('click', (e) => {
-    const target = e.target.closest('[data-accessibility-toggle]');
-    if (!target) return;
-
-    const panel = document.getElementById('accessibility-panel');
-    const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
-    const isOpen = panel?.classList.contains('open');
-
-    if (isOpen) {
-      panel?.classList.remove('open');
-      allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
-      document.body.classList.remove('accessibility-panel-open');
-    } else {
-      panel?.classList.add('open');
-      allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
-      document.body.classList.add('accessibility-panel-open');
-      setupFocusTrap();
-    }
-  });
-
-  // Font selection
-  document.querySelectorAll('input[name="font"]').forEach((radio) => {
-    radio.addEventListener('change', (e) => {
-      const target = e.target;
-      currentSettings.font = target.value;
-      saveSettings(currentSettings);
-      applyFont(currentSettings.font);
+      if (isOpen) {
+        panel?.classList.remove('open');
+        allToggleButtons.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+        document.body.classList.remove('accessibility-panel-open');
+      } else {
+        panel?.classList.add('open');
+        allToggleButtons.forEach((btn) => btn.setAttribute('aria-expanded', 'true'));
+        document.body.classList.add('accessibility-panel-open');
+        setupFocusTrap();
+      }
     });
-  });
 
-  // Theme selection
-  document.querySelectorAll('input[name="theme"]').forEach((radio) => {
-    radio.addEventListener('change', (e) => {
-      const target = e.target;
-      currentSettings.theme = target.value;
-      saveSettings(currentSettings);
-      applyTheme(currentSettings.theme);
-    });
-  });
-
-  // Text size (placeholder - console.log only)
-  document.querySelectorAll('.accessibility-size-btn').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const target = e.target;
-      const size = target.dataset.textSize;
-
-      if (!size) return;
-
-      currentSettings.textSize = size;
-      saveSettings(currentSettings);
-
-      // Update active state
-      document.querySelectorAll('.accessibility-size-btn').forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-pressed', 'false');
+    // Font selection
+    document.querySelectorAll('input[name="font"]').forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        const target = e.target;
+        currentSettings.font = target.value;
+        saveSettings(currentSettings);
+        applyFont(currentSettings.font);
       });
-      target.classList.add('active');
-      target.setAttribute('aria-pressed', 'true');
+    });
 
-      // Update label
+    // Theme selection
+    document.querySelectorAll('input[name="theme"]').forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        const target = e.target;
+        currentSettings.theme = target.value;
+        saveSettings(currentSettings);
+        applyTheme(currentSettings.theme);
+      });
+    });
+
+    // Text size (placeholder - console.log only)
+    document.querySelectorAll('.accessibility-size-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const target = e.target;
+        const size = target.dataset.textSize;
+
+        if (!size) return;
+
+        currentSettings.textSize = size;
+        saveSettings(currentSettings);
+
+        // Update active state
+        document.querySelectorAll('.accessibility-size-btn').forEach((b) => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        target.classList.add('active');
+        target.setAttribute('aria-pressed', 'true');
+
+        // Update label
+        const labels = {
+          xs: 'Extra Small',
+          sm: 'Small',
+          base: 'Normal',
+          lg: 'Large',
+          xl: 'Extra Large',
+        };
+        const label = document.getElementById('text-size-label');
+        if (label) label.textContent = labels[size] || 'Normal';
+
+        // PLACEHOLDER: Console log instead of applying
+        console.log('📏 Text size changed to:', size);
+        console.log('   Implementation pending - would scale font-size here');
+      });
+    });
+
+    // Line height (placeholder - console.log only)
+    document.querySelectorAll('input[name="lineHeight"]').forEach((radio) => {
+      radio.addEventListener('change', (e) => {
+        const target = e.target;
+        currentSettings.lineHeight = target.value;
+        saveSettings(currentSettings);
+
+        // PLACEHOLDER: Console log instead of applying
+        console.log('📐 Line height changed to:', currentSettings.lineHeight);
+        console.log('   Implementation pending - would adjust line-height CSS here');
+      });
+    });
+
+    // Reading ruler (placeholder - console.log only)
+    document.getElementById('reading-ruler')?.addEventListener('change', (e) => {
+      const target = e.target;
+      currentSettings.readingRuler = target.checked;
+      saveSettings(currentSettings);
+
+      // PLACEHOLDER: Console log instead of applying
+      console.log('📏 Reading ruler toggled:', currentSettings.readingRuler ? 'ON' : 'OFF');
+      console.log('   Implementation pending - would enable line highlighting here');
+    });
+
+    // Reset button
+    document.getElementById('reset-settings')?.addEventListener('click', () => {
+      currentSettings = resetSettings();
+      applySettings(currentSettings);
+
+      // Update UI to reflect reset
+      location.reload(); // Simple way to reset all UI elements
+    });
+
+    // Close button
+    document.getElementById('accessibility-close')?.addEventListener('click', closePanel);
+
+    // Close on backdrop click
+    document.getElementById('accessibility-backdrop')?.addEventListener('click', closePanel);
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const panel = document.getElementById('accessibility-panel');
+        if (panel?.classList.contains('open')) {
+          closePanel();
+        }
+      }
+    });
+
+    // Keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac)
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        const panel = document.getElementById('accessibility-panel');
+        const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+
+        if (panel?.classList.contains('open')) {
+          closePanel();
+        } else {
+          panel?.classList.add('open');
+          allToggleButtons.forEach((btn) => btn.setAttribute('aria-expanded', 'true'));
+          document.body.classList.add('accessibility-panel-open');
+          setupFocusTrap();
+        }
+      }
+    });
+
+    // Focus trap implementation
+    const panel = document.getElementById('accessibility-panel');
+    const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+    let firstFocusableElement = null;
+    let lastFocusableElement = null;
+
+    function setupFocusTrap() {
+      if (!panel) return;
+
+      const focusableContent = panel.querySelectorAll(focusableElements);
+      firstFocusableElement = focusableContent[0];
+      lastFocusableElement = focusableContent[focusableContent.length - 1];
+
+      // Focus first element when panel opens
+      if (firstFocusableElement) firstFocusableElement.focus();
+    }
+
+    // Trap focus within panel
+    document.addEventListener('keydown', (e) => {
+      if (!panel || !panel.classList.contains('open')) return;
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          // Shift+Tab: going backwards
+          if (document.activeElement === firstFocusableElement) {
+            e.preventDefault();
+            if (lastFocusableElement) lastFocusableElement.focus();
+          }
+        } else {
+          // Tab: going forwards
+          if (document.activeElement === lastFocusableElement) {
+            e.preventDefault();
+            if (firstFocusableElement) firstFocusableElement.focus();
+          }
+        }
+      }
+    });
+
+    // Setup focus trap when panel opens
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const target = mutation.target;
+          if (target.classList.contains('open')) {
+            setupFocusTrap();
+          }
+        }
+      });
+    });
+
+    if (panel) {
+      observer.observe(panel, { attributes: true });
+    }
+
+    function closePanel() {
+      const panelElement = document.getElementById('accessibility-panel');
+      const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+
+      if (panelElement) panelElement.classList.remove('open');
+      allToggleButtons.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+      document.body.classList.remove('accessibility-panel-open');
+    }
+
+    function updateUI(settings) {
+      // Update font radio buttons
+      const fontRadio = document.querySelector(`input[name="font"][value="${settings.font}"]`);
+      if (fontRadio) fontRadio.checked = true;
+
+      // Update theme radio buttons
+      const themeRadio = document.querySelector(`input[name="theme"][value="${settings.theme}"]`);
+      if (themeRadio) themeRadio.checked = true;
+
+      // Update text size buttons
+      document.querySelectorAll('.accessibility-size-btn').forEach((btn) => {
+        const button = btn;
+        const size = button.dataset.textSize;
+        if (size === settings.textSize) {
+          button.classList.add('active');
+          button.setAttribute('aria-pressed', 'true');
+        } else {
+          button.classList.remove('active');
+          button.setAttribute('aria-pressed', 'false');
+        }
+      });
+
+      // Update text size label
       const labels = {
         xs: 'Extra Small',
         sm: 'Small',
         base: 'Normal',
         lg: 'Large',
-        xl: 'Extra Large'
+        xl: 'Extra Large',
       };
       const label = document.getElementById('text-size-label');
-      if (label) label.textContent = labels[size] || 'Normal';
+      if (label) label.textContent = labels[settings.textSize] || 'Normal';
 
-      // PLACEHOLDER: Console log instead of applying
-      console.log('📏 Text size changed to:', size);
-      console.log('   Implementation pending - would scale font-size here');
-    });
-  });
+      // Update line height radio buttons
+      const lineHeightRadio = document.querySelector(`input[name="lineHeight"][value="${settings.lineHeight}"]`);
+      if (lineHeightRadio) lineHeightRadio.checked = true;
 
-  // Line height (placeholder - console.log only)
-  document.querySelectorAll('input[name="lineHeight"]').forEach((radio) => {
-    radio.addEventListener('change', (e) => {
-      const target = e.target;
-      currentSettings.lineHeight = target.value;
-      saveSettings(currentSettings);
-
-      // PLACEHOLDER: Console log instead of applying
-      console.log('📐 Line height changed to:', currentSettings.lineHeight);
-      console.log('   Implementation pending - would adjust line-height CSS here');
-    });
-  });
-
-  // Reading ruler (placeholder - console.log only)
-  document.getElementById('reading-ruler')?.addEventListener('change', (e) => {
-    const target = e.target;
-    currentSettings.readingRuler = target.checked;
-    saveSettings(currentSettings);
-
-    // PLACEHOLDER: Console log instead of applying
-    console.log('📏 Reading ruler toggled:', currentSettings.readingRuler ? 'ON' : 'OFF');
-    console.log('   Implementation pending - would enable line highlighting here');
-  });
-
-  // Reset button
-  document.getElementById('reset-settings')?.addEventListener('click', () => {
-    currentSettings = resetSettings();
-    applySettings(currentSettings);
-
-    // Update UI to reflect reset
-    location.reload(); // Simple way to reset all UI elements
-  });
-
-  // Close button
-  document.getElementById('accessibility-close')?.addEventListener('click', closePanel);
-
-  // Close on backdrop click
-  document.getElementById('accessibility-backdrop')?.addEventListener('click', closePanel);
-
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      const panel = document.getElementById('accessibility-panel');
-      if (panel?.classList.contains('open')) {
-        closePanel();
-      }
+      // Update reading ruler checkbox
+      const rulerCheckbox = document.getElementById('reading-ruler');
+      if (rulerCheckbox) rulerCheckbox.checked = settings.readingRuler;
     }
-  });
 
-  // Keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac)
-  document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
-      e.preventDefault();
-      const panel = document.getElementById('accessibility-panel');
-      const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
+    function applySettings(settings) {
+      applyFont(settings.font);
+      applyTheme(settings.theme);
+      // Text size, line height, reading ruler are placeholders (console.log only)
+    }
 
-      if (panel?.classList.contains('open')) {
-        closePanel();
+    function applyFont(font) {
+      // Copy existing ToggleFont logic
+      const fonts = {
+        sylexiad: 'Sylexiad Sans Medium, ui-sans-serif, system-ui, -apple-system',
+        opendyslexic: 'OpenDyslexic3, ui-sans-serif, system-ui, -apple-system',
+        fast: 'Fast Sans, ui-sans-serif, system-ui, -apple-system',
+      };
+
+      document.documentElement.style.setProperty('--aw-font-sans', fonts[font]);
+    }
+
+    function applyTheme(theme) {
+      // Copy existing ToggleTheme logic
+      if (theme === 'system') {
+        localStorage.removeItem('theme');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark', systemTheme === 'dark');
       } else {
-        panel?.classList.add('open');
-        allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'true'));
-        document.body.classList.add('accessibility-panel-open');
-        setupFocusTrap();
+        localStorage.setItem('theme', theme);
+        document.documentElement.classList.toggle('dark', theme === 'dark');
       }
     }
-  });
-
-  // Focus trap implementation
-  const panel = document.getElementById('accessibility-panel');
-  const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
-  let firstFocusableElement = null;
-  let lastFocusableElement = null;
-
-  function setupFocusTrap() {
-    if (!panel) return;
-
-    const focusableContent = panel.querySelectorAll(focusableElements);
-    firstFocusableElement = focusableContent[0];
-    lastFocusableElement = focusableContent[focusableContent.length - 1];
-
-    // Focus first element when panel opens
-    if (firstFocusableElement) firstFocusableElement.focus();
-  }
-
-  // Trap focus within panel
-  document.addEventListener('keydown', (e) => {
-    if (!panel || !panel.classList.contains('open')) return;
-
-    if (e.key === 'Tab') {
-      if (e.shiftKey) {
-        // Shift+Tab: going backwards
-        if (document.activeElement === firstFocusableElement) {
-          e.preventDefault();
-          if (lastFocusableElement) lastFocusableElement.focus();
-        }
-      } else {
-        // Tab: going forwards
-        if (document.activeElement === lastFocusableElement) {
-          e.preventDefault();
-          if (firstFocusableElement) firstFocusableElement.focus();
-        }
-      }
-    }
-  });
-
-  // Setup focus trap when panel opens
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.attributeName === 'class') {
-        const target = mutation.target;
-        if (target.classList.contains('open')) {
-          setupFocusTrap();
-        }
-      }
-    });
-  });
-
-  if (panel) {
-    observer.observe(panel, { attributes: true });
-  }
-
-  function closePanel() {
-    const panelElement = document.getElementById('accessibility-panel');
-    const allToggleButtons = document.querySelectorAll('[data-accessibility-toggle]');
-
-    if (panelElement) panelElement.classList.remove('open');
-    allToggleButtons.forEach(btn => btn.setAttribute('aria-expanded', 'false'));
-    document.body.classList.remove('accessibility-panel-open');
-  }
-
-  function updateUI(settings) {
-    // Update font radio buttons
-    const fontRadio = document.querySelector(`input[name="font"][value="${settings.font}"]`);
-    if (fontRadio) fontRadio.checked = true;
-
-    // Update theme radio buttons
-    const themeRadio = document.querySelector(`input[name="theme"][value="${settings.theme}"]`);
-    if (themeRadio) themeRadio.checked = true;
-
-    // Update text size buttons
-    document.querySelectorAll('.accessibility-size-btn').forEach(btn => {
-      const button = btn;
-      const size = button.dataset.textSize;
-      if (size === settings.textSize) {
-        button.classList.add('active');
-        button.setAttribute('aria-pressed', 'true');
-      } else {
-        button.classList.remove('active');
-        button.setAttribute('aria-pressed', 'false');
-      }
-    });
-
-    // Update text size label
-    const labels = {
-      xs: 'Extra Small',
-      sm: 'Small',
-      base: 'Normal',
-      lg: 'Large',
-      xl: 'Extra Large'
-    };
-    const label = document.getElementById('text-size-label');
-    if (label) label.textContent = labels[settings.textSize] || 'Normal';
-
-    // Update line height radio buttons
-    const lineHeightRadio = document.querySelector(`input[name="lineHeight"][value="${settings.lineHeight}"]`);
-    if (lineHeightRadio) lineHeightRadio.checked = true;
-
-    // Update reading ruler checkbox
-    const rulerCheckbox = document.getElementById('reading-ruler');
-    if (rulerCheckbox) rulerCheckbox.checked = settings.readingRuler;
-  }
-
-  function applySettings(settings) {
-    applyFont(settings.font);
-    applyTheme(settings.theme);
-    // Text size, line height, reading ruler are placeholders (console.log only)
-  }
-
-  function applyFont(font) {
-    // Copy existing ToggleFont logic
-    const fonts = {
-      sylexiad: 'Sylexiad Sans Medium, ui-sans-serif, system-ui, -apple-system',
-      opendyslexic: 'OpenDyslexic3, ui-sans-serif, system-ui, -apple-system',
-      fast: 'Fast Sans, ui-sans-serif, system-ui, -apple-system',
-    };
-
-    document.documentElement.style.setProperty('--aw-font-sans', fonts[font]);
-  }
-
-  function applyTheme(theme) {
-    // Copy existing ToggleTheme logic
-    if (theme === 'system') {
-      localStorage.removeItem('theme');
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.classList.toggle('dark', systemTheme === 'dark');
-    } else {
-      localStorage.setItem('theme', theme);
-      document.documentElement.classList.toggle('dark', theme === 'dark');
-    }
-  }
-})();
+  })();
 </script>
-
