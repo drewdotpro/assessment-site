@@ -6,5 +6,11 @@ node_modules
 # Documentation and reference files
 decap-cms-docs/
 
-# CMS-managed content (user-written)
-src/data/post/
+# CMS-managed content (user-written markdown in blog posts)
+src/content/assessments/
+src/content/adhd/
+src/content/autism/
+
+# CMS template file (contains template placeholders like {{WEBSITE_ID}})
+# Prettier adds spaces inside braces which breaks substitution
+public/admin/config.template.yml
