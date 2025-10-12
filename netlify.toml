@@ -7,9 +7,9 @@
   command = "npm run build:${WEBSITE_ID}"
 
 [build.environment]
-  ASSESSMENTS_URL = "https://nd-assessment-site.netlify.app/"
-  ADHD_URL = "https://nd-assessment-site.netlify.app/"
-  AUTISM_URL = "https://nd-assessment-site.netlify.app/"
+  ASSESSMENTS_URL = "https://nd-assessment-site.netlify.app"
+  ADHD_URL = "https://nd-assessment-site.netlify.app"
+  AUTISM_URL = "https://nd-assessment-site.netlify.app"
 [build.processing.html]
   pretty_urls = false
 

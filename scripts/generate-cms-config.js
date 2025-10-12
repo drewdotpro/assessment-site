@@ -8,14 +8,33 @@ const __dirname = path.dirname(__filename);
 
 // Get environment variables
 const WEBSITE_ID = process.env.WEBSITE_ID;
-const ASSESSMENTS_URL = process.env.ASSESSMENTS_URL || 'http://localhost:4321';
-const ADHD_URL = process.env.ADHD_URL || 'http://localhost:4321';
-const AUTISM_URL = process.env.AUTISM_URL || 'http://localhost:4321';
+const ASSESSMENTS_URL = process.env.ASSESSMENTS_URL;
+const ADHD_URL = process.env.ADHD_URL;
+const AUTISM_URL = process.env.AUTISM_URL;
 
 // Validate required environment variables
 if (!WEBSITE_ID) {
   console.error('❌ ERROR: WEBSITE_ID environment variable is required');
   console.error('   Use: WEBSITE_ID=assessments npm run dev:assessments');
+  process.exit(1);
+}
+
+if (!ASSESSMENTS_URL || !ADHD_URL || !AUTISM_URL) {
+  console.error('❌ ERROR: Site URL environment variables are required');
+  console.error(
+    '   Missing:',
+    [!ASSESSMENTS_URL && 'ASSESSMENTS_URL', !ADHD_URL && 'ADHD_URL', !AUTISM_URL && 'AUTISM_URL']
+      .filter(Boolean)
+      .join(', ')
+  );
+  console.error('');
+  console.error('   For local development:');
+  console.error('   npm run dev:assessments (URLs set automatically)');
+  console.error('');
+  console.error('   For production builds:');
+  console.error('   Set environment variables in Netlify dashboard or netlify.toml');
+  console.error('   OR pass them explicitly:');
+  console.error('   ASSESSMENTS_URL=https://... npm run build:assessments');
   process.exit(1);
 }
 
