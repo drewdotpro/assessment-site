@@ -473,6 +473,35 @@ const settings = DEFAULT_SETTINGS;
   :global(body.accessibility-panel-open) {
     overflow: hidden;
   }
+
+  /* Reading Ruler Styles - Lightbox/Spotlight Effect */
+  /* Dark overlay that covers everything except the highlighted line */
+  :global(.reading-ruler-overlay) {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    /* Using box-shadow to create the spotlight effect - everything is dimmed except the gap */
+    box-shadow:
+      0 -100vh 0 100vh rgba(0, 0, 0, 0.35),
+      /* top shadow */ 0 100vh 0 100vh rgba(0, 0, 0, 0.35); /* bottom shadow */
+    transition: box-shadow 0.1s ease-out;
+    will-change: box-shadow;
+  }
+
+  /* In dark mode, use slightly darker overlay for better contrast */
+  :global(.dark) :global(.reading-ruler-overlay) {
+    box-shadow:
+      0 -100vh 0 100vh rgba(0, 0, 0, 0.45),
+      0 100vh 0 100vh rgba(0, 0, 0, 0.45);
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.reading-ruler-overlay) {
+      transition: none;
+    }
+  }
 </style>
 
 <script is:inline>
@@ -510,6 +539,11 @@ const settings = DEFAULT_SETTINGS;
 
     // Initialize settings from localStorage
     let currentSettings = getSettings();
+
+    // Reading ruler state
+    let readingRulerElement = null;
+    let readingRulerEnabled = false;
+    let mouseMoveHandler = null;
 
     // Main initialization function - called on initial load AND after each navigation
     function initializeAccessibilityPanel() {
@@ -602,6 +636,11 @@ const settings = DEFAULT_SETTINGS;
 
       // Apply the text size
       applyTextSize(size);
+
+      // Update ruler height if ruler is enabled
+      if (readingRulerEnabled) {
+        updateRulerHeight();
+      }
     });
 
     // Line height - delegated
@@ -610,20 +649,22 @@ const settings = DEFAULT_SETTINGS;
       if (target.matches && target.matches('input[name="lineHeight"]')) {
         currentSettings.lineHeight = target.value;
         saveSettings(currentSettings);
-        applyLineHeight(currentSettings.lineHeight); // Apply the change
+        applyLineHeight(currentSettings.lineHeight);
+
+        // Update ruler height if ruler is enabled
+        if (readingRulerEnabled) {
+          updateRulerHeight();
+        }
       }
     });
 
-    // Reading ruler (placeholder - console.log only) - delegated
+    // Reading ruler - delegated
     document.addEventListener('change', (e) => {
       const target = e.target;
       if (target.id === 'reading-ruler') {
         currentSettings.readingRuler = target.checked;
         saveSettings(currentSettings);
-
-        // PLACEHOLDER: Console log instead of applying
-        console.log('📏 Reading ruler toggled:', currentSettings.readingRuler ? 'ON' : 'OFF');
-        console.log('   Implementation pending - would enable line highlighting here');
+        applyReadingRuler(currentSettings.readingRuler); // Actually apply the change
       }
     });
 
@@ -775,8 +816,8 @@ const settings = DEFAULT_SETTINGS;
       applyFont(settings.font);
       applyTheme(settings.theme);
       applyTextSize(settings.textSize);
-      applyLineHeight(settings.lineHeight); // Apply line height
-      // Reading ruler is placeholder (console.log only)
+      applyLineHeight(settings.lineHeight);
+      applyReadingRuler(settings.readingRuler); // Apply reading ruler
     }
 
     function applyFont(font) {
@@ -826,11 +867,157 @@ const settings = DEFAULT_SETTINGS;
       // Note: normal is default (no class needed, uses :root value)
     }
 
+    /**
+     * Create reading ruler overlay element (lightbox effect)
+     */
+    function createReadingRuler() {
+      if (readingRulerElement) return; // Already exists
+
+      const overlay = document.createElement('div');
+      overlay.className = 'reading-ruler-overlay';
+      overlay.setAttribute('aria-hidden', 'true'); // Decorative element
+      document.body.appendChild(overlay);
+      readingRulerElement = overlay;
+
+      // Set initial height based on current line height and text size settings
+      updateRulerHeight();
+    }
+
+    /**
+     * Remove reading ruler overlay element
+     */
+    function removeReadingRuler() {
+      if (readingRulerElement) {
+        readingRulerElement.remove();
+        readingRulerElement = null;
+      }
+    }
+
+    /**
+     * Get current text size scale factor
+     */
+    function getTextSizeScale() {
+      const body = document.body;
+      if (body.classList.contains('text-size-xs')) return 0.875;
+      if (body.classList.contains('text-size-sm')) return 0.9375;
+      if (body.classList.contains('text-size-lg')) return 1.125;
+      if (body.classList.contains('text-size-xl')) return 1.25;
+      return 1; // base
+    }
+
+    /**
+     * Update ruler height based on line height and text size settings
+     */
+    function updateRulerHeight() {
+      if (!readingRulerElement) return;
+
+      // Get current line height scale from body class
+      const body = document.body;
+      let lineHeightScale = 1.5; // Default (normal)
+
+      if (body.classList.contains('line-height-compact')) {
+        lineHeightScale = 1.2;
+      } else if (body.classList.contains('line-height-relaxed')) {
+        lineHeightScale = 2.0;
+      }
+
+      // Get current text size scale
+      const textSizeScale = getTextSizeScale();
+
+      // Calculate final height: base font size (16px) × text size scale × line height scale × 1.2 (20% larger)
+      const heightInPixels = 16 * textSizeScale * lineHeightScale * 1.2;
+
+      // Store the height for positioning calculations
+      readingRulerElement.dataset.height = heightInPixels;
+    }
+
+    /**
+     * Update ruler position based on mouse position (lightbox effect)
+     */
+    function updateRulerPosition(e) {
+      if (!readingRulerElement) return;
+
+      // Get the ruler height
+      const rulerHeight = parseFloat(readingRulerElement.dataset.height) || 24;
+
+      // Calculate position centred on cursor Y position
+      const rulerTop = e.clientY - rulerHeight / 2;
+
+      // Update box-shadow to create spotlight effect
+      // The gap between the two shadows is the "spotlight"
+      readingRulerElement.style.boxShadow = `
+        0 -100vh 0 100vh rgba(0, 0, 0, ${document.documentElement.classList.contains('dark') ? '0.45' : '0.35'}),
+        0 calc(100vh + ${rulerHeight}px) 0 100vh rgba(0, 0, 0, ${document.documentElement.classList.contains('dark') ? '0.45' : '0.35'})
+      `;
+      readingRulerElement.style.top = `${rulerTop}px`;
+      readingRulerElement.style.height = `${rulerHeight}px`;
+    }
+
+    /**
+     * Enable reading ruler
+     */
+    function enableReadingRuler() {
+      if (readingRulerEnabled) return; // Already enabled
+
+      createReadingRuler();
+
+      // Create and store mousemove handler
+      mouseMoveHandler = (e) => updateRulerPosition(e);
+      document.addEventListener('mousemove', mouseMoveHandler, { passive: true });
+
+      readingRulerEnabled = true;
+    }
+
+    /**
+     * Disable reading ruler
+     */
+    function disableReadingRuler() {
+      if (!readingRulerEnabled) return; // Already disabled
+
+      // Remove event listener
+      if (mouseMoveHandler) {
+        document.removeEventListener('mousemove', mouseMoveHandler);
+        mouseMoveHandler = null;
+      }
+
+      // Remove ruler element
+      removeReadingRuler();
+
+      readingRulerEnabled = false;
+    }
+
+    /**
+     * Apply reading ruler setting
+     */
+    function applyReadingRuler(enabled) {
+      if (enabled) {
+        enableReadingRuler();
+      } else {
+        disableReadingRuler();
+      }
+    }
+
     // === INITIAL LOAD ===
     // Run on initial page load
     initializeAccessibilityPanel();
 
     // === ASTRO VIEW TRANSITIONS ===
+    // Cleanup reading ruler during page transitions
+    document.addEventListener('astro:before-swap', () => {
+      // Clean up ruler element and event listener during page transition
+      if (readingRulerEnabled) {
+        // Remove event listener
+        if (mouseMoveHandler) {
+          document.removeEventListener('mousemove', mouseMoveHandler);
+          mouseMoveHandler = null;
+        }
+        // Remove ruler element
+        removeReadingRuler();
+        // Reset flag so it can be recreated on next page if setting is enabled
+        readingRulerEnabled = false;
+      }
+    });
+
     // Re-initialize after each client-side navigation (Astro View Transitions)
     document.addEventListener('astro:page-load', () => {
       initializeAccessibilityPanel();

@@ -104,9 +104,35 @@ Line height changes apply instantly to all body text elements (paragraphs, list 
 
 #### 5. Reading Ruler
 
-**Status**: Placeholder UI
+**Status**: Fully Implemented
 
-Toggle switch to enable/disable a reading ruler that follows the user's cursor. Currently logs state to console but does not render ruler. Intended for future implementation to help users with tracking difficulties focus on one line at a time.
+Toggle switch to enable/disable a reading ruler (line guide) that follows the user's cursor, helping users with dyslexia, visual processing difficulties, ADHD, and low vision focus on one line of text at a time.
+
+**Features**:
+
+- **Lightbox/spotlight effect** - Subtle dark overlay (rgba(0,0,0,0.35) in light mode, 0.45 in dark mode) dims everything except the current line, creating a gentle "spotlight" that enhances readability by reducing visual distractions without being overly dramatic
+- **Dynamic height scaling** - Automatically adapts to BOTH user's text size setting (0.875x to 1.25x) AND line height setting (1.2x to 2.0x), with an additional 20% height increase for easier tracking
+- **Smooth cursor tracking** - Follows mouse movement with 100ms transition (respects `prefers-reduced-motion`)
+- **Non-intrusive** - Pointer events disabled, doesn't block clicks or interactions
+- **Performance optimised** - Only loads JavaScript when enabled, uses passive event listeners for zero-impact scrolling
+
+**How it works**:
+The ruler uses CSS box-shadow to create two large overlays (above and below the cursor) that dim surrounding content. The gap between these shadows creates a clear, bright "spotlight" on the line the user is reading. This inverse approach (dim distractions, highlight current line) is more effective than overlaying the text itself. The subtle dimming effect maintains readability while still providing focus.
+
+**Height calculation**: `16px (base font) × text size scale × line height scale × 1.2 (20% larger)`
+
+- Example: Base text + Normal line height = 16 × 1.0 × 1.5 × 1.2 = 28.8px
+- Example: XL text + Relaxed line height = 16 × 1.25 × 2.0 × 1.2 = 48px
+
+**Accessibility**:
+
+- Hidden from screen readers (`aria-hidden="true"`) as it's a purely visual guide
+- Toggle fully keyboard accessible
+- Works in both light and dark themes with adjusted opacity for optimal contrast
+- Respects reduced motion preferences
+- Scales appropriately with all text size and line height combinations
+
+**Implementation**: Reading ruler element is dynamically created when enabled and removed when disabled. Mousemove event listener only attached when feature is active, ensuring zero performance impact when disabled. Height automatically updates when user changes text size or line height settings. See `src/components/common/AccessibilityPanel.astro:477-505` (CSS) and `:866-950` (JavaScript).
 
 #### 6. Reset to Defaults
 
@@ -792,4 +818,4 @@ Information not conveyed by colour alone:
 
 ---
 
-**Last Updated**: 2025-01-12
+**Last Updated**: 2025-10-12
