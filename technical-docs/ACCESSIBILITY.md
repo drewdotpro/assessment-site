@@ -88,15 +88,19 @@ Button labels display in their representative sizes (e.g., the "A+" button for X
 
 #### 4. Line Height
 
-**Status**: Placeholder UI
+**Status**: Fully Implemented
 
-Three line spacing options:
+Three line spacing options for improved readability:
 
-- **Compact** - Tighter spacing for faster scanning
-- **Normal** - Standard line height
-- **Relaxed** - Increased spacing for easier tracking
+- **Compact** - 1.2x line height - Tighter spacing for users who prefer denser text
+- **Normal** - 1.5x line height (WCAG recommended, default) - Standard spacing meeting WCAG 2.1 SC 1.4.12 Level AA
+- **Relaxed** - 2.0x line height - Wider spacing for improved readability and tracking
 
-Currently logs selection to console but does not apply changes. Intended for future implementation.
+Line height changes apply instantly to all body text elements (paragraphs, list items, blockquotes, table cells) whilst excluding UI elements (buttons, navigation, headers) to maintain proper interface spacing. Headings maintain a fixed 1.2x line height for visual hierarchy.
+
+**WCAG Compliance**: Default setting (Normal, 1.5x) meets WCAG 2.1 Success Criterion 1.4.12 (Level AA) which recommends line spacing of at least 1.5 times the font size for body text.
+
+**Implementation**: Uses CSS custom property `--aw-line-height-scale` applied via body classes (`.line-height-compact`, `.line-height-normal`, `.line-height-relaxed`). See `src/components/CustomStyles.astro:244-342` for complete CSS implementation.
 
 #### 5. Reading Ruler
 

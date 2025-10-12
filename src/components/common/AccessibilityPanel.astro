@@ -604,16 +604,13 @@ const settings = DEFAULT_SETTINGS;
       applyTextSize(size);
     });
 
-    // Line height (placeholder - console.log only) - delegated
+    // Line height - delegated
     document.addEventListener('change', (e) => {
       const target = e.target;
       if (target.matches && target.matches('input[name="lineHeight"]')) {
         currentSettings.lineHeight = target.value;
         saveSettings(currentSettings);
-
-        // PLACEHOLDER: Console log instead of applying
-        console.log('📐 Line height changed to:', currentSettings.lineHeight);
-        console.log('   Implementation pending - would adjust line-height CSS here');
+        applyLineHeight(currentSettings.lineHeight); // Apply the change
       }
     });
 
@@ -778,7 +775,8 @@ const settings = DEFAULT_SETTINGS;
       applyFont(settings.font);
       applyTheme(settings.theme);
       applyTextSize(settings.textSize);
-      // Line height and reading ruler are placeholders (console.log only)
+      applyLineHeight(settings.lineHeight); // Apply line height
+      // Reading ruler is placeholder (console.log only)
     }
 
     function applyFont(font) {
@@ -813,6 +811,19 @@ const settings = DEFAULT_SETTINGS;
         document.body.classList.add(`text-size-${size}`);
       }
       // Note: base is default (no class needed, uses :root value)
+    }
+
+    function applyLineHeight(lineHeight) {
+      const body = document.body;
+
+      // Remove all line height classes
+      body.classList.remove('line-height-compact', 'line-height-normal', 'line-height-relaxed');
+
+      // Add selected line height class
+      if (lineHeight && lineHeight !== 'normal') {
+        body.classList.add(`line-height-${lineHeight}`);
+      }
+      // Note: normal is default (no class needed, uses :root value)
     }
 
     // === INITIAL LOAD ===

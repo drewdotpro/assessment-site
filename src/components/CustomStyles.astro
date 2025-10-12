@@ -240,4 +240,104 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
+
+  /* Line Height Scaling
+     Applied to body text only, not UI components or headings.
+     Uses CSS custom property for line height scale factor.
+     WCAG 2.1 SC 1.4.12 recommends minimum 1.5 for body text. */
+
+  :root {
+    --aw-line-height-scale: 1.5; /* Default: Normal (WCAG recommended) */
+  }
+
+  /* Line height classes applied to <body> */
+  body.line-height-compact {
+    --aw-line-height-scale: 1.2; /* Tighter spacing */
+  }
+
+  body.line-height-normal {
+    --aw-line-height-scale: 1.5; /* WCAG recommended */
+  }
+
+  body.line-height-relaxed {
+    --aw-line-height-scale: 2; /* Wider spacing */
+  }
+
+  /* Apply line height to body text elements only */
+  body,
+  p,
+  li,
+  dd,
+  blockquote,
+  td,
+  th,
+  .prose,
+  .prose p,
+  .prose li,
+  .prose dd,
+  .prose blockquote,
+  .prose td,
+  .prose th,
+  article p,
+  article li,
+  article dd,
+  article blockquote,
+  article td,
+  article th,
+  main p,
+  main li,
+  main dd,
+  main blockquote,
+  main td,
+  main th {
+    line-height: var(--aw-line-height-scale);
+  }
+
+  /* Exclude UI elements from line height scaling - they need fixed spacing */
+  button,
+  .btn,
+  input,
+  select,
+  textarea,
+  nav,
+  nav *,
+  header,
+  header *,
+  footer,
+  footer *,
+  .accessibility-panel,
+  .accessibility-panel *,
+  .card-title,
+  [role='navigation'],
+  [role='navigation'] * {
+    line-height: 1.5; /* Fixed line height for UI components */
+  }
+
+  /* Headings use separate fixed line height for visual hierarchy */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6,
+  article h1,
+  article h2,
+  article h3,
+  article h4,
+  article h5,
+  article h6,
+  main h1,
+  main h2,
+  main h3,
+  main h4,
+  main h5,
+  main h6 {
+    line-height: 1.2; /* Fixed for headings */
+  }
 </style>
