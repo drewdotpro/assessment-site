@@ -694,13 +694,6 @@ i18n:
   textDirection: ltr
 ```
 
-Future multi-language support would require:
-
-- Additional language files
-- Route prefixing (`/en/`, `/cy/`, etc.)
-- Content duplication or translation system
-- Language switcher component
-
 ---
 
-**Last Updated**: 2025-10-11
+**Last Updated**: 2025-01-12

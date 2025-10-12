@@ -319,4 +319,4 @@ These are intentionally hardcoded for specific visual effects and don't need to 
 
 ---
 
-**Last Updated**: 2025-10-11
+**Last Updated**: 2025-01-12

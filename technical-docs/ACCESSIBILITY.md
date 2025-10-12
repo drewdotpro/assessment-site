@@ -14,7 +14,6 @@ This document details the accessibility features implemented on the Together Ass
 6. [Keyboard Navigation](#keyboard-navigation)
 7. [ARIA Labels](#aria-labels)
 8. [Colour Contrast](#colour-contrast)
-9. [Testing Accessibility](#testing-accessibility)
 
 ---
 
@@ -66,9 +65,26 @@ See [Dark Mode](#dark-mode) section and [COLOURS.md](./COLOURS.md) for detailed 
 
 #### 3. Text Size
 
-**Status**: Placeholder UI
+**Status**: Fully Implemented
 
-Five text size options from extra small (XS) to extra large (XL). Currently logs selection to console but does not apply changes. Intended for future implementation.
+Five text size options with visual size representation in button labels:
+
+- **XS (Extra Small)** - 87.5% of base size (14px equivalent)
+- **SM (Small)** - 93.75% of base size (15px equivalent)
+- **Base (Normal)** - 100% of base size (16px equivalent) - Default
+- **LG (Large)** - 112.5% of base size (18px equivalent)
+- **XL (Extra Large)** - 125% of base size (20px equivalent)
+
+Text size changes apply instantly to:
+
+- Body text content (paragraphs, list items, table cells)
+- Headings (scaled proportionally to maintain hierarchy)
+- Accessibility panel content itself
+- All user-facing text across the site
+
+Button labels display in their representative sizes (e.g., the "A+" button for XL shows larger text than the "A-" button for XS), providing immediate visual preview of each size option.
+
+**Implementation**: Uses CSS custom property `--aw-text-size-scale` to scale font sizes dynamically. See [COLOURS.md](./COLOURS.md#text-size-scaling) for technical implementation details.
 
 #### 4. Line Height
 
@@ -96,7 +112,7 @@ Button that resets all accessibility settings to their default values:
 
 - Font: Sylexiad Sans
 - Theme: System
-- Text Size: Base (when implemented)
+- Text Size: Base
 - Line Height: Normal (when implemented)
 - Reading Ruler: Off (when implemented)
 
@@ -104,10 +120,13 @@ Button that resets all accessibility settings to their default values:
 
 **Components**:
 
-1. **`src/components/common/ToggleAccessibility.astro`** - Header button component
+1. **`src/components/common/ToggleAccessibility.astro`** - Header button component (Lines 7-17)
    - Uses `data-accessibility-toggle` attribute (not ID) to support multiple instances
    - Includes ARIA attributes for screen reader support
    - Visible in both mobile and desktop navigation
+   - Responsive icon sizing:
+     - Mobile/Tablet (< 1280px): 24px icon (larger for easier touch targets)
+     - Desktop (≥ 1280px): 20px icon (balanced with "Accessibility" text label)
 
 2. **`src/components/common/AccessibilityPanel.astro`** - Main panel component
    - Slide-in panel with backdrop overlay
@@ -160,6 +179,39 @@ This approach ensures that:
 - All buttons stay synchronised
 - No duplicate ID conflicts
 - Works with dynamic content
+
+**Astro View Transitions Compatibility**:
+
+The site uses Astro's ClientRouter (View Transitions API) for client-side navigation. The accessibility panel has been designed to work seamlessly across page navigations:
+
+Location: `src/components/common/AccessibilityPanel.astro:514-826`
+
+```javascript
+// Main initialization function - called on initial load AND after each navigation
+function initializeAccessibilityPanel() {
+  currentSettings = getSettings();
+  applySettings(currentSettings);
+  updateUI(currentSettings);
+}
+
+// Run on initial page load
+initializeAccessibilityPanel();
+
+// Re-initialize after each client-side navigation
+document.addEventListener('astro:page-load', () => {
+  initializeAccessibilityPanel();
+});
+```
+
+All event listeners use document-level event delegation (as described above) which persists across page navigations. When a user navigates to a new page:
+
+1. Event listeners remain active (attached to document, not page-specific elements)
+2. `astro:page-load` event fires
+3. Settings are reloaded from localStorage
+4. UI state is updated to match current settings
+5. All controls remain functional
+
+This ensures the accessibility panel opens correctly and all controls (text size, font, theme, etc.) work after navigation, without requiring page refresh.
 
 **Focus Trap**:
 
@@ -734,130 +786,6 @@ Information not conveyed by colour alone:
 
 ---
 
-## Testing Accessibility
-
-### Manual Testing
-
-1. **Keyboard navigation**
-   - Tab through entire page
-   - Verify focus indicators visible
-   - Activate all interactive elements with Enter/Space
-   - Close modals with Esc
-
-2. **Screen reader testing**
-   - Test with NVDA (Windows), JAWS (Windows), or VoiceOver (Mac)
-   - Verify heading structure
-   - Check ARIA labels
-   - Test form fields
-
-3. **Zoom testing**
-   - Zoom to 200% in browser
-   - Verify no horizontal scroll
-   - Check text doesn't overlap
-   - Test layout doesn't break
-
-4. **Colour contrast**
-   - Use browser DevTools colour picker
-   - Test in both light and dark modes
-   - Verify against WCAG guidelines
-
-### Automated Testing
-
-**Browser tools**:
-
-- Chrome DevTools Lighthouse (Accessibility audit)
-- axe DevTools browser extension
-- WAVE Web Accessibility Evaluation Tool
-
-**Command line**:
-
-```bash
-# Install pa11y
-npm install -g pa11y
-
-# Test a page
-pa11y http://localhost:4321
-
-# Test with specific standard
-pa11y --standard WCAG2AA http://localhost:4321
-```
-
-### Continuous Monitoring
-
-Consider adding accessibility testing to CI/CD:
-
-```bash
-# In package.json
-"scripts": {
-  "test:a11y": "pa11y-ci --sitemap http://localhost:4321/sitemap.xml"
-}
-```
-
 ---
 
-## Future Enhancements
-
-### Planned Improvements
-
-1. **Skip Links**
-   - "Skip to main content" link at top of page
-   - Hidden until focused with keyboard
-
-2. **Reduced Motion**
-   - Respect `prefers-reduced-motion` media query
-   - Disable animations for users who prefer reduced motion
-
-3. **Complete Accessibility Panel Features**
-   - Text Size control - Apply font size changes dynamically
-   - Line Height control - Apply line spacing changes
-   - Reading Ruler - Implement visual ruler that follows cursor
-
-4. **ARIA Live Regions**
-   - Announce dynamic content changes
-   - Status messages for form submissions
-
-5. **Enhanced Form Validation**
-   - Inline validation with clear error messages
-   - Group related form fields with `<fieldset>`
-   - Error summary at top of form
-
-### Implemented Features
-
-These features were previously planned and are now complete:
-
-- ✅ **Focus Management** - Focus trapping implemented in accessibility panel modal with proper focus return on close
-- ✅ **Unified Accessibility Controls** - Single panel consolidating font, theme, and future accessibility settings
-
-### Research Opportunities
-
-- Eye-tracking studies with neurodiverse users
-- User testing with assistive technology users
-- Dyslexia-specific layout optimisations
-- ADHD-friendly information architecture
-
----
-
-## Resources
-
-### Documentation
-
-- **Decap CMS Docs**: `decap-cms-docs/` folder
-- **WCAG 2.1**: https://www.w3.org/WAI/WCAG21/quickref/
-- **ARIA Authoring Practices**: https://www.w3.org/WAI/ARIA/apg/
-
-### Testing Tools
-
-- **axe DevTools**: Browser extension for accessibility testing
-- **WAVE**: https://wave.webaim.org/
-- **Lighthouse**: Built into Chrome DevTools
-- **Pa11y**: Command-line accessibility testing
-
-### Fonts
-
-- **OpenDyslexic**: https://opendyslexic.org/
-- **Sylexiad**: Custom neurodiversity-friendly font
-- **Fast Sans**: OpenType calt features for letter highlighting
-
----
-
-**Last Updated**: 2025-10-12
+**Last Updated**: 2025-01-12

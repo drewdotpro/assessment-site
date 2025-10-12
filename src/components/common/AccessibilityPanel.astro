@@ -97,7 +97,7 @@ const settings = DEFAULT_SETTINGS;
       </div>
     </section>
 
-    <!-- Text Size (Placeholder) -->
+    <!-- Text Size -->
     <section class="accessibility-section">
       <h3 class="accessibility-section-title">Text Size</h3>
       <div class="accessibility-button-group" role="group" aria-label="Text size selection">
@@ -106,40 +106,45 @@ const settings = DEFAULT_SETTINGS;
           data-text-size="xs"
           class="accessibility-size-btn"
           aria-pressed={settings.textSize === 'xs'}
+          aria-label="Extra Small"
         >
-          A-
+          <span style="font-size: 0.75rem;">A-</span>
         </button>
         <button
           type="button"
           data-text-size="sm"
           class="accessibility-size-btn"
           aria-pressed={settings.textSize === 'sm'}
+          aria-label="Small"
         >
-          A-
+          <span style="font-size: 0.875rem;">A-</span>
         </button>
         <button
           type="button"
           data-text-size="base"
           class="accessibility-size-btn active"
           aria-pressed={settings.textSize === 'base'}
+          aria-label="Normal"
         >
-          A
+          <span style="font-size: 1rem;">A</span>
         </button>
         <button
           type="button"
           data-text-size="lg"
           class="accessibility-size-btn"
           aria-pressed={settings.textSize === 'lg'}
+          aria-label="Large"
         >
-          A+
+          <span style="font-size: 1.125rem;">A+</span>
         </button>
         <button
           type="button"
           data-text-size="xl"
           class="accessibility-size-btn"
           aria-pressed={settings.textSize === 'xl'}
+          aria-label="Extra Large"
         >
-          A+
+          <span style="font-size: 1.25rem;">A+</span>
         </button>
       </div>
       <p class="accessibility-size-label">Current: <span id="text-size-label">Normal</span></p>
@@ -309,7 +314,6 @@ const settings = DEFAULT_SETTINGS;
   }
 
   .accessibility-section-title {
-    font-size: 0.875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -375,7 +379,6 @@ const settings = DEFAULT_SETTINGS;
   }
 
   .accessibility-size-label {
-    font-size: 0.875rem;
     color: var(--aw-color-text-muted);
     margin: 0;
   }
@@ -445,7 +448,7 @@ const settings = DEFAULT_SETTINGS;
   }
 
   .accessibility-toggle-text {
-    font-size: 0.9375rem;
+    /* Font size scales via CustomStyles.astro */
   }
 
   /* Reset Button */
@@ -456,7 +459,6 @@ const settings = DEFAULT_SETTINGS;
     border-radius: 0.375rem;
     background: transparent;
     cursor: pointer;
-    font-size: 0.9375rem;
     color: var(--aw-color-text-muted);
     transition: all 200ms;
   }
@@ -509,15 +511,22 @@ const settings = DEFAULT_SETTINGS;
     // Initialize settings from localStorage
     let currentSettings = getSettings();
 
-    // Apply settings on load
-    applySettings(currentSettings);
+    // Main initialization function - called on initial load AND after each navigation
+    function initializeAccessibilityPanel() {
+      // Reload settings from localStorage (in case they changed)
+      currentSettings = getSettings();
 
-    // Update UI to match loaded settings
-    updateUI(currentSettings);
+      // Apply settings on load
+      applySettings(currentSettings);
+
+      // Update UI to match loaded settings
+      updateUI(currentSettings);
+    }
 
     // === TOGGLE BUTTON EVENT DELEGATION ===
     // Handle clicks on any button with [data-accessibility-toggle]
     // This supports multiple toggle buttons (mobile + desktop) without duplicate IDs
+    // Using event delegation on document level to persist across page navigations
     document.addEventListener('click', (e) => {
       const target = e.target.closest('[data-accessibility-toggle]');
       if (!target) return;
@@ -538,88 +547,94 @@ const settings = DEFAULT_SETTINGS;
       }
     });
 
-    // Font selection
-    document.querySelectorAll('input[name="font"]').forEach((radio) => {
-      radio.addEventListener('change', (e) => {
-        const target = e.target;
+    // === EVENT DELEGATION FOR ALL INTERACTIVE ELEMENTS ===
+    // Use event delegation on document level to persist across Astro view transitions
+
+    // Font selection - delegated
+    document.addEventListener('change', (e) => {
+      const target = e.target;
+      if (target.matches && target.matches('input[name="font"]')) {
         currentSettings.font = target.value;
         saveSettings(currentSettings);
         applyFont(currentSettings.font);
-      });
+      }
     });
 
-    // Theme selection
-    document.querySelectorAll('input[name="theme"]').forEach((radio) => {
-      radio.addEventListener('change', (e) => {
-        const target = e.target;
+    // Theme selection - delegated
+    document.addEventListener('change', (e) => {
+      const target = e.target;
+      if (target.matches && target.matches('input[name="theme"]')) {
         currentSettings.theme = target.value;
         saveSettings(currentSettings);
         applyTheme(currentSettings.theme);
-      });
+      }
     });
 
-    // Text size (placeholder - console.log only)
-    document.querySelectorAll('.accessibility-size-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const target = e.target;
-        const size = target.dataset.textSize;
+    // Text size buttons - delegated
+    document.addEventListener('click', (e) => {
+      const button = e.target.closest('.accessibility-size-btn');
+      if (!button) return;
 
-        if (!size) return;
+      const size = button.dataset.textSize;
+      if (!size) return;
 
-        currentSettings.textSize = size;
-        saveSettings(currentSettings);
+      currentSettings.textSize = size;
+      saveSettings(currentSettings);
 
-        // Update active state
-        document.querySelectorAll('.accessibility-size-btn').forEach((b) => {
-          b.classList.remove('active');
-          b.setAttribute('aria-pressed', 'false');
-        });
-        target.classList.add('active');
-        target.setAttribute('aria-pressed', 'true');
-
-        // Update label
-        const labels = {
-          xs: 'Extra Small',
-          sm: 'Small',
-          base: 'Normal',
-          lg: 'Large',
-          xl: 'Extra Large',
-        };
-        const label = document.getElementById('text-size-label');
-        if (label) label.textContent = labels[size] || 'Normal';
-
-        // PLACEHOLDER: Console log instead of applying
-        console.log('📏 Text size changed to:', size);
-        console.log('   Implementation pending - would scale font-size here');
+      // Update active state
+      document.querySelectorAll('.accessibility-size-btn').forEach((b) => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
       });
+      button.classList.add('active');
+      button.setAttribute('aria-pressed', 'true');
+
+      // Update label
+      const labels = {
+        xs: 'Extra Small',
+        sm: 'Small',
+        base: 'Normal',
+        lg: 'Large',
+        xl: 'Extra Large',
+      };
+      const label = document.getElementById('text-size-label');
+      if (label) label.textContent = labels[size] || 'Normal';
+
+      // Apply the text size
+      applyTextSize(size);
     });
 
-    // Line height (placeholder - console.log only)
-    document.querySelectorAll('input[name="lineHeight"]').forEach((radio) => {
-      radio.addEventListener('change', (e) => {
-        const target = e.target;
+    // Line height (placeholder - console.log only) - delegated
+    document.addEventListener('change', (e) => {
+      const target = e.target;
+      if (target.matches && target.matches('input[name="lineHeight"]')) {
         currentSettings.lineHeight = target.value;
         saveSettings(currentSettings);
 
         // PLACEHOLDER: Console log instead of applying
         console.log('📐 Line height changed to:', currentSettings.lineHeight);
         console.log('   Implementation pending - would adjust line-height CSS here');
-      });
+      }
     });
 
-    // Reading ruler (placeholder - console.log only)
-    document.getElementById('reading-ruler')?.addEventListener('change', (e) => {
+    // Reading ruler (placeholder - console.log only) - delegated
+    document.addEventListener('change', (e) => {
       const target = e.target;
-      currentSettings.readingRuler = target.checked;
-      saveSettings(currentSettings);
+      if (target.id === 'reading-ruler') {
+        currentSettings.readingRuler = target.checked;
+        saveSettings(currentSettings);
 
-      // PLACEHOLDER: Console log instead of applying
-      console.log('📏 Reading ruler toggled:', currentSettings.readingRuler ? 'ON' : 'OFF');
-      console.log('   Implementation pending - would enable line highlighting here');
+        // PLACEHOLDER: Console log instead of applying
+        console.log('📏 Reading ruler toggled:', currentSettings.readingRuler ? 'ON' : 'OFF');
+        console.log('   Implementation pending - would enable line highlighting here');
+      }
     });
 
-    // Reset button
-    document.getElementById('reset-settings')?.addEventListener('click', () => {
+    // Reset button - delegated
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('#reset-settings');
+      if (!target) return;
+
       currentSettings = resetSettings();
       applySettings(currentSettings);
 
@@ -627,13 +642,21 @@ const settings = DEFAULT_SETTINGS;
       location.reload(); // Simple way to reset all UI elements
     });
 
-    // Close button
-    document.getElementById('accessibility-close')?.addEventListener('click', closePanel);
+    // Close button - delegated
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('#accessibility-close');
+      if (!target) return;
+      closePanel();
+    });
 
-    // Close on backdrop click
-    document.getElementById('accessibility-backdrop')?.addEventListener('click', closePanel);
+    // Close on backdrop click - delegated
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('#accessibility-backdrop');
+      if (!target) return;
+      closePanel();
+    });
 
-    // Close on Escape key
+    // Close on Escape key - using event delegation
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         const panel = document.getElementById('accessibility-panel');
@@ -643,7 +666,7 @@ const settings = DEFAULT_SETTINGS;
       }
     });
 
-    // Keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac)
+    // Keyboard shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac) - using event delegation
     document.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
         e.preventDefault();
@@ -662,13 +685,12 @@ const settings = DEFAULT_SETTINGS;
     });
 
     // Focus trap implementation
-    const panel = document.getElementById('accessibility-panel');
     const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
     let firstFocusableElement = null;
     let lastFocusableElement = null;
 
     function setupFocusTrap() {
+      const panel = document.getElementById('accessibility-panel');
       if (!panel) return;
 
       const focusableContent = panel.querySelectorAll(focusableElements);
@@ -679,8 +701,9 @@ const settings = DEFAULT_SETTINGS;
       if (firstFocusableElement) firstFocusableElement.focus();
     }
 
-    // Trap focus within panel
+    // Trap focus within panel - using event delegation
     document.addEventListener('keydown', (e) => {
+      const panel = document.getElementById('accessibility-panel');
       if (!panel || !panel.classList.contains('open')) return;
 
       if (e.key === 'Tab') {
@@ -699,22 +722,6 @@ const settings = DEFAULT_SETTINGS;
         }
       }
     });
-
-    // Setup focus trap when panel opens
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          const target = mutation.target;
-          if (target.classList.contains('open')) {
-            setupFocusTrap();
-          }
-        }
-      });
-    });
-
-    if (panel) {
-      observer.observe(panel, { attributes: true });
-    }
 
     function closePanel() {
       const panelElement = document.getElementById('accessibility-panel');
@@ -770,7 +777,8 @@ const settings = DEFAULT_SETTINGS;
     function applySettings(settings) {
       applyFont(settings.font);
       applyTheme(settings.theme);
-      // Text size, line height, reading ruler are placeholders (console.log only)
+      applyTextSize(settings.textSize);
+      // Line height and reading ruler are placeholders (console.log only)
     }
 
     function applyFont(font) {
@@ -795,5 +803,26 @@ const settings = DEFAULT_SETTINGS;
         document.documentElement.classList.toggle('dark', theme === 'dark');
       }
     }
+
+    function applyTextSize(size) {
+      // Remove all text-size-* classes from body
+      document.body.classList.remove('text-size-xs', 'text-size-sm', 'text-size-base', 'text-size-lg', 'text-size-xl');
+
+      // Add new text-size class
+      if (size && size !== 'base') {
+        document.body.classList.add(`text-size-${size}`);
+      }
+      // Note: base is default (no class needed, uses :root value)
+    }
+
+    // === INITIAL LOAD ===
+    // Run on initial page load
+    initializeAccessibilityPanel();
+
+    // === ASTRO VIEW TRANSITIONS ===
+    // Re-initialize after each client-side navigation (Astro View Transitions)
+    document.addEventListener('astro:page-load', () => {
+      initializeAccessibilityPanel();
+    });
   })();
 </script>

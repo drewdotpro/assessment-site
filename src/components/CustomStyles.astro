@@ -132,4 +132,112 @@
     color: var(--aw-color-text-default) !important;
     text-decoration: none !important;
   }
+
+  /* Text Size Scaling
+     Applied to body content only, not UI components.
+     Uses CSS custom property for scale factor. */
+
+  :root {
+    --aw-text-size-scale: 1; /* Default: 100% (base) */
+  }
+
+  /* Text size classes applied to <body> */
+  body.text-size-xs {
+    --aw-text-size-scale: 0.875; /* 14px equivalent */
+  }
+
+  body.text-size-sm {
+    --aw-text-size-scale: 0.9375; /* 15px equivalent */
+  }
+
+  body.text-size-base {
+    --aw-text-size-scale: 1; /* 16px equivalent (default) */
+  }
+
+  body.text-size-lg {
+    --aw-text-size-scale: 1.125; /* 18px equivalent */
+  }
+
+  body.text-size-xl {
+    --aw-text-size-scale: 1.25; /* 20px equivalent */
+  }
+
+  /* Apply scale to content text only */
+  /* Target prose content, paragraphs, lists, tables, spans, text-containing divs, and accessibility panel */
+  .prose,
+  .prose p,
+  .prose li,
+  .prose td,
+  .prose th,
+  article p,
+  article li,
+  article td,
+  article th,
+  main p:not(.accessibility-size-label):not([class*='btn']),
+  main li,
+  main blockquote,
+  main table td,
+  main table th,
+  main span:not([class*='btn']),
+  main div:not([class*='btn']):not(.flex):not(.grid):not([class*='gap']) > span,
+  main div:not([class*='btn']) > span,
+  .accessibility-panel p,
+  .accessibility-panel span:not(.accessibility-size-btn span):not([class*='slider']),
+  .accessibility-panel label {
+    font-size: calc(1rem * var(--aw-text-size-scale));
+  }
+
+  /* Scale headings proportionally but maintain hierarchy */
+  .prose h1,
+  article h1,
+  main h1 {
+    font-size: calc(2.25rem * var(--aw-text-size-scale));
+  }
+
+  .prose h2,
+  article h2,
+  main h2,
+  .accessibility-panel h2 {
+    font-size: calc(1.875rem * var(--aw-text-size-scale));
+  }
+
+  .prose h3,
+  article h3,
+  main h3,
+  .accessibility-panel h3 {
+    font-size: calc(1.5rem * var(--aw-text-size-scale));
+  }
+
+  .prose h4,
+  article h4,
+  main h4 {
+    font-size: calc(1.25rem * var(--aw-text-size-scale));
+  }
+
+  .prose h5,
+  article h5,
+  main h5 {
+    font-size: calc(1.125rem * var(--aw-text-size-scale));
+  }
+
+  .prose h6,
+  article h6,
+  main h6 {
+    font-size: calc(1rem * var(--aw-text-size-scale));
+  }
+
+  /* Ensure line-height stays readable at all sizes */
+  .prose,
+  article,
+  main {
+    line-height: calc(1.6 * var(--aw-text-size-scale, 1));
+  }
+
+  /* Word wrapping safety for long words */
+  .prose,
+  article,
+  main {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 </style>
