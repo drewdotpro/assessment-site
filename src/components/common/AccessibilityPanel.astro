@@ -474,31 +474,110 @@ const settings = DEFAULT_SETTINGS;
     overflow: hidden;
   }
 
-  /* Reading Ruler Styles - Lightbox/Spotlight Effect */
-  /* Dark overlay that covers everything except the highlighted line */
-  :global(.reading-ruler-overlay) {
+  /* Reading Ruler Styles - Draggable Handle Approach */
+  :global(.reading-ruler-container) {
     position: fixed;
-    inset: 0;
-    pointer-events: none;
+    left: 0;
+    width: 100vw;
+    height: 1.5em; /* Default height - will be updated by JS */
+    pointer-events: none; /* Allow clicks to pass through */
     z-index: 9998;
-    /* Using box-shadow to create the spotlight effect - everything is dimmed except the gap */
-    box-shadow:
-      0 -100vh 0 100vh rgba(0, 0, 0, 0.35),
-      /* top shadow */ 0 100vh 0 100vh rgba(0, 0, 0, 0.35); /* bottom shadow */
-    transition: box-shadow 0.1s ease-out;
-    will-change: box-shadow;
+    display: flex;
+    align-items: stretch;
   }
 
-  /* In dark mode, use slightly darker overlay for better contrast */
-  :global(.dark) :global(.reading-ruler-overlay) {
-    box-shadow:
-      0 -100vh 0 100vh rgba(0, 0, 0, 0.45),
-      0 100vh 0 100vh rgba(0, 0, 0, 0.45);
+  :global(.reading-ruler-handle) {
+    position: relative;
+    width: 40px;
+    flex-shrink: 0;
+    background: rgba(147, 51, 234, 0.8); /* Purple accent */
+    pointer-events: auto; /* Handle is interactive */
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none; /* Prevents scrolling when dragging handle */
+    transition: background-color 0.2s ease;
+  }
+
+  :global(.reading-ruler-handle:hover) {
+    background: rgba(147, 51, 234, 0.95);
+  }
+
+  :global(.reading-ruler-handle:active),
+  :global(.reading-ruler-handle.dragging) {
+    cursor: grabbing;
+    background: rgba(126, 34, 206, 1);
+  }
+
+  :global(.reading-ruler-handle svg) {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+  }
+
+  :global(.reading-ruler-highlight) {
+    flex: 1;
+    background: transparent;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.8); /* Dark ruler line at bottom */
+    pointer-events: none;
+  }
+
+  /* Dark mode adjustments - use light background highlight instead of line */
+  :global(.dark) :global(.reading-ruler-highlight) {
+    background: rgba(230, 230, 250, 0.2);
+    border-bottom: none;
+  }
+
+  /* Add body padding when ruler is active to prevent content being covered */
+  :global(body.reading-ruler-active) {
+    padding-left: 40px;
+  }
+
+  /* Vertical line to demarcate ruler area - using ::before pseudo-element */
+  :global(body.reading-ruler-active)::before {
+    content: '';
+    position: fixed;
+    left: 40px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 9997; /* Just below ruler handle */
+    pointer-events: none;
+  }
+
+  /* Dark mode adjustment for vertical line */
+  :global(.dark):global(body.reading-ruler-active)::before {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Also pad the mobile accessibility panel when ruler is active (mobile only - it slides up from bottom) */
+  @media (max-width: 767px) {
+    :global(body.reading-ruler-active) .accessibility-panel {
+      padding-left: 40px;
+    }
+  }
+
+  /* Also pad the mobile menu (header when expanded) when ruler is active */
+  /* Target at mobile viewport sizes where menu is visible */
+  @media (max-width: 767px) {
+    :global(body.reading-ruler-active) #header.expanded nav {
+      padding-left: 40px !important;
+    }
+
+    :global(body.reading-ruler-active) #header.expanded nav ul {
+      padding-left: 40px !important;
+    }
   }
 
   /* Respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
-    :global(.reading-ruler-overlay) {
+    :global(.reading-ruler-handle) {
       transition: none;
     }
   }
@@ -542,8 +621,13 @@ const settings = DEFAULT_SETTINGS;
 
     // Reading ruler state
     let readingRulerElement = null;
+    let rulerHandleElement = null;
     let readingRulerEnabled = false;
-    let mouseMoveHandler = null;
+
+    // Drag state
+    let isDraggingRuler = false;
+    let dragStartY = 0;
+    let rulerStartTop = 0;
 
     // Main initialization function - called on initial load AND after each navigation
     function initializeAccessibilityPanel() {
@@ -868,28 +952,64 @@ const settings = DEFAULT_SETTINGS;
     }
 
     /**
-     * Create reading ruler overlay element (lightbox effect)
+     * Create reading ruler with draggable handle
      */
     function createReadingRuler() {
       if (readingRulerElement) return; // Already exists
 
-      const overlay = document.createElement('div');
-      overlay.className = 'reading-ruler-overlay';
-      overlay.setAttribute('aria-hidden', 'true'); // Decorative element
-      document.body.appendChild(overlay);
-      readingRulerElement = overlay;
+      // Create container
+      const container = document.createElement('div');
+      container.className = 'reading-ruler-container';
+
+      // Create draggable handle
+      const handle = document.createElement('div');
+      handle.className = 'reading-ruler-handle';
+      handle.setAttribute('aria-label', 'Drag to reposition reading ruler');
+      handle.setAttribute('role', 'slider');
+      handle.setAttribute('aria-orientation', 'vertical');
+      handle.setAttribute('tabindex', '0');
+
+      // Add Tabler icon (arrows-move-vertical)
+      handle.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 7l0 14"></path>
+          <path d="M9 18l3 3l3 -3"></path>
+          <path d="M9 6l3 -3l3 3"></path>
+        </svg>
+      `;
+
+      // Create highlight bar
+      const highlight = document.createElement('div');
+      highlight.className = 'reading-ruler-highlight';
+
+      // Assemble
+      container.appendChild(handle);
+      container.appendChild(highlight);
+      document.body.appendChild(container);
+
+      // Store references
+      readingRulerElement = container;
+      rulerHandleElement = handle;
 
       // Set initial height based on current line height and text size settings
       updateRulerHeight();
+
+      // Position in middle of viewport initially
+      const initialTop = (window.innerHeight - parseFloat(container.style.height || container.offsetHeight)) / 2;
+      positionRuler(initialTop);
+
+      // Setup drag handlers
+      setupDragHandlers();
     }
 
     /**
-     * Remove reading ruler overlay element
+     * Remove reading ruler element
      */
     function removeReadingRuler() {
       if (readingRulerElement) {
         readingRulerElement.remove();
         readingRulerElement = null;
+        rulerHandleElement = null;
       }
     }
 
@@ -925,32 +1045,144 @@ const settings = DEFAULT_SETTINGS;
       const textSizeScale = getTextSizeScale();
 
       // Calculate final height: base font size (16px) × text size scale × line height scale × 1.2 (20% larger)
-      const heightInPixels = 16 * textSizeScale * lineHeightScale * 1.2;
+      const heightInEm = textSizeScale * lineHeightScale * 1.2;
 
-      // Store the height for positioning calculations
-      readingRulerElement.dataset.height = heightInPixels;
+      // Set the height
+      readingRulerElement.style.height = `${heightInEm}em`;
     }
 
     /**
-     * Update ruler position based on mouse position (lightbox effect)
+     * Position ruler at specific Y coordinate (viewport-relative)
      */
-    function updateRulerPosition(e) {
+    function positionRuler(topPosition) {
       if (!readingRulerElement) return;
 
-      // Get the ruler height
-      const rulerHeight = parseFloat(readingRulerElement.dataset.height) || 24;
+      // Get ruler height in pixels
+      const rulerHeight = readingRulerElement.offsetHeight;
 
-      // Calculate position centred on cursor Y position
-      const rulerTop = e.clientY - rulerHeight / 2;
+      // Constrain to viewport
+      const minY = 0;
+      const maxY = window.innerHeight - rulerHeight;
+      const constrainedTop = Math.max(minY, Math.min(maxY, topPosition));
 
-      // Update box-shadow to create spotlight effect
-      // The gap between the two shadows is the "spotlight"
-      readingRulerElement.style.boxShadow = `
-        0 -100vh 0 100vh rgba(0, 0, 0, ${document.documentElement.classList.contains('dark') ? '0.45' : '0.35'}),
-        0 calc(100vh + ${rulerHeight}px) 0 100vh rgba(0, 0, 0, ${document.documentElement.classList.contains('dark') ? '0.45' : '0.35'})
-      `;
-      readingRulerElement.style.top = `${rulerTop}px`;
-      readingRulerElement.style.height = `${rulerHeight}px`;
+      // Update position
+      readingRulerElement.style.top = `${constrainedTop}px`;
+    }
+
+    /**
+     * Setup drag handlers for ruler handle
+     */
+    function setupDragHandlers() {
+      if (!rulerHandleElement) return;
+
+      // Mouse drag start
+      const handleMouseDown = (e) => {
+        isDraggingRuler = true;
+        dragStartY = e.clientY;
+        rulerStartTop = readingRulerElement.offsetTop;
+        rulerHandleElement.classList.add('dragging');
+        e.preventDefault(); // Prevent text selection
+      };
+
+      // Touch drag start
+      const handleTouchStart = (e) => {
+        if (e.touches.length !== 1) return;
+        isDraggingRuler = true;
+        dragStartY = e.touches[0].clientY;
+        rulerStartTop = readingRulerElement.offsetTop;
+        rulerHandleElement.classList.add('dragging');
+        e.preventDefault(); // Prevent text selection and scrolling
+      };
+
+      // Mouse drag move
+      const handleMouseMove = (e) => {
+        if (!isDraggingRuler) return;
+        const deltaY = e.clientY - dragStartY;
+        const newTop = rulerStartTop + deltaY;
+        positionRuler(newTop);
+      };
+
+      // Touch drag move
+      const handleTouchMove = (e) => {
+        if (!isDraggingRuler || e.touches.length !== 1) return;
+        const deltaY = e.touches[0].clientY - dragStartY;
+        const newTop = rulerStartTop + deltaY;
+        positionRuler(newTop);
+        e.preventDefault(); // Prevent scrolling while dragging
+      };
+
+      // Mouse drag end
+      const handleMouseUp = () => {
+        if (!isDraggingRuler) return;
+        isDraggingRuler = false;
+        rulerHandleElement?.classList.remove('dragging');
+      };
+
+      // Touch drag end
+      const handleTouchEnd = () => {
+        if (!isDraggingRuler) return;
+        isDraggingRuler = false;
+        rulerHandleElement?.classList.remove('dragging');
+      };
+
+      // Keyboard support for accessibility
+      const handleKeyDown = (e) => {
+        if (!rulerHandleElement) return;
+
+        const step = 10; // pixels to move per keypress
+        let newTop = readingRulerElement.offsetTop;
+
+        if (e.key === 'ArrowUp') {
+          newTop -= step;
+          positionRuler(newTop);
+          e.preventDefault();
+        } else if (e.key === 'ArrowDown') {
+          newTop += step;
+          positionRuler(newTop);
+          e.preventDefault();
+        }
+      };
+
+      // Attach event listeners
+      rulerHandleElement.addEventListener('mousedown', handleMouseDown);
+      rulerHandleElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+      rulerHandleElement.addEventListener('keydown', handleKeyDown);
+
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('touchend', handleTouchEnd);
+
+      // Store handler references for cleanup
+      rulerHandleElement._handlers = {
+        mousedown: handleMouseDown,
+        touchstart: handleTouchStart,
+        keydown: handleKeyDown,
+        mousemove: handleMouseMove,
+        touchmove: handleTouchMove,
+        mouseup: handleMouseUp,
+        touchend: handleTouchEnd,
+      };
+    }
+
+    /**
+     * Remove drag handlers
+     */
+    function removeDragHandlers() {
+      if (!rulerHandleElement || !rulerHandleElement._handlers) return;
+
+      const handlers = rulerHandleElement._handlers;
+
+      rulerHandleElement.removeEventListener('mousedown', handlers.mousedown);
+      rulerHandleElement.removeEventListener('touchstart', handlers.touchstart);
+      rulerHandleElement.removeEventListener('keydown', handlers.keydown);
+
+      document.removeEventListener('mousemove', handlers.mousemove);
+      document.removeEventListener('touchmove', handlers.touchmove);
+      document.removeEventListener('mouseup', handlers.mouseup);
+      document.removeEventListener('touchend', handlers.touchend);
+
+      delete rulerHandleElement._handlers;
     }
 
     /**
@@ -958,12 +1190,15 @@ const settings = DEFAULT_SETTINGS;
      */
     function enableReadingRuler() {
       if (readingRulerEnabled) return; // Already enabled
-
       createReadingRuler();
+      document.body.classList.add('reading-ruler-active');
 
-      // Create and store mousemove handler
-      mouseMoveHandler = (e) => updateRulerPosition(e);
-      document.addEventListener('mousemove', mouseMoveHandler, { passive: true });
+      // Add padding to mobile nav menu items directly via inline styles
+      // This ensures the padding is applied even when Tailwind utilities have higher specificity
+      const mobileNavs = document.querySelectorAll('#header nav');
+      mobileNavs.forEach((nav) => {
+        nav.style.paddingLeft = '40px';
+      });
 
       readingRulerEnabled = true;
     }
@@ -974,14 +1209,25 @@ const settings = DEFAULT_SETTINGS;
     function disableReadingRuler() {
       if (!readingRulerEnabled) return; // Already disabled
 
-      // Remove event listener
-      if (mouseMoveHandler) {
-        document.removeEventListener('mousemove', mouseMoveHandler);
-        mouseMoveHandler = null;
-      }
+      // Remove drag handlers
+      removeDragHandlers();
 
       // Remove ruler element
       removeReadingRuler();
+
+      // Remove body padding
+      document.body.classList.remove('reading-ruler-active');
+
+      // Remove inline padding from mobile nav menu items
+      const mobileNavs = document.querySelectorAll('#header nav');
+      mobileNavs.forEach((nav) => {
+        nav.style.paddingLeft = '';
+      });
+
+      // Reset drag state
+      isDraggingRuler = false;
+      dragStartY = 0;
+      rulerStartTop = 0;
 
       readingRulerEnabled = false;
     }
@@ -1004,15 +1250,16 @@ const settings = DEFAULT_SETTINGS;
     // === ASTRO VIEW TRANSITIONS ===
     // Cleanup reading ruler during page transitions
     document.addEventListener('astro:before-swap', () => {
-      // Clean up ruler element and event listener during page transition
+      // Clean up ruler element and event listeners during page transition
       if (readingRulerEnabled) {
-        // Remove event listener
-        if (mouseMoveHandler) {
-          document.removeEventListener('mousemove', mouseMoveHandler);
-          mouseMoveHandler = null;
-        }
+        // Remove drag handlers
+        removeDragHandlers();
         // Remove ruler element
         removeReadingRuler();
+        // Reset drag state
+        isDraggingRuler = false;
+        dragStartY = 0;
+        rulerStartTop = 0;
         // Reset flag so it can be recreated on next page if setting is enabled
         readingRulerEnabled = false;
       }

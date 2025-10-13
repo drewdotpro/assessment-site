@@ -106,18 +106,27 @@ Line height changes apply instantly to all body text elements (paragraphs, list 
 
 **Status**: Fully Implemented
 
-Toggle switch to enable/disable a reading ruler (line guide) that follows the user's cursor, helping users with dyslexia, visual processing difficulties, ADHD, and low vision focus on one line of text at a time.
+Toggle switch to enable/disable a reading ruler (line guide) with a draggable handle, helping users with dyslexia, visual processing difficulties, ADHD, and low vision focus on one line of text at a time.
 
 **Features**:
 
-- **Lightbox/spotlight effect** - Subtle dark overlay (rgba(0,0,0,0.35) in light mode, 0.45 in dark mode) dims everything except the current line, creating a gentle "spotlight" that enhances readability by reducing visual distractions without being overly dramatic
+- **Draggable handle approach** - 40px-wide purple handle on the left side with vertical drag and drop repositioning
+- **Visual line indicator** - Different styles for light and dark modes:
+  - **Light mode**: 3px dark horizontal line at the bottom of the ruler (`border-bottom: 3px solid rgba(0, 0, 0, 0.8)`) - creates a true "ruler" effect under the text without obscuring readability
+  - **Dark mode**: Semi-transparent lavender background highlight (`rgba(230, 230, 250, 0.2)`) - better contrast in dark environments
 - **Dynamic height scaling** - Automatically adapts to BOTH user's text size setting (0.875x to 1.25x) AND line height setting (1.2x to 2.0x), with an additional 20% height increase for easier tracking
-- **Smooth cursor tracking** - Follows mouse movement with 100ms transition (respects `prefers-reduced-motion`)
-- **Non-intrusive** - Pointer events disabled, doesn't block clicks or interactions
-- **Performance optimised** - Only loads JavaScript when enabled, uses passive event listeners for zero-impact scrolling
+- **Tabler icon** - Uses `arrows-move-vertical` SVG icon in the draggable handle for clear visual affordance
+- **Touch and mouse support** - Drag with mouse or touch, with visual feedback (hover, active, dragging states)
+- **Keyboard accessibility** - Arrow keys (Up/Down) move ruler in 10px increments, full ARIA support (`role="slider"`, `aria-orientation="vertical"`)
+- **Body padding system** - When ruler is active, adds 40px left padding to body and a vertical divider line at 40px to visually separate the ruler control area from content
+- **Mobile menu support** - Adds padding to mobile navigation menu (when expanded) and mobile accessibility panel to prevent ruler handle from covering text
+- **Non-intrusive** - Ruler highlight has pointer events disabled, doesn't block clicks or interactions; only handle is interactive
+- **Performance optimised** - Only loads JavaScript when enabled, cleanup on page transitions
 
 **How it works**:
-The ruler uses CSS box-shadow to create two large overlays (above and below the cursor) that dim surrounding content. The gap between these shadows creates a clear, bright "spotlight" on the line the user is reading. This inverse approach (dim distractions, highlight current line) is more effective than overlaying the text itself. The subtle dimming effect maintains readability while still providing focus.
+The ruler uses a fixed-position container with a draggable purple handle (40px wide) and a highlight area that spans the full viewport width. In light mode, the highlight uses a bottom border to create an underline effect. In dark mode, it uses a background colour for better visibility. The handle can be dragged vertically to reposition the ruler anywhere on the page.
+
+When the ruler is active, the entire page shifts 40px to the right to prevent content from being covered by the handle. A subtle vertical divider line at the 40px mark clearly demarcates the ruler control area from the content area.
 
 **Height calculation**: `16px (base font) × text size scale × line height scale × 1.2 (20% larger)`
 
@@ -126,13 +135,19 @@ The ruler uses CSS box-shadow to create two large overlays (above and below the 
 
 **Accessibility**:
 
-- Hidden from screen readers (`aria-hidden="true"`) as it's a purely visual guide
+- Full ARIA support: `role="slider"`, `aria-orientation="vertical"`, `aria-label="Drag to reposition reading ruler"`, `tabindex="0"`
+- Keyboard navigation: Arrow Up/Down keys move ruler in 10px steps
+- Visual affordance: Clear drag handle with hover and active states
+- Touch-friendly: 40px touch target, prevents scrolling during drag
 - Toggle fully keyboard accessible
-- Works in both light and dark themes with adjusted opacity for optimal contrast
-- Respects reduced motion preferences
+- Works in both light and dark themes with theme-appropriate styling
+- Respects reduced motion preferences (disables transitions)
 - Scales appropriately with all text size and line height combinations
 
-**Implementation**: Reading ruler element is dynamically created when enabled and removed when disabled. Mousemove event listener only attached when feature is active, ensuring zero performance impact when disabled. Height automatically updates when user changes text size or line height settings. See `src/components/common/AccessibilityPanel.astro:477-505` (CSS) and `:866-950` (JavaScript).
+**Implementation**:
+
+- CSS: `src/components/common/AccessibilityPanel.astro:477-583` (ruler styles, body padding, vertical divider, mobile menu padding)
+- JavaScript: `src/components/common/AccessibilityPanel.astro:927-1273` (ruler creation, drag handlers, height calculation, keyboard support, Astro view transitions cleanup)
 
 #### 6. Reset to Defaults
 
@@ -818,4 +833,4 @@ Information not conveyed by colour alone:
 
 ---
 
-**Last Updated**: 2025-10-12
+**Last Updated**: 2025-10-13
