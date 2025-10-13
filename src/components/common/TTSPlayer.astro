@@ -1,0 +1,440 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<aside
+  id="tts-player"
+  class="tts-player"
+  role="region"
+  aria-label="Text-to-speech player"
+  aria-hidden="true"
+  data-collapsed="false"
+>
+  <!-- Minimized Tab (shown when collapsed) -->
+  <button type="button" class="tts-tab" aria-label="Expand text-to-speech player">
+    <Icon name="tabler:volume" class="tts-tab-icon" />
+    <span class="tts-tab-text" id="tts-tab-status">Listening</span>
+    <svg class="tts-tab-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M18 15l-6-6-6 6"></path>
+    </svg>
+  </button>
+
+  <!-- Full Player (shown when expanded) -->
+  <div class="tts-content">
+    <header class="tts-header">
+      <Icon name="tabler:volume" class="tts-icon" />
+      <h2 id="tts-status" class="tts-status-text">Listening to Page</h2>
+      <button type="button" class="tts-minimize" aria-label="Minimize">
+        <svg class="tts-icon-minimize" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </button>
+      <button type="button" class="tts-close" aria-label="Close">
+        <Icon name="tabler:x" class="tts-icon-close" />
+      </button>
+    </header>
+
+    <div class="tts-controls">
+      <button type="button" class="tts-play-pause" aria-label="Play" aria-pressed="false">
+        <span class="tts-icon-play">
+          <svg
+            class="tts-icon-control"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M7 4v16l13 -8z"></path>
+          </svg>
+        </span>
+        <span class="tts-icon-pause">
+          <svg
+            class="tts-icon-control"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 5v14"></path>
+            <path d="M16 5v14"></path>
+          </svg>
+        </span>
+        <span class="sr-only">Play</span>
+      </button>
+
+      <button type="button" class="tts-stop" aria-label="Stop">
+        <Icon name="tabler:player-stop" class="tts-icon-control" />
+        <span class="sr-only">Stop</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+</aside>
+
+<style>
+  .tts-player {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 100%;
+    max-width: 600px;
+    background: var(--aw-color-bg-page);
+    border: 1px solid var(--aw-color-border);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: none;
+    box-shadow: 0 -4px 6px -1px rgb(0 0 0 / 0.1);
+    z-index: 9999;
+    transition: transform 0.3s ease;
+  }
+
+  /* Visible state - expanded (full player) */
+  .tts-player[aria-hidden='false'][data-collapsed='false'] {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Visible state - collapsed (just tab showing) */
+  .tts-player[aria-hidden='false'][data-collapsed='true'] {
+    transform: translateX(-50%) translateY(calc(100% - 48px));
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .tts-player[data-collapsed='true'] .tts-content {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tts-player[data-collapsed='true'] .tts-tab {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Expanded state - show full player */
+  .tts-player[data-collapsed='false'] .tts-tab {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .tts-player[data-collapsed='false'] .tts-content {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Minimized Tab */
+  .tts-tab {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 48px;
+    background: var(--aw-color-primary);
+    color: white;
+    border: none;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 20px;
+    font-weight: 600;
+    font-size: 14px;
+    transition:
+      opacity 0.2s,
+      transform 0.1s;
+    box-shadow: 0 -2px 4px rgb(0 0 0 / 0.1);
+  }
+
+  .tts-tab:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .tts-tab:active {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .tts-tab-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .tts-tab-text {
+    flex: 1;
+    text-align: center;
+  }
+
+  .tts-tab-chevron {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* Full Player Content */
+  .tts-content {
+    padding: 16px;
+    transition: opacity 0.2s;
+  }
+
+  .tts-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tts-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--aw-color-primary);
+  }
+
+  .tts-status-text {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--aw-color-text-heading);
+  }
+
+  .tts-minimize,
+  .tts-close {
+    background: transparent;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--aw-color-text-muted);
+    border-radius: 4px;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  .tts-minimize:hover,
+  .tts-close:hover {
+    background: var(--aw-color-bg-page-dark);
+    color: var(--aw-color-text-heading);
+  }
+
+  .tts-icon-minimize,
+  .tts-icon-close {
+    width: 20px;
+    height: 20px;
+    display: block;
+  }
+
+  .tts-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .tts-play-pause,
+  .tts-stop {
+    background: var(--aw-color-primary);
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    color: white;
+    transition:
+      background-color 0.2s,
+      transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tts-play-pause:hover,
+  .tts-stop:hover {
+    background: var(--aw-color-primary-dark);
+    transform: scale(1.05);
+  }
+
+  .tts-play-pause:active,
+  .tts-stop:active {
+    transform: scale(0.95);
+  }
+
+  .tts-icon-control {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+
+  /* Show/hide play/pause icon wrappers based on state */
+  .tts-play-pause .tts-icon-play {
+    display: inline-flex;
+  }
+
+  .tts-play-pause .tts-icon-pause {
+    display: none;
+  }
+
+  .tts-play-pause[aria-pressed='true'] .tts-icon-play {
+    display: none;
+  }
+
+  .tts-play-pause[aria-pressed='true'] .tts-icon-pause {
+    display: inline-flex;
+  }
+
+  /* Add bottom padding to body when TTS player is visible */
+  :global(body:has(.tts-player[aria-hidden='false'])) {
+    padding-bottom: 60px;
+  }
+
+  /* Add bottom padding to accessibility panel content when TTS player is visible */
+  :global(.accessibility-panel-content:has(~ * .tts-player[aria-hidden='false'])),
+  :global(body:has(.tts-player[aria-hidden='false']) .accessibility-panel-content) {
+    padding-bottom: calc(1.5rem + 60px) !important;
+  }
+
+  /* Add bottom padding to header nav when TTS player is visible */
+  :global(body:has(.tts-player[aria-hidden='false']) #header nav) {
+    padding-bottom: 60px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tts-player,
+    .tts-content,
+    .tts-tab {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .tts-player {
+      max-width: 100%;
+      border-radius: 0;
+    }
+
+    .tts-tab {
+      width: 200px;
+    }
+  }
+</style>
+
+<script>
+  // Handle tab collapse/expand and minimize button
+  document.addEventListener('click', (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+
+    // Handle tab click (expand)
+    const tab = target.closest('.tts-tab');
+    if (tab) {
+      const player = document.getElementById('tts-player');
+      if (player) {
+        player.setAttribute('data-collapsed', 'false');
+      }
+      return;
+    }
+
+    // Handle minimize button click (collapse)
+    const minimize = target.closest('.tts-minimize');
+    if (minimize) {
+      const player = document.getElementById('tts-player');
+      if (player) {
+        player.setAttribute('data-collapsed', 'true');
+      }
+      return;
+    }
+  });
+</script>
+
+<script>
+  // Lazy load TTS player on user interaction
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let ttsPlayerInstance: any = null;
+  let ttsPlayerLoaded = false;
+
+  // On page load, ensure player UI is in correct initial state
+  function initializePlayerState() {
+    const player = document.getElementById('tts-player');
+    if (player) {
+      // Reset to hidden state
+      player.setAttribute('aria-hidden', 'true');
+      // Reset collapsed state to false (so it will show correctly when opened)
+      player.setAttribute('data-collapsed', 'false');
+
+      // Reset play/pause button to initial state
+      const playPauseBtn = player.querySelector('.tts-play-pause');
+      if (playPauseBtn) {
+        playPauseBtn.setAttribute('aria-label', 'Play');
+        playPauseBtn.setAttribute('aria-pressed', 'false');
+      }
+
+      // Reset status text
+      const statusEl = player.querySelector('#tts-status');
+      if (statusEl) {
+        statusEl.textContent = 'Listening to Page';
+      }
+    }
+  }
+
+  // Initialize on first load
+  initializePlayerState();
+
+  // Pre-load voices when accessibility panel opens
+  document.addEventListener('click', async (e: MouseEvent) => {
+    const accessibilityToggle = (e.target as HTMLElement).closest('[data-accessibility-toggle]');
+    if (accessibilityToggle) {
+      // Trigger voice loading early so they're ready when user clicks "Listen"
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.getVoices();
+      }
+    }
+  });
+
+  document.addEventListener('click', async (e: MouseEvent) => {
+    const target = (e.target as HTMLElement).closest('[data-tts-toggle]');
+    if (!target) {
+      return;
+    }
+
+    if (!ttsPlayerLoaded) {
+      try {
+        const module = await import('~/scripts/tts-player');
+        ttsPlayerInstance = new module.TTSPlayer();
+        ttsPlayerLoaded = true;
+        ttsPlayerInstance.start();
+      } catch {
+        alert('Failed to load text-to-speech. Please try again.');
+      }
+    } else if (ttsPlayerInstance) {
+      const player = document.getElementById('tts-player');
+      if (player?.getAttribute('aria-hidden') === 'false') {
+        ttsPlayerInstance.close();
+      } else {
+        ttsPlayerInstance.start();
+      }
+    }
+  });
+
+  // Handle page navigation
+  document.addEventListener('astro:page-load', () => {
+    // Reset player UI state after navigation
+    initializePlayerState();
+
+    if (ttsPlayerLoaded && ttsPlayerInstance) {
+      ttsPlayerInstance.updateContent();
+    }
+  });
+
+  document.addEventListener('astro:before-preparation', () => {
+    if (ttsPlayerInstance?.isPlaying()) {
+      ttsPlayerInstance.pause();
+    }
+  });
+</script>

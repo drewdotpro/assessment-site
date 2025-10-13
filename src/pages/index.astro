@@ -49,11 +49,6 @@ const trustBadgesWithImages = await Promise.all(
 // Get first 4 FAQs for homepage
 const homepageFaqs = faqs.slice(0, 4);
 
-// Debug - log what we're getting
-console.log('Services loaded:', services.length);
-console.log('FAQs loaded:', faqs.length);
-console.log('Trust badges loaded:', trustBadges.length);
-
 const metadata = {
   title: settings.site.name,
   ignoreTitleTemplate: true,

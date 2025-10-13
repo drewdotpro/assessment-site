@@ -3,6 +3,7 @@ import { Icon } from 'astro-icon/components';
 import Logo from '~/components/Logo.astro';
 import ToggleAccessibility from '~/components/common/ToggleAccessibility.astro';
 import AccessibilityPanel from '~/components/common/AccessibilityPanel.astro';
+import TTSPlayer from '~/components/common/TTSPlayer.astro';
 import ToggleMenu from '~/components/common/ToggleMenu.astro';
 import Button from '~/components/ui/Button.astro';
 
@@ -223,4 +224,5 @@ const currentPath = `/${trimSlash(new URL(Astro.url).pathname)}`;
     </div>
   </div>
   <AccessibilityPanel />
+  <TTSPlayer />
 </header>
