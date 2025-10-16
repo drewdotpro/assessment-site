@@ -331,8 +331,8 @@ import { Icon } from 'astro-icon/components';
   document.addEventListener('click', (e: MouseEvent) => {
     const target = e.target as HTMLElement;
 
-    // IMPORTANT: Ignore clicks from control buttons to prevent them from triggering collapse
-    // This fixes the mobile touch bug where tapping control buttons makes them disappear
+    // Ignore clicks from control buttons to prevent them from triggering player collapse
+    // Control buttons (play/pause/stop) handle their own actions and shouldn't minimize the player
     if (target.closest('.tts-controls')) {
       return;
     }
