@@ -9,11 +9,12 @@ This document details the accessibility features implemented on the Together Ass
 1. [Accessibility Settings Panel](#accessibility-settings-panel)
 2. [Neurodiversity-Friendly Fonts](#neurodiversity-friendly-fonts)
 3. [Dark Mode](#dark-mode)
-4. [Responsive Design](#responsive-design)
-5. [Semantic HTML](#semantic-html)
-6. [Keyboard Navigation](#keyboard-navigation)
-7. [ARIA Labels](#aria-labels)
-8. [Colour Contrast](#colour-contrast)
+4. [Text-to-Speech System](#text-to-speech-system)
+5. [Responsive Design](#responsive-design)
+6. [Semantic HTML](#semantic-html)
+7. [Keyboard Navigation](#keyboard-navigation)
+8. [ARIA Labels](#aria-labels)
+9. [Colour Contrast](#colour-contrast)
 
 ---
 
@@ -149,7 +150,80 @@ When the ruler is active, the entire page shifts 40px to the right to prevent co
 - CSS: `src/components/common/AccessibilityPanel.astro:477-583` (ruler styles, body padding, vertical divider, mobile menu padding)
 - JavaScript: `src/components/common/AccessibilityPanel.astro:927-1273` (ruler creation, drag handlers, height calculation, keyboard support, Astro view transitions cleanup)
 
-#### 6. Reset to Defaults
+#### 6. Text-to-Speech
+
+**Status**: Fully Implemented
+
+Button to trigger text-to-speech playback of the current page content using the browser's Web Speech API.
+
+**Features**:
+
+- **Content extraction** - Blacklist-based approach reads all visible text in the main content area, excluding UI chrome (navigation, buttons, forms, etc.)
+- **British English voice selection** - Automatically selects en-GB voices when available, with preference for specific voice names (serena, kate, susan, fiona, stephanie) and voices tagged 'female' by the browser API
+- **Collapsible player** - 48px tall purple tab at bottom centre of page with play/pause/stop controls
+  - **Collapsed state**: Minimal tab showing "Listening" status with sound icon and chevron
+  - **Expanded state**: Full player with play/pause and stop buttons
+  - **Minimize button**: Down chevron to collapse player whilst keeping audio playing
+  - **Close button**: X button to stop playback and close player
+- **Page clearance** - Adds 60px bottom padding to body, footer, navigation menu, and accessibility panel when player is visible to prevent content being covered by the tab
+- **Voice pre-loading** - Triggers voice list loading when accessibility panel opens to eliminate delay when starting playback
+- **Navigation handling** - Stops playback and hides player when navigating to new page; fresh DOM element references prevent stale reference bugs during Astro view transitions
+- **Keyboard support** - Escape key closes player and stops playback
+
+**How it works**:
+
+When the user clicks "Listen to This Page", the system:
+
+1. Loads the TTS player module lazily (only on first use)
+2. Extracts all visible text from the main content area using TreeWalker
+3. Selects the best available British English voice
+4. Creates a SpeechSynthesisUtterance and starts playback
+5. Shows collapsed player tab at bottom of page
+6. User can click tab to expand controls, minimize to collapse whilst playing, or close to stop
+
+The player uses a getter pattern to query DOM elements fresh on every access, preventing stale reference bugs during Astro view transitions.
+
+**Content extraction logic**:
+
+Uses TreeWalker to traverse all text nodes in the main content area, only excluding:
+
+- Navigation menus (`nav`)
+- Headers and footers (`header`, `footer`)
+- Sidebars (`aside`)
+- Buttons, forms, and form inputs
+- Hidden elements (`[aria-hidden="true"]`, `[hidden]`)
+- The TTS player itself (`.tts-player`)
+- Toggle menus and accessibility controls
+
+This blacklist approach ensures all visible content is read, including links, headings, paragraphs, list items, and span text that whitelist approaches often miss.
+
+**Accessibility**:
+
+- Full keyboard support with Escape key to close
+- ARIA labels on all controls (Play/Pause/Stop/Close)
+- `aria-pressed` state on play/pause button
+- `aria-hidden` attribute controls player visibility
+- Status text updates ("Listening to Page", "Playing")
+- Works in both light and dark themes
+
+**Browser compatibility**:
+
+- Requires Web Speech API support (Chrome, Edge, Safari, Firefox)
+- Falls back gracefully with alert message if not supported
+- Handles browser-specific voice loading patterns (Chrome async, Firefox sync)
+
+**Implementation**:
+
+- **Player UI**: `src/components/common/TTSPlayer.astro` (collapsible player component with tab, controls, and styles)
+- **TTS Logic**: `src/scripts/tts-player.ts` (TypeScript class handling Web Speech API, content extraction, voice selection, state management)
+- **Integration**: `src/components/common/AccessibilityPanel.astro:186-195` ("Listen to This Page" button in accessibility panel)
+- **Layout**: Player component included in `src/components/widgets/Header.astro` and page layouts
+
+**Hover consistency**:
+
+The "Listen to This Page" button uses `hover:bg-secondary` to match the hover behaviour of other primary buttons on the site (e.g., "Book a free 15-minute consultation"), ensuring consistent user experience across all primary action buttons.
+
+#### 7. Reset to Defaults
 
 **Status**: Fully Implemented
 
@@ -158,8 +232,9 @@ Button that resets all accessibility settings to their default values:
 - Font: Sylexiad Sans
 - Theme: System
 - Text Size: Base
-- Line Height: Normal (when implemented)
-- Reading Ruler: Off (when implemented)
+- Line Height: Normal
+- Reading Ruler: Off
+- Text-to-Speech: Stopped (if playing)
 
 ### Technical Implementation
 
@@ -562,6 +637,312 @@ For complete implementation details, see [COLOURS.md](./COLOURS.md#dark-mode-tog
 
 ---
 
+## Text-to-Speech System
+
+The site implements a comprehensive text-to-speech (TTS) system allowing users to listen to page content read aloud. This feature benefits users with:
+
+- Dyslexia or other reading difficulties
+- Visual impairments
+- Fatigue or concentration challenges
+- Preference for auditory information processing
+- Learning disabilities
+
+### Features
+
+**Content Reading**:
+
+- Automatically extracts and reads all visible text content from the current page
+- Uses blacklist approach to exclude UI elements (navigation, buttons, forms)
+- Includes page headings, paragraphs, list items, and link text
+- Adds natural pauses between text blocks
+
+**Voice Selection**:
+
+- **Priority-based scoring system** - Uses curated list of 115 English voices ranked by quality (en-GB > female > quality > en-US > other English)
+- **Deterministic selection** - Always selects the same voice given the same available voices (fixes mobile "Rocko" issue)
+- **Top priority voices**: Microsoft Sonia, Microsoft Libby, Google UK English Female (high-quality en-GB female voices)
+- **Intelligent fallbacks** - Unknown voices scored using same criteria (language, gender, quality) to ensure best available voice selected
+- Handles browser-specific voice loading patterns (Chrome async, Firefox sync)
+
+**Player Interface**:
+
+- Collapsible 48px purple tab at bottom centre of page
+- Two states:
+  - **Collapsed**: Minimal tab showing "Listening" status with sound icon and up chevron
+  - **Expanded**: Full controls with play/pause and stop buttons
+- Minimize button (down chevron) collapses player whilst keeping audio playing
+- Close button (X) stops playback and closes player
+- Consistent primary button hover styling matching other site buttons
+
+**Page Integration**:
+
+- Adds 60px bottom padding to prevent tab from covering content:
+  - Page footer clearance
+  - Navigation menu last items visible
+  - Accessibility panel "Reset to Defaults" button accessible
+- Transparent background when collapsed (only purple tab visible)
+- Works seamlessly across light and dark themes
+
+**Navigation Handling**:
+
+- Stops playback automatically when user navigates to new page
+- Player closes and resets on navigation
+- Uses getter pattern for DOM references to prevent stale element bugs during Astro view transitions
+- Voice list pre-loads when accessibility panel opens to eliminate delay
+
+### User Experience
+
+**Starting Playback**:
+
+1. Open accessibility settings panel (Ctrl/Cmd + Shift + A or header button)
+2. Click "Listen to This Page" button
+3. Collapsed player tab appears at bottom of page
+4. Audio playback starts automatically
+
+**While Playing**:
+
+- Click tab to expand and access controls
+- Click minimize button (down chevron) to collapse whilst continuing playback
+- Click stop button or X to end playback and close player
+- Press Escape key to close player and stop playback
+- Navigate to new page to automatically stop playback
+
+**Control Buttons**:
+
+- **Play/Pause**: Toggle button with icon that changes based on state (play icon when paused, pause icon when playing)
+- **Stop**: Ends playback, resets to beginning, closes player
+- **Minimize**: Collapses player to tab whilst audio continues
+- **Close (X)**: Stops playback and closes player
+
+### Technical Implementation
+
+**Components**:
+
+1. **`src/components/common/TTSPlayer.astro`** - Player UI component
+   - Collapsible tab with expand/collapse states
+   - Play/pause/stop/minimize/close controls
+   - Status text updates ("Listening to Page", "Playing")
+   - CSS styling for collapsed/expanded states
+   - Lazy loading script (only loads when user clicks "Listen to This Page")
+
+2. **`src/scripts/tts-player.ts`** - Core TTS logic (TypeScript class)
+   - Web Speech API integration (`speechSynthesis`, `SpeechSynthesisUtterance`)
+   - Content extraction with TreeWalker
+   - Voice selection and loading
+   - State management (idle/playing/paused)
+   - DOM element querying with getter pattern (prevents stale references)
+   - Event handlers (onstart, onend, onpause, onresume, onerror)
+
+3. **`src/components/common/AccessibilityPanel.astro`** - Integration point
+   - "Listen to This Page" button with `data-tts-toggle` attribute (lines 186-195)
+   - Click handler for lazy loading and TTS player initialization
+   - Voice pre-loading when accessibility panel opens
+
+4. **Layout Integration**:
+   - Player component included in `src/components/widgets/Header.astro`
+   - Included in page layouts to ensure availability site-wide
+
+**Content Extraction Logic**:
+
+Location: `src/scripts/tts-player.ts:231-290`
+
+Uses TreeWalker to traverse all text nodes in main content area, only excluding:
+
+```javascript
+const skipSelector =
+  'nav, header, footer, aside, ' +
+  '.tts-player, [aria-hidden="true"], [hidden], ' +
+  'button, form, input, select, textarea, ' +
+  '.toggle-menu, .accessibility-toggle';
+```
+
+**Blacklist approach ensures comprehensive coverage**:
+
+- Captures text in links (`<a>`)
+- Captures text in headings (`<h1>` to `<h6>`)
+- Captures text in paragraphs (`<p>`)
+- Captures text in list items (`<li>`)
+- Captures text in spans and divs
+- Adds periods to text blocks without ending punctuation for natural pauses
+
+**Voice Selection Logic**:
+
+Location: `src/scripts/tts-player.ts:10-125` (VOICE_PRIORITY constant) and `src/scripts/tts-player.ts:350-417` (selectPreferredVoice method)
+
+**Three-Step Selection Algorithm**:
+
+The voice selection process uses a robust three-step algorithm to ensure optimal voice quality:
+
+**Step 1: Language Filtering**
+
+- Filters available voices to only en-GB and en-US languages
+- Rejects all other languages (de-DE, es-ES, fr-FR, etc.) to prevent wrong-language voices
+- Falls back to any English language (en-AU, en-IN, etc.) if no en-GB/en-US voices available
+- Returns null if no English voices at all
+
+**Step 2: Deduplication by Name**
+
+- Groups voices by name (e.g., multiple "Shelley" voices in different languages)
+- Prefers en-GB over en-US when duplicate names exist
+- Ensures "Shelley en-GB" selected instead of "Shelley de-DE" or "Shelley en-US"
+- Critical for iOS/mobile devices which report many duplicate voice names across languages
+
+**Step 3: Priority-Based Scoring**
+
+The system uses a curated list of 115 English voices (`VOICE_PRIORITY` constant) extracted from comprehensive voice database analysis. Each voice entry includes:
+
+```typescript
+{
+  name: string;           // Primary voice name
+  altNames: string[];     // Platform-specific alternative names
+  score: number;          // Priority score (0 = highest)
+}
+```
+
+Each filtered and deduplicated voice is scored:
+
+1. **Voices in VOICE_PRIORITY list**: Matched by primary name OR any altName
+   - **Primary names**: "Google UK English 2 (Natural)", "Microsoft Sonia Online", etc.
+   - **Alternative names**: "Android Speech Recognition and Synthesis from Google en-gb-x-gba-network", "Chrome OS UK English 2", etc.
+   - **Score**: Uses the `score` field from matched entry (0 = highest priority)
+   - Top 3 voices:
+     - Microsoft Sonia Online (Natural) - English (United Kingdom) - score 0
+     - Microsoft Libby Online (Natural) - English (United Kingdom) - score 1
+     - Google UK English Female - score 2
+   - Total: 115 voices ordered by: en-GB > female > quality (veryHigh > high > normal) > en-US > other English
+
+2. **Unknown voices** (not in priority list): Score = 10000 + fallback score
+   - Fallback scoring algorithm (src/scripts/tts-player.ts:312-342):
+     - Language: en-GB (0) > en-US (+1000) > other English (+2000) > non-English (+5000)
+     - Gender: female (-500 bonus)
+     - Preferred names: serena, kate, susan, fiona, stephanie, sonia, libby (-100 to -30 bonus)
+
+**Alternative name matching**: Browsers report platform-specific voice names (e.g., Android reports "Android Speech Recognition and Synthesis from Google en-gb-x-gba-network" instead of "Google UK English 2"). The system matches both primary names and alternative names (altNames) to correctly identify high-priority voices across all platforms (Windows, macOS, Android, Chrome OS, iOS).
+
+**Deterministic selection**: Given the same available voices, the system always returns the same voice (lowest score wins). The three-step filtering process ensures consistent, high-quality voice selection across all platforms and devices.
+
+**Data source**: Voice priorities extracted from `temp/priority-voices.json` (115 voices from Microsoft, Google, Apple platforms scored by language, gender, and quality attributes). Alternative names extracted from comprehensive voice database analysis.
+
+**Astro View Transitions Compatibility**:
+
+Location: `src/components/common/TTSPlayer.astro:395-407` and `src/scripts/tts-player.ts:10-18`
+
+The TTS system handles Astro's view transitions by:
+
+1. **Using getter pattern for DOM references** (prevents stale elements):
+
+   ```typescript
+   private get playerElement(): HTMLElement {
+     const el = document.getElementById('tts-player');
+     if (!el) throw new Error('TTS player element not found');
+     return el;
+   }
+   ```
+
+2. **Reinitializing on navigation**:
+
+   ```javascript
+   document.addEventListener('astro:page-load', () => {
+     initializePlayerState();
+     if (ttsPlayerInstance) {
+       ttsPlayerInstance.updateContent();
+     }
+   });
+   ```
+
+3. **Resetting player state**: Player closes and stops playback on navigation
+
+**Accessibility Features**:
+
+- **ARIA labels**: All controls have descriptive labels
+- **ARIA pressed state**: Play/pause button indicates current state
+- **ARIA hidden**: Controls player visibility to screen readers
+- **Keyboard support**: Escape key closes player and stops playback
+- **Focus management**: Buttons are keyboard accessible
+- **Status updates**: Visual status text ("Listening to Page", "Playing", "Paused")
+- **Theme compatibility**: Works in both light and dark themes
+
+**Browser Compatibility**:
+
+Requires Web Speech API support:
+
+- ✓ Google Chrome / Edge (Chromium)
+- ✓ Safari / WebKit
+- ✓ Firefox
+- ✗ Older browsers without Web Speech API support
+
+Falls back gracefully with alert message if API not supported.
+
+### Page Clearance Implementation
+
+Location: `src/components/common/TTSPlayer.astro:264-278`
+
+When TTS player is visible (`aria-hidden='false'`), adds 60px bottom padding to prevent tab from covering content:
+
+```css
+/* Body padding for footer clearance */
+:global(body:has(.tts-player[aria-hidden='false'])) {
+  padding-bottom: 60px;
+}
+
+/* Accessibility panel content clearance */
+:global(body:has(.tts-player[aria-hidden='false']) .accessibility-panel-content) {
+  padding-bottom: calc(1.5rem + 60px) !important;
+}
+
+/* Navigation menu clearance */
+:global(body:has(.tts-player[aria-hidden='false']) #header nav) {
+  padding-bottom: 60px;
+}
+```
+
+Padding only applies when player is visible, automatically removed when player closes.
+
+### Usage for Developers
+
+**Adding TTS to a Page**:
+
+The TTS player is already included in the Header component and available site-wide. No additional setup needed for standard pages.
+
+**Triggering TTS Programmatically**:
+
+```javascript
+// Get TTS player instance (after it's been loaded)
+const ttsPlayer = window.ttsPlayer;
+
+// Start playback
+if (ttsPlayer) {
+  ttsPlayer.start();
+}
+
+// Pause playback
+if (ttsPlayer && ttsPlayer.isPlaying()) {
+  ttsPlayer.pause();
+}
+
+// Stop playback
+if (ttsPlayer) {
+  ttsPlayer.stop();
+}
+```
+
+**Excluding Content from TTS**:
+
+Add elements to the skip selector in `extractContent()` method, or use existing exclusion attributes:
+
+```html
+<!-- Hidden from screen readers and TTS -->
+<div aria-hidden="true">This won't be read</div>
+
+<!-- Standard hidden attribute -->
+<div hidden>This won't be read</div>
+
+<!-- Using existing skip classes -->
+<div class="tts-skip">This won't be read (add to skipSelector)</div>
+```
+
+---
+
 ## Responsive Design
 
 ### Breakpoints
@@ -833,4 +1214,4 @@ Information not conveyed by colour alone:
 
 ---
 
-**Last Updated**: 2025-10-13
+**Last Updated**: 2025-10-14

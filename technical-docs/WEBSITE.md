@@ -638,6 +638,10 @@ The site implements a custom font switcher allowing users to select their prefer
 
 ### Other Accessibility Features
 
+- **Text-to-Speech system** - Read page content aloud with British English voice selection
+- **Text size adjustment** - Five size options (XS to XL)
+- **Line height control** - Compact, normal, or relaxed spacing
+- **Reading ruler** - Draggable line guide for tracking text
 - Dark mode toggle (system/light/dark)
 - Responsive design with mobile-first approach
 - Semantic HTML structure
@@ -645,7 +649,6 @@ The site implements a custom font switcher allowing users to select their prefer
 - ARIA labels and accessibility attributes
 - Keyboard navigation support
 - Colour contrast compliance
-- Text resizing support without layout breaking
 
 ---
 

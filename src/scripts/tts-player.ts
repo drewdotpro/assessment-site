@@ -3,6 +3,311 @@
 type PlayerState = 'idle' | 'playing' | 'paused';
 
 export class TTSPlayer {
+  // Voice priority list extracted from temp/priority-voices.json
+  // Voices are ordered by priority: en-GB > female > quality > en-US > other English
+  // Each entry includes altNames for platform-specific voice matching (Android, Chrome OS, etc.)
+  // Lower score = higher priority
+  private static readonly VOICE_PRIORITY: ReadonlyArray<{ name: string; altNames: readonly string[]; score: number }> =
+    [
+      { name: 'Microsoft Sonia Online (Natural) - English (United Kingdom)', altNames: [], score: 0 },
+      { name: 'Microsoft Libby Online (Natural) - English (United Kingdom)', altNames: [], score: 1 },
+      { name: 'Google UK English Female', altNames: [], score: 2 },
+      {
+        name: 'Google UK English 2 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gba-network',
+          'Chrome OS UK English 2',
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gba-local',
+          'Android Speech Recognition and Synthesis from Google en-GB-language',
+        ],
+        score: 3,
+      },
+      {
+        name: 'Google UK English 4 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbc-network',
+          'Chrome OS UK English 4',
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbc-local',
+        ],
+        score: 4,
+      },
+      {
+        name: 'Google UK English 6 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbg-network',
+          'Chrome OS UK English 6',
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbg-local',
+        ],
+        score: 5,
+      },
+      { name: 'Serena', altNames: [], score: 6 },
+      { name: 'Microsoft Hazel - English (Great Britain)', altNames: [], score: 7 },
+      { name: 'Microsoft Susan - English (Great Britain)', altNames: [], score: 8 },
+      { name: 'Kate', altNames: [], score: 9 },
+      { name: 'Stephanie', altNames: [], score: 10 },
+      { name: 'Fiona', altNames: [], score: 11 },
+      { name: 'Chrome OS UK English 7', altNames: [], score: 12 },
+      { name: 'Martha', altNames: [], score: 13 },
+      { name: 'Microsoft Maisie Online (Natural) - English (United Kingdom)', altNames: [], score: 15 },
+      { name: 'Microsoft Ryan Online (Natural) - English (United Kingdom)', altNames: [], score: 16 },
+      { name: 'Microsoft Thomas Online (Natural) - English (United Kingdom)', altNames: [], score: 17 },
+      { name: 'Google UK English Male', altNames: [], score: 18 },
+      {
+        name: 'Google UK English 1 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-gb-x-rjs-network',
+          'Chrome OS UK English 1',
+          'Android Speech Recognition and Synthesis from Google en-gb-x-rjs-local',
+        ],
+        score: 19,
+      },
+      {
+        name: 'Google UK English 3 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbb-network',
+          'Chrome OS UK English 3',
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbb-local',
+        ],
+        score: 20,
+      },
+      {
+        name: 'Google UK English 5 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbd-network',
+          'Chrome OS UK English 5',
+          'Android Speech Recognition and Synthesis from Google en-gb-x-gbd-local',
+        ],
+        score: 21,
+      },
+      { name: 'Jamie', altNames: [], score: 22 },
+      { name: 'Daniel', altNames: [], score: 23 },
+      { name: 'Microsoft George - English (Great Britain)', altNames: [], score: 24 },
+      { name: 'Oliver', altNames: [], score: 25 },
+      { name: 'Arthur', altNames: [], score: 26 },
+      {
+        name: 'Microsoft EmmaMultilingual Online (Natural) - English (United States)',
+        altNames: ['Microsoft Emma Online (Natural) - English (United States)'],
+        score: 27,
+      },
+      {
+        name: 'Microsoft AvaMultilingual Online (Natural) - English (United States)',
+        altNames: ['Microsoft Ava Online (Natural) - English (United States)'],
+        score: 28,
+      },
+      { name: 'Microsoft Jenny Online (Natural) - English (United States)', altNames: [], score: 29 },
+      { name: 'Microsoft Aria Online (Natural) - English (United States)', altNames: [], score: 30 },
+      { name: 'Microsoft Michelle Online (Natural) - English (United States)', altNames: [], score: 31 },
+      { name: 'Google US English', altNames: [], score: 32 },
+      {
+        name: 'Google US English 5 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-tpc-network',
+          'Chrome OS US English 5',
+          'Android Speech Recognition and Synthesis from Google en-us-x-tpc-local',
+          'Android Speech Recognition and Synthesis from Google en-US-language',
+        ],
+        score: 33,
+      },
+      {
+        name: 'Google US English 1 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-iob-network',
+          'Chrome OS US English 1',
+          'Android Speech Recognition and Synthesis from Google en-us-x-iob-local',
+        ],
+        score: 34,
+      },
+      {
+        name: 'Google US English 2 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-iog-network',
+          'Chrome OS US English 2',
+          'Android Speech Recognition and Synthesis from Google en-us-x-iog-local',
+        ],
+        score: 35,
+      },
+      {
+        name: 'Google US English 7 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-tpf-network',
+          'Chrome OS US English 7',
+          'Android Speech Recognition and Synthesis from Google en-us-x-tpf-local',
+        ],
+        score: 36,
+      },
+      { name: 'Ava', altNames: [], score: 37 },
+      { name: 'Zoe', altNames: [], score: 38 },
+      { name: 'Samantha', altNames: [], score: 39 },
+      { name: 'Microsoft Zira - English (United States)', altNames: [], score: 40 },
+      {
+        name: 'Android Speech Recognition and Synthesis from Google en-us-x-sfg-network',
+        altNames: ['Android Speech Recognition and Synthesis from Google en-us-x-sfg-local'],
+        score: 41,
+      },
+      { name: 'Allison', altNames: [], score: 42 },
+      { name: 'Chrome OS US English 8', altNames: [], score: 43 },
+      { name: 'Nicky', altNames: [], score: 44 },
+      { name: 'Microsoft Natasha Online (Natural) - English (Australia)', altNames: [], score: 45 },
+      { name: 'Microsoft Hayley Online - English (Australia)', altNames: [], score: 46 },
+      { name: 'Microsoft Clara Online (Natural) - English (Canada)', altNames: [], score: 47 },
+      { name: 'Microsoft Heather Online - English (Canada)', altNames: [], score: 48 },
+      {
+        name: 'Microsoft Neerja Online (Natural) - English (India)',
+        altNames: ['Microsoft Neerja Online (Natural) - English (India) (Preview)'],
+        score: 49,
+      },
+      { name: 'Microsoft Emily Online (Natural) - English (Ireland)', altNames: [], score: 50 },
+      { name: 'Microsoft Leah Online (Natural) - English (South Africa)', altNames: [], score: 51 },
+      { name: 'Microsoft Yan Online (Natural) - English (Hong Kong SAR)', altNames: [], score: 52 },
+      { name: 'Microsoft Asilia Online (Natural) - English (Kenya)', altNames: [], score: 53 },
+      { name: 'Microsoft Molly Online (Natural) - English (New Zealand)', altNames: [], score: 54 },
+      { name: 'Microsoft Ezinne Online (Natural) - English (Nigeria)', altNames: [], score: 55 },
+      { name: 'Microsoft Rosa Online (Natural) - English (Philippines)', altNames: [], score: 56 },
+      { name: 'Microsoft Luna Online (Natural) - English (Singapore)', altNames: [], score: 57 },
+      { name: 'Microsoft Imani Online (Natural) - English (Tanzania)', altNames: [], score: 58 },
+      { name: 'Karen', altNames: [], score: 59 },
+      {
+        name: 'Google Australian English 1 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-au-x-aua-network',
+          'Chrome OS Australian English 1',
+          'Android Speech Recognition and Synthesis from Google en-au-x-aua-local',
+          'Android Speech Recognition and Synthesis from Google en-AU-language',
+        ],
+        score: 60,
+      },
+      {
+        name: 'Google Australian English 3 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-au-x-auc-network',
+          'Chrome OS Australian English 3',
+          'Android Speech Recognition and Synthesis from Google en-au-x-auc-local',
+        ],
+        score: 61,
+      },
+      {
+        name: 'Google Australian English 2 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-au-x-aub-network',
+          'Chrome OS Australian English 2',
+          'Android Speech Recognition and Synthesis from Google en-au-x-aub-local',
+        ],
+        score: 62,
+      },
+      {
+        name: 'Google Australian English 4 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-au-x-aud-network',
+          'Chrome OS Australian English 4',
+          'Android Speech Recognition and Synthesis from Google en-au-x-aud-local',
+        ],
+        score: 63,
+      },
+      {
+        name: 'Android Speech Recognition and Synthesis from Google en-in-x-ena-network',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-in-x-ena-local',
+          'Android Speech Recognition and Synthesis from Google en-IN-language',
+        ],
+        score: 64,
+      },
+      {
+        name: 'Android Speech Recognition and Synthesis from Google en-in-x-enc-network',
+        altNames: ['Android Speech Recognition and Synthesis from Google en-in-x-enc-local'],
+        score: 65,
+      },
+      { name: 'Matilda', altNames: [], score: 66 },
+      { name: 'Isha', altNames: [], score: 67 },
+      { name: 'Microsoft Catherine - English (Austalia)', altNames: [], score: 68 },
+      { name: 'Microsoft Linda - English (Canada)', altNames: [], score: 69 },
+      { name: 'Microsoft Heera - English (India)', altNames: [], score: 70 },
+      { name: 'Sangeeta', altNames: [], score: 71 },
+      { name: 'Moira', altNames: [], score: 72 },
+      { name: 'Tessa', altNames: [], score: 73 },
+      { name: 'Catherine', altNames: [], score: 74 },
+      { name: 'Microsoft Ana Online (Natural) - English (United States)', altNames: [], score: 75 },
+      { name: 'Joelle', altNames: [], score: 76 },
+      {
+        name: 'Microsoft AndrewMultilingual Online (Natural) - English (United States)',
+        altNames: ['Microsoft Andrew Online (Natural) - English (United States)'],
+        score: 77,
+      },
+      {
+        name: 'Microsoft BrianMultilingual Online (Natural) - English (United States)',
+        altNames: ['Microsoft Brian Online (Natural) - English (United States)'],
+        score: 78,
+      },
+      { name: 'Microsoft Guy Online (Natural) - English (United States)', altNames: [], score: 79 },
+      { name: 'Microsoft Eric Online (Natural) - English (United States)', altNames: [], score: 80 },
+      { name: 'Microsoft Steffan Online (Natural) - English (United States)', altNames: [], score: 81 },
+      { name: 'Microsoft Christopher Online (Natural) - English (United States)', altNames: [], score: 82 },
+      { name: 'Microsoft Roger Online (Natural) - English (United States)', altNames: [], score: 83 },
+      {
+        name: 'Google US English 4 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-iom-network',
+          'Chrome OS US English 4',
+          'Android Speech Recognition and Synthesis from Google en-us-x-iom-local',
+        ],
+        score: 84,
+      },
+      {
+        name: 'Google US English 3 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-iol-network',
+          'Chrome OS US English 3',
+          'Android Speech Recognition and Synthesis from Google en-us-x-iol-local',
+        ],
+        score: 85,
+      },
+      {
+        name: 'Google US English 6 (Natural)',
+        altNames: [
+          'Android Speech Recognition and Synthesis from Google en-us-x-tpd-network',
+          'Chrome OS US English 6',
+          'Android Speech Recognition and Synthesis from Google en-us-x-tpd-local',
+        ],
+        score: 86,
+      },
+      { name: 'Alex', altNames: [], score: 87 },
+      { name: 'Microsoft David - English (United States)', altNames: [], score: 88 },
+      { name: 'Microsoft Mark - English (United States)', altNames: [], score: 89 },
+      { name: 'Evan', altNames: [], score: 90 },
+      { name: 'Nathan', altNames: [], score: 91 },
+      { name: 'Tom', altNames: [], score: 92 },
+      { name: 'Aaron', altNames: [], score: 93 },
+      { name: 'Microsoft William Online (Natural) - English (Australia)', altNames: [], score: 94 },
+      { name: 'Microsoft Liam Online (Natural) - English (Canada)', altNames: [], score: 95 },
+      { name: 'Microsoft Prabhat Online (Natural) - English (India)', altNames: [], score: 96 },
+      { name: 'Microsoft Connor Online (Natural) - English (Ireland)', altNames: [], score: 97 },
+      { name: 'Microsoft Luke Online (Natural) - English (South Africa)', altNames: [], score: 98 },
+      { name: 'Microsoft Sam Online (Natural) - English (Hongkong)', altNames: [], score: 99 },
+      { name: 'Microsoft Chilemba Online (Natural) - English (Kenya)', altNames: [], score: 100 },
+      { name: 'Microsoft Mitchell Online (Natural) - English (New Zealand)', altNames: [], score: 101 },
+      { name: 'Microsoft Abeo Online (Natural) - English (Nigeria)', altNames: [], score: 102 },
+      { name: 'Microsoft James Online (Natural) - English (Philippines)', altNames: [], score: 103 },
+      { name: 'Microsoft Wayne Online (Natural) - English (Singapore)', altNames: [], score: 104 },
+      { name: 'Microsoft Elimu Online (Natural) - English (Tanzania)', altNames: [], score: 105 },
+      { name: 'Chrome OS Australian English 5', altNames: [], score: 106 },
+      {
+        name: 'Android Speech Recognition and Synthesis from Google en-in-x-end-network',
+        altNames: ['Android Speech Recognition and Synthesis from Google en-in-x-end-local'],
+        score: 107,
+      },
+      {
+        name: 'Android Speech Recognition and Synthesis from Google en-in-x-ene-network',
+        altNames: ['Android Speech Recognition and Synthesis from Google en-in-x-ene-local'],
+        score: 108,
+      },
+      { name: 'Lee', altNames: [], score: 109 },
+      { name: 'Rishi', altNames: [], score: 110 },
+      { name: 'Microsoft Richard - English (Australia)', altNames: [], score: 111 },
+      { name: 'Microsoft Richard - English (Canada)', altNames: [], score: 112 },
+      { name: 'Microsoft Ravi - English (India)', altNames: [], score: 113 },
+      { name: 'Microsoft Sean - English (Ireland)', altNames: [], score: 114 },
+      { name: 'Gordon', altNames: [], score: 115 },
+    ];
+
   private synthesis: SpeechSynthesis;
   private utterance: SpeechSynthesisUtterance | null = null;
   private state: PlayerState = 'idle';
@@ -182,52 +487,117 @@ export class TTSPlayer {
     });
   }
 
-  private selectPreferredVoice(): SpeechSynthesisVoice | null {
-    // Get voices - they should be loaded by now, but check again
-    const voices = this.synthesis.getVoices();
+  /**
+   * Calculate fallback score for voices not in VOICE_PRIORITY list
+   * Lower score = higher priority
+   */
+  private calculateFallbackScore(voice: SpeechSynthesisVoice): number {
+    let score = 0;
+    const lang = voice.lang.toLowerCase();
+    const name = voice.name.toLowerCase();
 
-    // If voices still not loaded, this is a race condition
-    // In some browsers (Chrome), voices load asynchronously
+    // Language priority (lower score = higher priority)
+    if (lang.startsWith('en-gb')) {
+      score = 0; // Highest priority
+    } else if (lang.startsWith('en-us')) {
+      score = 1000;
+    } else if (lang.startsWith('en')) {
+      score = 2000;
+    } else {
+      score = 5000; // Non-English fallback
+    }
+
+    // Gender preference (subtract to boost priority)
+    if (name.includes('female')) {
+      score -= 500;
+    }
+
+    // Preferred name bonus
+    const preferredNames = ['serena', 'kate', 'susan', 'fiona', 'stephanie', 'sonia', 'libby'];
+    for (let i = 0; i < preferredNames.length; i++) {
+      if (name.includes(preferredNames[i])) {
+        score -= 100 - i * 10; // Earlier names get bigger bonus
+        break;
+      }
+    }
+
+    return score;
+  }
+
+  /**
+   * Select the preferred voice using priority-based scoring
+   * Uses VOICE_PRIORITY list for deterministic selection
+   * Falls back to intelligent scoring for unknown voices
+   */
+  private selectPreferredVoice(): SpeechSynthesisVoice | null {
+    const allVoices = this.synthesis.getVoices();
+
+    if (allVoices.length === 0) {
+      return null;
+    }
+
+    // Filter to only en-GB and en-US voices
+    const englishVoices = allVoices.filter((voice) => {
+      const lang = voice.lang.toLowerCase();
+      return lang.startsWith('en-gb') || lang.startsWith('en-us');
+    });
+
+    // Fallback: if no en-GB/en-US voices, accept any English voice
+    const voices =
+      englishVoices.length > 0 ? englishVoices : allVoices.filter((v) => v.lang.toLowerCase().startsWith('en'));
+
     if (voices.length === 0) {
       return null;
     }
 
-    // Priority 1: British English (en-GB) voices matching specific criteria
-    const gb = voices.filter((v) => v.lang.toLowerCase().startsWith('en-gb'));
-    if (gb.length > 0) {
-      // Check for voices with 'female' in the name first
-      const withFemaleTag = gb.find((v) => v.name.toLowerCase().includes('female'));
-      if (withFemaleTag) {
-        return withFemaleTag;
-      }
+    // Group voices by name, preferring en-GB over en-US for duplicates
+    const voicesByName = new Map<string, SpeechSynthesisVoice>();
 
-      // Look for specific preferred voice names
-      const preferredNames = ['serena', 'kate', 'susan', 'fiona', 'stephanie'];
-      for (const name of preferredNames) {
-        const voice = gb.find((v) => v.name.toLowerCase().includes(name));
-        if (voice) {
-          return voice;
+    for (const voice of voices) {
+      const existing = voicesByName.get(voice.name);
+      if (!existing) {
+        voicesByName.set(voice.name, voice);
+      } else {
+        // If we have a duplicate name, prefer en-GB over en-US
+        const existingLang = existing.lang.toLowerCase();
+        const voiceLang = voice.lang.toLowerCase();
+
+        if (voiceLang.startsWith('en-gb') && !existingLang.startsWith('en-gb')) {
+          voicesByName.set(voice.name, voice);
         }
+        // Otherwise keep existing (en-GB or first encountered)
       }
-
-      // Return first British English voice as fallback
-      return gb[0];
     }
 
-    // Priority 2: Any English language voice with similar criteria
-    const en = voices.filter((v) => v.lang.toLowerCase().startsWith('en'));
-    if (en.length > 0) {
-      // Check for voices with 'female' in the name
-      const withFemaleTag = en.find((v) => v.name.toLowerCase().includes('female'));
-      if (withFemaleTag) {
-        return withFemaleTag;
+    const uniqueVoices = Array.from(voicesByName.values());
+
+    // Score each unique voice by priority
+    let bestVoice: SpeechSynthesisVoice | null = null;
+    let bestScore = Infinity;
+
+    for (const voice of uniqueVoices) {
+      // Check if voice is in our priority list (match by name OR altNames)
+      const priorityEntry = TTSPlayer.VOICE_PRIORITY.find(
+        (pv) => pv.name === voice.name || pv.altNames.includes(voice.name)
+      );
+
+      let score: number;
+      if (priorityEntry) {
+        // Voice found in priority list - use its score
+        score = priorityEntry.score;
+      } else {
+        // Voice not in priority list - use fallback scoring
+        // Add large offset to ensure priority list voices always win
+        score = 10000 + this.calculateFallbackScore(voice);
       }
 
-      return en[0];
+      if (score < bestScore) {
+        bestScore = score;
+        bestVoice = voice;
+      }
     }
 
-    // Fallback: Use first available voice
-    return voices[0];
+    return bestVoice;
   }
 
   private extractContent(): string {

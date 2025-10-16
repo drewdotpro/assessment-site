@@ -200,7 +200,21 @@ const settings = DEFAULT_SETTINGS;
     <!-- Text-to-Speech -->
     <section class="accessibility-section">
       <h3 class="accessibility-section-title">Text-to-Speech</h3>
-      <button type="button" data-tts-toggle class="accessibility-tts-btn">
+      <button type="button" data-tts-toggle class="accessibility-tts-btn" aria-label="Listen to this page">
+        <!-- Loading spinner (hidden by default) -->
+        <svg class="tts-loading-spinner" style="display: none;" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" stroke-opacity="0.25"></circle>
+          <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z" opacity="0.75">
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 12 12"
+              to="360 12 12"
+              dur="1s"
+              repeatCount="indefinite"></animateTransform>
+          </path>
+        </svg>
+        <!-- Volume icon (shown by default) -->
         <svg class="tts-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             stroke-linecap="round"
@@ -484,14 +498,21 @@ const settings = DEFAULT_SETTINGS;
     gap: 0.5rem;
   }
 
-  .accessibility-tts-btn:hover {
+  .accessibility-tts-btn:hover:not(:disabled) {
     background: var(--aw-color-secondary);
     border-color: var(--aw-color-secondary);
   }
 
-  .tts-btn-icon {
+  .accessibility-tts-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .tts-btn-icon,
+  .tts-loading-spinner {
     width: 20px;
     height: 20px;
+    flex-shrink: 0;
   }
 
   /* Reset Button */
