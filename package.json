@@ -46,6 +46,7 @@
     "astro": "^5.12.9",
     "astro-embed": "^0.9.0",
     "astro-icon": "^1.1.5",
+    "astro-pagefind": "^1.8.5",
     "limax": "4.1.0",
     "lodash.merge": "^4.6.2",
     "marked": "^16.4.0",

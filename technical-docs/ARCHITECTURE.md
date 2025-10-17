@@ -370,6 +370,115 @@ Custom remark/rehype plugins provide:
 - Path alias: `~/*` maps to `src/*`
 - Type definitions in `src/env.d.ts` and `src/types.d.ts`
 
+### Astro View Transitions Pattern
+
+**CRITICAL**: This site uses Astro's View Transitions for client-side navigation. When implementing dynamic JavaScript features, you **MUST** follow this pattern to ensure functionality persists across page navigations.
+
+#### The Problem
+
+Astro View Transitions replace the DOM during navigation but **do not reload JavaScript**. This causes:
+
+- Event listeners attached to old DOM elements stop working
+- DOM element references become stale
+- Dynamic features break after navigation
+
+#### The Solution Pattern
+
+**Always wrap initialization code in a function and call it on both initial load and `astro:page-load`:**
+
+```javascript
+<script>
+  // Persist state that should survive navigation (outside function)
+  let globalState = null;
+
+  // Wrap ALL initialization in a function
+  function initializeFeature() {
+    // Query DOM elements INSIDE the function (fresh references)
+    const button = document.getElementById('my-button');
+    const panel = document.getElementById('my-panel');
+
+    // Early return if elements don't exist
+    if (!button || !panel) return;
+
+    // Define functions and attach event listeners
+    function handleClick() {
+      panel.classList.toggle('open');
+    }
+
+    button.addEventListener('click', handleClick);
+  }
+
+  // Initialize on first load
+  initializeFeature();
+
+  // Reinitialize after each navigation
+  document.addEventListener('astro:page-load', () => {
+    initializeFeature();
+  });
+</script>
+```
+
+#### Key Rules
+
+1. **Query DOM inside init function** - Fresh references after navigation
+2. **Define functions inside init** - They need access to fresh DOM refs
+3. **Attach events inside init** - Events attached to fresh elements
+4. **Persist expensive state outside** - API connections, loaded libraries
+5. **Always add early return check** - Elements might not exist on all pages
+
+#### Real-World Examples
+
+**Search Panel** (`src/components/common/SearchPanel.astro:242-493`):
+
+- ✅ Pagefind library instance persists (expensive to reload)
+- ✅ All DOM queries inside `initializeSearch()`
+- ✅ All event listeners attached fresh on each page
+- ✅ Called on both initial load and `astro:page-load`
+
+**Accessibility Panel** (similar pattern):
+
+- ✅ Settings state persists in localStorage
+- ✅ DOM references queried fresh
+- ✅ Event listeners reattached after navigation
+
+#### Common Mistakes to Avoid
+
+❌ **DON'T** query DOM at top level:
+
+```javascript
+// BAD - becomes stale after navigation
+const button = document.getElementById('button');
+button.addEventListener('click', ...);
+```
+
+❌ **DON'T** forget the `astro:page-load` handler:
+
+```javascript
+// BAD - only works on first page
+function init() { ... }
+init(); // No astro:page-load handler!
+```
+
+❌ **DON'T** reload expensive resources unnecessarily:
+
+```javascript
+// BAD - reloads library on every navigation
+function init() {
+  const lib = await import('heavy-library.js'); // Expensive!
+}
+```
+
+#### Testing Checklist
+
+When implementing dynamic features:
+
+1. ✅ Test on initial page load
+2. ✅ Navigate to another page using links
+3. ✅ Test the feature again - **does it still work?**
+4. ✅ Navigate back - **still working?**
+
+If the feature breaks after navigation, you need to implement this pattern.
+
 ---
 
 ## Content Collections

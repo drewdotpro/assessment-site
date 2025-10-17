@@ -1,0 +1,4 @@
+# Netlify redirects configuration
+# Strip trailing slashes - redirect to canonical URLs without trailing slashes
+# This ensures consistent URLs across the site and prevents duplicate content issues
+/*/ /:splat 301

@@ -1,0 +1,17 @@
+---
+// Button that opens the search panel
+// Uses data-search-toggle attribute for event delegation (see SearchPanel.astro)
+import { Icon } from 'astro-icon/components';
+---
+
+<button
+  data-search-toggle
+  type="button"
+  class="text-muted hover:text-gray-900 dark:hover:text-white inline-flex items-center p-2.5 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+  aria-label="Search site"
+  aria-expanded="false"
+  aria-controls="search-panel"
+>
+  <Icon name="tabler:search" class="w-6 h-6 xl:w-5 xl:h-5" />
+  <span class="ml-1 hidden xl:inline">Search</span>
+</button>

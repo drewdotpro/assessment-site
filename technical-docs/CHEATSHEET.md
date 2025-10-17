@@ -1113,7 +1113,7 @@ import ToBlogLink from '~/components/blog/ToBlogLink.astro';
 
 ---
 
-## Common Components (11)
+## Common Components (13)
 
 ### 1. Image
 
@@ -1329,6 +1329,61 @@ import SplitbeeAnalytics from '~/components/common/SplitbeeAnalytics.astro';
 - `noCookieMode`: boolean (default: false) - Disable cookies
 - `url`: string (default: 'https://cdn.splitbee.io/sb.js')
 
+### 12. ToggleSearch
+
+**Search toggle button**
+
+```astro
+import ToggleSearch from '~/components/common/ToggleSearch.astro';
+
+<ToggleSearch />
+```
+
+**Props:** None - uses `data-search-toggle` attribute for event delegation
+
+**Note:** Opens the SearchPanel when clicked. Uses event delegation pattern for Astro view transitions compatibility.
+
+### 13. SearchPanel
+
+**Full-featured search panel with Pagefind integration**
+
+```astro
+import SearchPanel from '~/components/common/SearchPanel.astro';
+
+<SearchPanel />
+```
+
+**Props:** None - fully self-contained component
+
+**Features:**
+
+- Pagefind static site search with lazy-loaded index
+- Debounced search (300ms) for optimal performance
+- Keyboard navigation (Escape to close, Tab through results, Enter to navigate)
+- Focus trap and focus restoration for accessibility
+- Screen reader announcements with ARIA live regions
+- Theme integration (dark/light mode support)
+- Responsive design:
+  - Desktop: slides from right (480px wide)
+  - Mobile: slides from bottom (full width, 80vh max height)
+- Results limited to 15 for performance
+- Highlighted search terms in excerpts
+- Compatible with Astro view transitions
+
+**Usage:**
+
+1. Add `<SearchPanel />` to your layout (typically in Header.astro)
+2. Add `<ToggleSearch />` button(s) anywhere to open the panel
+3. Search panel automatically lazy-loads Pagefind on first open
+4. Pagefind index is generated during build process
+
+**Technical Notes:**
+
+- Requires `astro-pagefind` integration in astro.config.ts
+- Uses dynamic import with `/* @vite-ignore */` to prevent build-time resolution
+- Pagefind index must exist in dist/pagefind/ for search to work
+- Dev mode serves prebuilt index - run `npm run build:assessments` once initially
+
 ---
 
 ## Root Components (3)
@@ -1474,4 +1529,4 @@ import Layout from '~/layouts/MarkdownLayout.astro';
 
 ---
 
-**Last Updated**: 2025-01-12
+**Last Updated**: 2025-01-17

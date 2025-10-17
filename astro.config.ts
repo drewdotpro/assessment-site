@@ -9,6 +9,7 @@ import mdx from '@astrojs/mdx';
 import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
+import pagefind from 'astro-pagefind';
 import type { AstroIntegration } from 'astro';
 
 import astrowind from './vendor/integration';
@@ -69,6 +70,9 @@ export default defineConfig({
     astrowind({
       config: './src/config.yaml',
     }),
+
+    // Pagefind MUST be last - it needs to index the final HTML output
+    pagefind(),
   ],
 
   image: {
@@ -85,6 +89,19 @@ export default defineConfig({
       alias: {
         '~': path.resolve(__dirname, './src'),
       },
+    },
+    build: {
+      rollupOptions: {
+        external: ['/pagefind/pagefind.js'],
+      },
+    },
+    server: {
+      fs: {
+        allow: ['.', './dist'],
+      },
+    },
+    optimizeDeps: {
+      exclude: ['/pagefind/pagefind.js'],
     },
   },
 });

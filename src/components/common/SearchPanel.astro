@@ -1,0 +1,498 @@
+---
+// SearchPanel.astro - Modal search interface with Pagefind integration
+import { Icon } from 'astro-icon/components';
+---
+
+<!-- Backdrop overlay -->
+<div id="search-backdrop" class="search-backdrop" aria-hidden="true" style="display: none;"></div>
+
+<!-- Search panel -->
+<aside
+  id="search-panel"
+  class="search-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="search-panel-title"
+  style="transform: translateX(100%);"
+>
+  <!-- Header -->
+  <div class="search-panel-header">
+    <h2 id="search-panel-title" class="text-xl font-bold">Search</h2>
+    <button
+      data-search-close
+      type="button"
+      class="text-muted hover:text-gray-900 dark:hover:text-white p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+      aria-label="Close search"
+    >
+      <Icon name="tabler:x" class="w-5 h-5" />
+    </button>
+  </div>
+
+  <!-- Search input -->
+  <div class="search-input-container">
+    <label for="search-input" class="sr-only">Search the site</label>
+    <input
+      id="search-input"
+      type="search"
+      placeholder="Search..."
+      class="search-input"
+      aria-describedby="search-instructions"
+      autocomplete="off"
+    />
+    <span id="search-instructions" class="sr-only">
+      Type to search. Use arrow keys to navigate results, Enter to open.
+    </span>
+  </div>
+
+  <!-- Status/results count (screen reader announcement) -->
+  <div id="search-status" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+  <!-- Loading indicator -->
+  <div id="search-loading" class="search-loading" style="display: none;">
+    <div class="animate-pulse">Loading search...</div>
+  </div>
+
+  <!-- Results container -->
+  <div id="search-results" class="search-results"></div>
+
+  <!-- Empty state -->
+  <div id="search-empty" class="search-empty" style="display: none;">
+    <p class="text-muted">No results found</p>
+  </div>
+</aside>
+
+<style is:inline>
+  /* Backdrop overlay */
+  .search-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .search-backdrop.open {
+    opacity: 1;
+  }
+
+  /* Search panel - desktop: slide from right */
+  .search-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 480px;
+    max-width: 100%;
+    background: var(--aw-color-bg-page);
+    color: var(--aw-color-text-default);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    transition: transform 300ms ease;
+    overflow: hidden;
+  }
+
+  .search-panel.open {
+    transform: translateX(0) !important;
+  }
+
+  /* Mobile: slide from bottom */
+  @media (max-width: 767px) {
+    .search-panel {
+      top: auto;
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-height: 80vh;
+      border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+    }
+
+    .search-panel.open {
+      transform: translateY(0) !important;
+    }
+  }
+
+  /* Header */
+  .search-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--aw-color-text-muted);
+    flex-shrink: 0;
+  }
+
+  /* Search input */
+  .search-input-container {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--aw-color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--aw-color-text-muted);
+    border-radius: 8px;
+    background: var(--aw-color-bg-page);
+    color: var(--aw-color-text-default);
+    font-size: calc(1rem * var(--aw-text-size-scale, 1));
+    line-height: var(--aw-line-height-scale, 1.5);
+    transition: border-color 200ms ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--aw-color-primary);
+  }
+
+  /* Results */
+  .search-results {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+  }
+
+  .search-result {
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+    border: 1px solid transparent;
+    text-decoration: none;
+    display: block;
+  }
+
+  .search-result:hover,
+  .search-result:focus {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--aw-color-primary);
+    outline: none;
+  }
+
+  .dark .search-result:hover,
+  .dark .search-result:focus {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .search-result-title {
+    font-size: calc(1.125rem * var(--aw-text-size-scale, 1));
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--aw-color-text-heading);
+  }
+
+  .search-result-excerpt {
+    font-size: calc(0.875rem * var(--aw-text-size-scale, 1));
+    line-height: var(--aw-line-height-scale, 1.5);
+    color: var(--aw-color-text-muted);
+  }
+
+  .search-result-url {
+    font-size: calc(0.75rem * var(--aw-text-size-scale, 1));
+    color: var(--aw-color-primary);
+    margin-top: 0.25rem;
+  }
+
+  /* Loading and empty states */
+  .search-loading,
+  .search-empty {
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  /* Highlight matches in results */
+  .search-result mark {
+    background-color: var(--aw-color-accent);
+    color: var(--aw-color-bg-page);
+    padding: 0.1em 0.2em;
+    border-radius: 2px;
+  }
+
+  /* Screen reader only */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
+
+<script>
+  // Pagefind instance (lazy loaded) - persists across page loads
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let pagefind: any = null;
+  let debounceTimeout: number | null = null;
+
+  // Initialize search functionality
+  function initializeSearch() {
+    // Get DOM elements (fresh references after navigation)
+    const backdropEl = document.getElementById('search-backdrop');
+    const panelEl = document.getElementById('search-panel');
+    const inputEl = document.getElementById('search-input') as HTMLInputElement | null;
+    const resultsEl = document.getElementById('search-results');
+    const loadingEl = document.getElementById('search-loading');
+    const emptyEl = document.getElementById('search-empty');
+    const statusEl = document.getElementById('search-status');
+
+    // Early return if elements don't exist
+    if (!backdropEl || !panelEl || !inputEl || !resultsEl || !loadingEl || !emptyEl || !statusEl) {
+      return;
+    }
+
+    // Type-safe references (guaranteed non-null after check above)
+    const backdrop = backdropEl as HTMLElement;
+    const panel = panelEl as HTMLElement;
+    const input = inputEl as HTMLInputElement;
+    const results = resultsEl as HTMLElement;
+    const loading = loadingEl as HTMLElement;
+    const empty = emptyEl as HTMLElement;
+    const status = statusEl as HTMLElement;
+
+    // Focus trap elements
+    const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    let lastFocusedElement: HTMLElement | null = null;
+
+    // Open panel
+    async function openSearchPanel() {
+      lastFocusedElement = document.activeElement as HTMLElement | null;
+
+      backdrop.style.display = 'block';
+      setTimeout(() => backdrop.classList.add('open'), 10);
+      panel.classList.add('open');
+
+      // Update ARIA
+      const toggle = document.querySelector('[data-search-toggle]');
+      if (toggle) toggle.setAttribute('aria-expanded', 'true');
+
+      // Focus input
+      input.focus();
+
+      // Lazy load Pagefind on first open
+      if (!pagefind) {
+        try {
+          // Use template literal to prevent Vite from analyzing this import during dev
+          const pagefindPath = `/pagefind/pagefind.js`;
+          pagefind = await import(/* @vite-ignore */ pagefindPath);
+        } catch (err) {
+          console.error('Failed to load Pagefind:', err);
+          status.textContent = 'Search unavailable. Please try again later.';
+        }
+      }
+    }
+
+    // Close panel
+    function closeSearchPanel() {
+      backdrop.classList.remove('open');
+      panel.classList.remove('open');
+
+      setTimeout(() => {
+        backdrop.style.display = 'none';
+      }, 300);
+
+      // Update ARIA
+      const toggle = document.querySelector('[data-search-toggle]');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+
+      // Restore focus
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();
+      }
+
+      // Clear search
+      input.value = '';
+      results.innerHTML = '';
+      loading.style.display = 'none';
+      empty.style.display = 'none';
+    }
+
+    // Clean excerpt by removing mark tags that don't match search terms
+    function cleanExcerpt(excerpt: string, query: string): string {
+      // Extract search terms (split on whitespace, lowercase)
+      const searchTerms = query
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((term) => term.length > 0)
+        .map((term) => term.replace(/[^a-z0-9]/g, '')); // Clean each term
+
+      // Create a temporary element to parse HTML
+      const temp = document.createElement('div');
+      temp.innerHTML = excerpt;
+
+      // Find all mark elements
+      const marks = temp.querySelectorAll('mark');
+      marks.forEach((mark) => {
+        const textContent = mark.textContent || '';
+        const markedText = textContent.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        // Check if the marked text exactly matches any search term
+        // OR if it's a partial match where:
+        // 1. The marked text starts with the search term AND
+        // 2. The search term is at least 3 characters long (to avoid single-letter prefix matches)
+        const isValidMatch = searchTerms.some((term) => {
+          // Exact match is always valid
+          if (markedText === term) return true;
+
+          // Partial match only valid for longer search terms (3+ chars)
+          // This prevents single letters like "a" from matching "Astrowind"
+          if (term.length >= 3 && markedText.startsWith(term)) return true;
+
+          return false;
+        });
+
+        // If no match found, remove the mark tags but keep the text
+        if (!isValidMatch && mark.parentNode) {
+          const textNode = document.createTextNode(textContent);
+          mark.parentNode.replaceChild(textNode, mark);
+        }
+      });
+
+      return temp.innerHTML;
+    }
+
+    // Perform search
+    async function performSearch(query: string): Promise<void> {
+      if (!query.trim()) {
+        results.innerHTML = '';
+        loading.style.display = 'none';
+        empty.style.display = 'none';
+        status.textContent = '';
+        return;
+      }
+
+      if (!pagefind) {
+        return; // Still loading
+      }
+
+      // Show loading
+      loading.style.display = 'block';
+      results.innerHTML = '';
+      empty.style.display = 'none';
+
+      try {
+        const searchResults = await pagefind.search(query);
+
+        loading.style.display = 'none';
+
+        if (searchResults.results.length === 0) {
+          empty.style.display = 'block';
+          status.textContent = `No results found for "${query}"`;
+          return;
+        }
+
+        // Announce results to screen readers
+        status.textContent = `${searchResults.results.length} result${searchResults.results.length === 1 ? '' : 's'} found for "${query}"`;
+
+        // Limit to first 15 results for performance
+        const limitedResults = searchResults.results.slice(0, 15);
+
+        // Render results
+        for (const result of limitedResults) {
+          const data = await result.data();
+
+          // Strip trailing slash to ensure consistent URLs
+          const cleanUrl = data.url.replace(/\/$/, '');
+
+          // Clean the excerpt to remove incorrect highlighting
+          const cleanedExcerpt = cleanExcerpt(data.excerpt, query);
+
+          const resultEl = document.createElement('a');
+          resultEl.href = cleanUrl;
+          resultEl.className = 'search-result';
+          resultEl.setAttribute('tabindex', '0');
+          resultEl.innerHTML = `
+            <div class="search-result-title">${data.meta.title || 'Untitled'}</div>
+            <div class="search-result-excerpt">${cleanedExcerpt}</div>
+            <div class="search-result-url">${cleanUrl}</div>
+          `;
+
+          results.appendChild(resultEl);
+        }
+      } catch (err) {
+        console.error('Search error:', err);
+        loading.style.display = 'none';
+        status.textContent = 'Search error. Please try again.';
+      }
+    }
+
+    // Debounced search
+    function handleSearchInput(e: Event): void {
+      const target = e.target as HTMLInputElement;
+      if (debounceTimeout) clearTimeout(debounceTimeout);
+      debounceTimeout = window.setTimeout(() => {
+        performSearch(target.value);
+      }, 300);
+    }
+
+    // Focus trap
+    function trapFocus(e: KeyboardEvent): void {
+      if (!panel.classList.contains('open')) return;
+
+      const focusable = Array.from(panel.querySelectorAll(focusableSelectors)) as HTMLElement[];
+      const firstFocusable = focusable[0];
+      const lastFocusable = focusable[focusable.length - 1];
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey && document.activeElement === firstFocusable) {
+          e.preventDefault();
+          lastFocusable?.focus();
+        } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+          e.preventDefault();
+          firstFocusable?.focus();
+        }
+      }
+    }
+
+    // Event delegation for toggle buttons
+    document.addEventListener('click', (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      // Open search
+      if (target.closest('[data-search-toggle]')) {
+        e.preventDefault();
+        openSearchPanel();
+      }
+
+      // Close search
+      if (target.closest('[data-search-close]') || target === backdrop) {
+        e.preventDefault();
+        closeSearchPanel();
+      }
+    });
+
+    // Search input
+    if (input) {
+      input.addEventListener('input', handleSearchInput);
+    }
+
+    // Keyboard events
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      // Escape closes panel
+      if (e.key === 'Escape' && panel.classList.contains('open')) {
+        closeSearchPanel();
+      }
+
+      // Focus trap
+      trapFocus(e);
+    });
+  }
+
+  // Initialize on first load
+  initializeSearch();
+
+  // Reinitialize after Astro view transitions
+  document.addEventListener('astro:page-load', () => {
+    initializeSearch();
+  });
+</script>

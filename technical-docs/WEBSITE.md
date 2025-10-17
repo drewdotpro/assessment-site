@@ -636,6 +636,45 @@ The site implements a custom font switcher allowing users to select their prefer
 - Font switcher: `src/components/common/ToggleFont.astro`
 - Font files: `public/fonts/`
 
+### Site Search
+
+**Implementation:** Pagefind static site search with custom UI
+
+The site includes a comprehensive search feature allowing users to quickly find content across all pages:
+
+**Features:**
+
+- Lazy-loaded search index (only loads when search is opened)
+- Debounced search input (300ms) for optimal performance
+- Results show page title, excerpt with highlighted search terms, and URL
+- Limited to 15 results for performance
+- Search index isolated per site (assessments search only searches assessments content)
+
+**Accessibility:**
+
+- Full keyboard navigation (Escape to close, Tab through results, Enter to open)
+- Focus trap while panel is open
+- Focus restoration when panel closes
+- Screen reader announcements for result counts
+- ARIA roles and labels throughout
+- Theme integration (respects dark/light mode)
+
+**Responsive Design:**
+
+- Desktop: Panel slides in from right (480px wide)
+- Mobile: Panel slides up from bottom (full width, 80vh max height)
+
+**Technical Notes:**
+
+- Search index generated during build process
+- Dev mode serves prebuilt index (run build once initially)
+- Uses event delegation for Astro view transitions compatibility
+
+**Components:**
+
+- `ToggleSearch.astro` - Search button in header
+- `SearchPanel.astro` - Full search modal panel
+
 ### Other Accessibility Features
 
 - **Text-to-Speech system** - Read page content aloud with British English voice selection
@@ -697,4 +736,4 @@ This prevents race conditions and ensures quality control before content goes li
 
 ---
 
-**Last Updated:** 2025-01-12
+**Last Updated:** 2025-01-17
