@@ -30,7 +30,7 @@
   }
 
   .btn-secondary {
-    @apply btn;
+    @apply btn font-semibold bg-accent text-white border-accent hover:bg-accent-dark hover:border-accent-dark hover:text-white dark:text-white dark:bg-accent dark:border-accent dark:hover:border-accent-dark dark:hover:bg-accent-dark;
   }
 
   .btn-tertiary {
