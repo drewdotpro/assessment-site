@@ -400,8 +400,8 @@ import { Icon } from 'astro-icon/components';
         for (const result of limitedResults) {
           const data = await result.data();
 
-          // Strip trailing slash to ensure consistent URLs
-          const cleanUrl = data.url.replace(/\/$/, '');
+          // Strip trailing slash to ensure consistent URLs (but preserve "/" for root)
+          const cleanUrl = data.url.length > 1 ? data.url.replace(/\/$/, '') : data.url;
 
           // Clean the excerpt to remove incorrect highlighting
           const cleanedExcerpt = cleanExcerpt(data.excerpt, query);
